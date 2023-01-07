@@ -1,0 +1,40 @@
+import { REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v9';
+
+import * as commandModules from './commands';
+import config from './config';
+
+type Command = {
+  data: unknown;
+};
+
+const commands = [];
+
+// eslint-disable-next-line no-restricted-syntax
+for (const module of Object.values<Command>(commandModules)) {
+  commands.push(module.data);
+}
+
+const rest = new REST({ version: '10' }).setToken(config.DISCORD_TOKEN);
+
+// and deploy your commands!
+(async () => {
+  try {
+    console.log(
+      `Started refreshing ${commands.length} application (/) commands.`
+    );
+
+    // The put method is used to fully refresh all commands in the guild with the current set
+    await rest.put(
+      Routes.applicationGuildCommands(config.CLIENT_ID, config.GUILD_ID),
+      { body: commands }
+    );
+
+    console.log(
+      `Successfully reloaded ${commands.length} application (/) commands.`
+    );
+  } catch (error) {
+    // And of course, make sure you catch and log any errors!
+    console.error(error);
+  }
+})();
