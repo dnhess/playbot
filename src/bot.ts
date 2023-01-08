@@ -21,11 +21,19 @@ client.once(Events.ClientReady, (c) => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isCommand()) return;
+  // if (!interaction.isCommand() || !interaction.isAutocomplete()) return;
 
-  const { commandName } = interaction;
+  if (interaction.isChatInputCommand()) {
+    console.log('IN HERE');
+    const { commandName } = interaction;
 
-  commands[commandName]?.execute(interaction, client);
+    commands[commandName]?.execute(interaction, client);
+  } else if (interaction.isAutocomplete()) {
+    const { commandName } = interaction;
+    console.log(`Command name: ${commandName}`);
+    console.log(commands[commandName]);
+    commands[commandName]?.autocomplete(interaction, client);
+  }
 });
 
 // On message create, check if the message matches given text

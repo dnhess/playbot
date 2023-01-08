@@ -1,3 +1,5 @@
+import { EmbedBuilder } from 'discord.js';
+
 export const messages = [
   {
     message: 'ping',
@@ -9,6 +11,10 @@ export const messages = [
   },
   {
     message: 'hello',
-    response: 'hi',
+    response: {
+      embeds: [
+        new EmbedBuilder().setTitle('Hello!').setDescription('How are you?'),
+      ],
+    },
   },
 ];
