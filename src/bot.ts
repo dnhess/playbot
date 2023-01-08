@@ -32,7 +32,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     const { commandName } = interaction;
     console.log(`Command name: ${commandName}`);
     console.log(commands[commandName]);
-    commands[commandName]?.autocomplete(interaction, client);
+    await commands[commandName]?.autocomplete(interaction, client);
   }
 });
 
