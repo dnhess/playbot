@@ -1,20 +1,29 @@
+import type { Message } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 
 export const messages = [
   {
     message: 'ping',
-    response: 'pong',
+    response: () => 'pong',
   },
   {
     message: 'pong',
-    response: 'ping',
+    response: () => 'ping',
+  },
+  {
+    message: 'hey',
+    response: () => {
+      return {
+        embeds: [
+          new EmbedBuilder().setTitle('Hello!').setDescription('How are you?'),
+        ],
+      };
+    },
   },
   {
     message: 'hello',
-    response: {
-      embeds: [
-        new EmbedBuilder().setTitle('Hello!').setDescription('How are you?'),
-      ],
+    response: (message: Message) => {
+      return `Hello ${message.author.toString()}!`;
     },
   },
 ];
