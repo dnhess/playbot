@@ -32,6 +32,8 @@ export const client = new Client({
 
 client.once(Events.ClientReady, (c) => {
   console.log(`Ready! Logged in as ${c.user.tag}!`);
+
+  client.user?.setActivity('Listening for your commands!');
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -106,8 +108,18 @@ client.on(Events.InteractionCreate, async (interaction) => {
         const adminEmbed = new EmbedBuilder()
           .setTitle('Welcome Form Response')
           .setDescription(
-            `Playbite Username: ${playbiteUsername}\nHow did you find us?:\n ${playbiteFound}`
-          );
+            `Welcome form response from ${interaction.user.username}#${interaction.user.discriminator}`
+          )
+          .addFields([
+            {
+              name: 'Playbite Username',
+              value: playbiteUsername,
+            },
+            {
+              name: 'How did you hear about us?',
+              value: playbiteFound,
+            },
+          ]);
 
         // @ts-ignore
         adminChannel.send({ embeds: [adminEmbed] });
