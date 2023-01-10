@@ -37,8 +37,6 @@ client.once(Events.ClientReady, (c) => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
-  // if (!interaction.isCommand() || !interaction.isAutocomplete()) return;
-
   if (interaction.isChatInputCommand()) {
     console.log('IN HERE');
     const { commandName } = interaction;

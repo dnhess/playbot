@@ -26,4 +26,19 @@ export const messages = [
       return `Hello ${message.author.toString()}!`;
     },
   },
+  {
+    message: 'collectible',
+    response: () => {
+      return {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle('Hey, you can create your own collectible!')
+            .setColor('#7E47F3')
+            .setDescription(
+              `To create a new collectible, go to [Create your Own Collectible on Playbite](https://www.playbite.com/creating-your-own-collectible-on-playbite/).`
+            ),
+        ],
+      };
+    },
+  },
 ];
