@@ -41,7 +41,7 @@ export const autocomplete = async (
 
   if (focusedOption) {
     const filteredChoices = choices.filter((choice) =>
-      choice.name.toLowerCase().includes(focusedOption.value.toLowerCase())
+      choice.name.toLowerCase().includes(focusedOption.toLowerCase())
     );
 
     // @ts-ignore
