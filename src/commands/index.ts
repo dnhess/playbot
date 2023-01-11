@@ -5,3 +5,4 @@ export * as drops from './drops';
 export * as ping from './ping';
 export * as play from './play';
 export * as user from './user';
+export * as game from './game';
