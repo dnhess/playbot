@@ -43,15 +43,15 @@ export const execute = async (interaction: CommandInteraction) => {
   }
   await interaction.deferReply();
 
-  const Required = Data.level * 20 + 20;
+  const toNextLevel = 5 * Data.level ** 2 + 50 * Data.level + 100;
 
   const rank = new canvacord.Rank()
     .setAvatar(member.user.displayAvatarURL({ forceStatic: true }))
     .setCurrentXP(Data.XP)
-    .setRequiredXP(Required)
+    .setRequiredXP(toNextLevel)
     .setRank(1, 'RANK', false)
     .setLevel(Data.level, 'Level')
-    .setUsername(member.user.username)
+    .setUsername(member?.user.tag)
     .setDiscriminator(member.user.discriminator);
 
   const Card = await rank.build();
@@ -60,7 +60,6 @@ export const execute = async (interaction: CommandInteraction) => {
 
   const embed2 = new EmbedBuilder()
     .setColor('#7E47F3')
-    .setTitle(`${member.user.username}'s Level/Rank`)
     .setImage('attachment://rank.png');
 
   return interaction.editReply({ embeds: [embed2], files: [attachment] });

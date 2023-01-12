@@ -19,6 +19,7 @@ import * as commandModules from './commands';
 import config from './config';
 import { messages } from './messages/messages';
 import { levelSchema } from './Schemas/level';
+import { welcomeSchema } from './Schemas/welcome';
 
 const commands = Object(commandModules);
 
@@ -61,12 +62,18 @@ client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isChatInputCommand()) {
     const { commandName } = interaction;
     console.log(`Command name: ${commandName}`);
-    commands[commandName]?.execute(interaction, client);
+
+    // Remove hyphens from command name
+    const commandNameNoHyphens = commandName.replace(/-/g, '');
+    console.log(`Command name no hyphens: ${commandNameNoHyphens}`);
+    commands[commandNameNoHyphens]?.execute(interaction, client);
   } else if (interaction.isAutocomplete()) {
     const { commandName } = interaction;
     console.log(`Command name: ${commandName}`);
-    console.log(commands[commandName]);
-    await commands[commandName]?.autocomplete(interaction, client);
+    // Remove hyphens from command name
+    const commandNameNoHyphens = commandName.replace(/-/g, '');
+
+    await commands[commandNameNoHyphens]?.autocomplete(interaction, client);
   } else if (interaction.isButton()) {
     const { customId } = interaction;
     console.log(`Custom ID: ${customId}`);
@@ -194,7 +201,7 @@ client.on(Events.MessageCreate, async (message) => {
   if (!data) return;
 
   // @ts-ignore
-  const requiredXP = data.level * data.level * 20;
+  const requiredXP = 5 * data.level ** 2 + 50 * data.level + 100;
 
   // @ts-ignore
   if (data.XP + give >= requiredXP) {
@@ -220,27 +227,37 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 // On user join, send a message to welcome them, DM the user with a modal to ask for their username
+// TODO: Figure out how to make this work by storing the message in a db so I don't have to redeploy the bot every time I want to change the message
+// TODO: Also figure out how to make this work by checking to see if it is enabled in the db
 client.on(Events.GuildMemberAdd, (member) => {
-  console.log('in here');
-  const welcomeChannel = member.guild.channels.cache.find(
-    (channel) => channel.name === 'general' || channel.name === 'welcome'
+  // If guild id is in welcomeSchema, send a welcome message to the given channel
+  welcomeSchema.findOne(
+    { guildId: member.guild.id },
+    async (err: any, data: { channel: string }) => {
+      if (err) throw err;
+      console.log(data);
+      if (data) {
+        const welcomeChannel = member.guild.channels.cache.find(
+          (channel) => channel.name === data.channel
+        );
+
+        if (!welcomeChannel) return;
+
+        if (welcomeChannel) {
+          const welcomeEmbed = new EmbedBuilder()
+            .setTitle('Welcome to the server!')
+            .setDescription(
+              `${member} has joined the server! Make sure to read the rules!`
+            )
+            .setThumbnail(member.user.avatarURL())
+            .setColor('#00ff00');
+
+          // @ts-ignore
+          welcomeChannel.send({ embeds: [welcomeEmbed] });
+        }
+      }
+    }
   );
-
-  console.log('welcomeChannel', welcomeChannel);
-
-  if (!welcomeChannel) return;
-
-  if (welcomeChannel) {
-    const welcomeEmbed = new EmbedBuilder()
-      .setTitle('Welcome to the server!')
-      .setDescription(
-        `${member} has joined the server! Make sure to read the rules!`
-      )
-      .setThumbnail(member.user.avatarURL());
-
-    // @ts-ignore
-    welcomeChannel.send({ embeds: [welcomeEmbed] });
-  }
 
   // Send a welcome DM to user with a modal to ask for their username
   const welcomeEmbed = new EmbedBuilder()

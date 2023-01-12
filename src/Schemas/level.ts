@@ -1,10 +1,10 @@
 import { model, Schema } from 'mongoose';
 
 const levelSchemaSettings = new Schema({
-  guild: String,
-  user: String,
+  guildId: String,
+  userId: String,
   XP: Number,
   level: Number,
 });
 
-export const levelSchema = model('levelSchema', levelSchemaSettings);
+export const levelSchema = model('levels', levelSchemaSettings);

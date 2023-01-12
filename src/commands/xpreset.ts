@@ -9,7 +9,7 @@ import {
 import { levelSchema } from '../Schemas/level';
 
 export const data = new SlashCommandBuilder()
-  .setName('xpreset')
+  .setName('xp-reset')
   .setDescription('Resets the xp of a user')
   .addUserOption((option) =>
     option
