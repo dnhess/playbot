@@ -6,22 +6,30 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-import { welcomeSchema } from '../Schemas/welcome';
+import { joinReactionSchema } from '../Schemas/joinReaction';
 
 export const data = new SlashCommandBuilder()
-  .setName('enable-welcome')
-  .setDescription('Enables welcome messages on the server')
+  .setName('enable-welcome-reaction')
+  .setDescription('Applies a reaction to the welcome message')
   .addStringOption((option) =>
     option
       .setName('channel')
       .setDescription('The channel to send the welcome message in')
       .setRequired(true)
   )
-  .setDefaultMemberPermissions(PermissionFlagsBits.ADMINISTRATOR);
+  .addStringOption((option) =>
+    option
+      .setName('emoji')
+      .setDescription('The emoji to react with')
+      .setRequired(true)
+  )
+  .setDefaultMemberPermissions(PermissionFlagsBits.ADMINISTRATOR)
+  .setDefaultPermission(false);
 
 // eslint-disable-next-line consistent-return
 export const execute = async (interaction: CommandInteraction) => {
   const channel = interaction.options.getString('channel');
+  const emoji = interaction.options.getString('emoji');
   const perm = new EmbedBuilder()
     .setColor('#7E47F3')
     .setDescription(`:x: You do not have the permissions to use this command!`);
@@ -34,14 +42,28 @@ export const execute = async (interaction: CommandInteraction) => {
 
   const { guildId } = interaction;
 
+  // Check to see if joinReactionSchema exists if so delete
+  // const joinReactionSchemaExists = await joinReactionSchema.findOne({
+  //   guildId,
+  //   channel,
+  // });
+
+  // if (joinReactionSchemaExists) {
+  //   await joinReactionSchema.deleteOne({
+  //     guildId,
+  //     channel,
+  //   });
+  // }
+
   // Add the welcome message to the database
-  await welcomeSchema.replaceOne(
+  await joinReactionSchema.replaceOne(
     {
       guildId,
     },
     {
       guildId,
       channel,
+      emojiName: emoji,
     },
     { upsert: true }
   );
@@ -51,7 +73,7 @@ export const execute = async (interaction: CommandInteraction) => {
   const embed = new EmbedBuilder()
     .setColor('#7E47F3')
     .setDescription(
-      `:white_check_mark: Successfully enabled welcome messages in ${channel} !`
+      `:white_check_mark: Successfully enabled welcome reaction ${emoji} in ${channel} !`
     );
 
   return interaction.editReply({ embeds: [embed] });

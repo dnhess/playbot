@@ -18,8 +18,10 @@ import mongoose from 'mongoose';
 import * as commandModules from './commands';
 import config from './config';
 import { messages } from './messages/messages';
+import { joinReactionSchema } from './Schemas/joinReaction';
 import { levelSchema } from './Schemas/level';
 import { welcomeSchema } from './Schemas/welcome';
+import { welcomeDMSchema } from './Schemas/welcomeDM';
 
 const commands = Object(commandModules);
 
@@ -79,76 +81,113 @@ client.on(Events.InteractionCreate, async (interaction) => {
     console.log(`Custom ID: ${customId}`);
 
     if (customId === 'welcome-modal-btn') {
-      const welcomeModal = new ModalBuilder()
-        .setTitle('Welcome to the server!')
-        .setCustomId('welcome-modal');
+      // Get the guild from welcomeDM schema
+      welcomeDMSchema.findOne(
+        { guildID: interaction.guildId },
+        async (err: any, data: { messages: string[]; title: string }) => {
+          if (err) throw err;
 
-      const playbiteUsernameInput = new TextInputBuilder()
-        .setCustomId('playbite-username')
-        .setLabel('Playbite Username')
-        .setMinLength(3)
-        .setStyle(TextInputStyle.Short);
+          if (data) {
+            const welcomeModal = new ModalBuilder()
+              .setTitle(data.title)
+              .setCustomId(`welcome-modal-${interaction.guildId}`);
 
-      const playbiteFoundInput = new TextInputBuilder()
-        .setCustomId('playbite-found')
-        .setLabel('How did you hear about us?')
-        .setMinLength(3)
-        .setStyle(TextInputStyle.Paragraph);
+            // Build inputs for each message
+            data.messages.forEach((message, index) => {
+              // If message is null or undefined, return
+              if (!message) return;
 
-      const firstActionRow = new ActionRowBuilder().addComponents(
-        playbiteUsernameInput
+              const input = new TextInputBuilder()
+                .setCustomId(`welcome-message-${index}`)
+                .setLabel(`${message}`)
+                .setMinLength(3)
+                .setStyle(TextInputStyle.Paragraph);
+
+              const actionRow = new ActionRowBuilder().addComponents(input);
+              // @ts-ignore
+              welcomeModal.addComponents(actionRow);
+            });
+
+            await interaction.showModal(welcomeModal);
+          }
+        }
       );
-      const secondActionRow = new ActionRowBuilder().addComponents(
-        playbiteFoundInput
-      );
-      console.log('Adding components');
-      // @ts-ignore
-      const modal = welcomeModal.addComponents(firstActionRow, secondActionRow);
-      console.log('Showing modal');
-      await interaction.showModal(modal);
     }
   } else if (interaction.type === InteractionType.ModalSubmit) {
     const { customId } = interaction;
     console.log(`Custom ID: ${customId}`);
 
-    if (customId === 'welcome-modal') {
-      const playbiteUsername =
-        interaction.fields.getTextInputValue('playbite-username');
-      const playbiteFound =
-        interaction.fields.getTextInputValue('playbite-found');
+    if (customId === `welcome-modal-${interaction.guildId}`) {
+      // Get the guild from welcomeDM schema
+      welcomeDMSchema.findOne(
+        { guildID: interaction.guildId },
+        async (
+          err: any,
+          data: {
+            messages: string[];
+            title: string;
+            channel: string;
+            reply: string;
+          }
+        ) => {
+          if (err) throw err;
 
-      interaction.reply(
-        'Thanks for submitting your info! We will review it soon!'
+          if (data) {
+            // Get all text input values from modal
+
+            type TextInputResponse = {
+              name: string;
+              value: string;
+            };
+
+            const responses: TextInputResponse[] = [];
+
+            console.log(interaction.fields);
+
+            data.messages.forEach((message, index) => {
+              // If message is null or undefined, return
+              if (!message) return;
+              const response = interaction.fields.getTextInputValue(
+                `welcome-message-${index}`
+              );
+              responses.push({
+                name: message,
+                value: response,
+              });
+            });
+
+            console.log(
+              `Received responses from welcome-modal-${interaction.guildId}`
+            );
+            // Post inbed to channel
+            const embed = new EmbedBuilder()
+              .setTitle('Welcome Form Response')
+              .setDescription(
+                `Welcome form response from ${interaction.user.username}#${interaction.user.discriminator}`
+              )
+              .addFields(responses);
+
+            // Get the channel name from the interaction
+            const adminChannel = client.channels.cache.find(
+              // @ts-ignore
+              (channel) => channel.name === data.channel
+            );
+
+            console.log(`Channel name: ${data.channel}`);
+
+            console.log(`adminChannel: ${adminChannel}`);
+
+            if (!adminChannel) return;
+
+            if (adminChannel) {
+              // @ts-ignore
+              await adminChannel.send({ embeds: [embed] });
+            }
+
+            interaction.reply(data.reply);
+          }
+        }
       );
-      console.log('Checking for admin channel');
-      // Send message to admin channel
-      const adminChannel = client.channels.cache.find(
-        // @ts-ignore
-        (channel) => channel.name === 'admin' || channel.name === 'general'
-      );
-      console.log(`adminChannel:${adminChannel}`);
-      if (!adminChannel) return;
-
-      if (adminChannel) {
-        const adminEmbed = new EmbedBuilder()
-          .setTitle('Welcome Form Response')
-          .setDescription(
-            `Welcome form response from ${interaction.user.username}#${interaction.user.discriminator}`
-          )
-          .addFields([
-            {
-              name: 'Playbite Username',
-              value: playbiteUsername,
-            },
-            {
-              name: 'How did you hear about us?',
-              value: playbiteFound,
-            },
-          ]);
-
-        // @ts-ignore
-        adminChannel.send({ embeds: [adminEmbed] });
-      }
     }
   }
 });
@@ -235,8 +274,10 @@ client.on(Events.GuildMemberAdd, (member) => {
     { guildId: member.guild.id },
     async (err: any, data: { channel: string }) => {
       if (err) throw err;
-      console.log(data);
+
       if (data) {
+        console.log(`Welcome message enabled for ${member.guild.name}`);
+        console.log(`Sending welcome message to ${data.channel}`);
         const welcomeChannel = member.guild.channels.cache.find(
           (channel) => channel.name === data.channel
         );
@@ -259,22 +300,74 @@ client.on(Events.GuildMemberAdd, (member) => {
     }
   );
 
-  // Send a welcome DM to user with a modal to ask for their username
-  const welcomeEmbed = new EmbedBuilder()
-    .setTitle('Welcome to the server!')
-    .setDescription(
-      `Welcome to the server! Feel free to answer a few questions and get some free tickets!`
-    );
+  // If guild id is in guildWelcomeReaction, add the given reaction to the welcome message
+  joinReactionSchema.findOne(
+    { guildId: member.guild.id },
+    async (err: any, data: { emojiName: string; channel: string }) => {
+      if (err) throw err;
 
-  const buttonAction = new ActionRowBuilder().addComponents(
-    new ButtonBuilder()
-      .setCustomId('welcome-modal-btn')
-      .setLabel('Get Started')
-      .setStyle(ButtonStyle.Primary)
+      if (data) {
+        console.log(`Welcome reaction enabled for ${member.guild.name}`);
+        console.log(
+          `Sending welcome reaction in ${data.channel} with emoji ${data.emojiName}`
+        );
+        // Get emoji name from guild.emoji
+        const emoji = member.guild.emojis.cache.find(
+          // eslint-disable-next-line @typescript-eslint/no-shadow
+          (emoji) => emoji.name === data.emojiName
+        );
+
+        // Add emoji to welcome message
+        const welcomeChannel = member.guild.channels.cache.find(
+          (channel) => channel.name === data.channel
+        );
+
+        if (!welcomeChannel || !emoji) return;
+
+        if (welcomeChannel) {
+          // @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/no-shadow
+          welcomeChannel.messages.fetch({ limit: 1 }).then((messages) => {
+            // @ts-ignore
+            messages.first().react(emoji);
+          });
+        }
+      }
+    }
   );
 
-  // @ts-ignore
-  member.send({ embeds: [welcomeEmbed], components: [buttonAction] });
+  // If this is in welcomeDmSchema, send a welcome DM to user with a modal with data.description and data.messages
+
+  welcomeDMSchema.findOne(
+    { guildId: member.guild.id },
+    async (
+      err: any,
+      data: { description: string; messages: string[]; title: string }
+    ) => {
+      if (err) throw err;
+
+      if (data) {
+        console.log(
+          `Member joined and welcome DMs are enabled for ${member.guild.name}`
+        );
+        console.log(`Sending welcome DM to ${member.user.username}`);
+
+        const welcomeEmbed = new EmbedBuilder()
+          .setTitle(`${data.title}`)
+          .setDescription(`${data.description}`);
+
+        const buttonAction = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId(`welcome-modal-btn`)
+            .setLabel('Get Started')
+            .setStyle(ButtonStyle.Primary)
+        );
+
+        // @ts-ignore
+        member.send({ embeds: [welcomeEmbed], components: [buttonAction] });
+      }
+    }
+  );
 });
 
 client.login(config.DISCORD_TOKEN);
