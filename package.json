@@ -14,7 +14,8 @@
     "precommit": "npm run lint-fix && npm run pretty",
     "prepush": "npm run lint",
     "prepare": "husky install",
-    "deploy:commands": "tsc && node build/deploy-commands.js"
+    "deploy:commands": "tsc && node build/deploy-commands.js",
+    "postinstall": "tsc && node build/deploy-commands.js"
   },
   "keywords": [],
   "author": "",
