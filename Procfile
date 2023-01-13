@@ -1,1 +1,1 @@
-worker: yarn deploy:commands && yarn start
+worker: node index.js
