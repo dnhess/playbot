@@ -29,10 +29,7 @@ export const autocomplete = async (
     `${config.BASE_API_URL}/auctions?plat=web-android`
   );
   const auctionsJson = await auctions.json();
-  console.log('AUCTIONS JSON', auctionsJson);
   const auctionsData = convertAuctionsResponseToAuctionData(auctionsJson);
-
-  // console.log('AUCTIONS', auctionsData);
 
   const choices: { name: string; value: string }[] = auctionsData.map(
     (auction) => ({
@@ -41,11 +38,7 @@ export const autocomplete = async (
     })
   );
 
-  console.log('CHOICES');
-  console.log(choices);
-
   if (focusedOption) {
-    console.log(auctionsData);
     // Filter autocomplete where status is not 2
     const filteredAuctions = auctionsData.filter(
       (auction) => auction.status === 0

@@ -63,22 +63,20 @@ client.once(Events.ClientReady, async (c) => {
 client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isChatInputCommand()) {
     const { commandName } = interaction;
-    console.log(`Command name: ${commandName}`);
-
+    console.log(`Received chat input command interaction: ${commandName}`);
     // Remove hyphens from command name
     const commandNameNoHyphens = commandName.replace(/-/g, '');
-    console.log(`Command name no hyphens: ${commandNameNoHyphens}`);
     commands[commandNameNoHyphens]?.execute(interaction, client);
   } else if (interaction.isAutocomplete()) {
     const { commandName } = interaction;
-    console.log(`Command name: ${commandName}`);
+    console.log(`Received qutocomplete interaction: ${commandName}`);
     // Remove hyphens from command name
     const commandNameNoHyphens = commandName.replace(/-/g, '');
 
     await commands[commandNameNoHyphens]?.autocomplete(interaction, client);
   } else if (interaction.isButton()) {
     const { customId } = interaction;
-    console.log(`Custom ID: ${customId}`);
+    console.log(`Received button interaction with the id: ${customId}`);
 
     if (customId === 'welcome-modal-btn') {
       // Get the guild from welcomeDM schema
@@ -115,7 +113,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     }
   } else if (interaction.type === InteractionType.ModalSubmit) {
     const { customId } = interaction;
-    console.log(`Custom ID: ${customId}`);
+    console.log(`Received modal interaction with the id: ${customId}`);
 
     if (customId === `welcome-modal-${interaction.guildId}`) {
       // Get the guild from welcomeDM schema
@@ -141,8 +139,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
             };
 
             const responses: TextInputResponse[] = [];
-
-            console.log(interaction.fields);
 
             data.messages.forEach((message, index) => {
               // If message is null or undefined, return
@@ -173,9 +169,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
               (channel) => channel.name === data.channel
             );
 
-            console.log(`Channel name: ${data.channel}`);
-
-            console.log(`adminChannel: ${adminChannel}`);
+            console.log(`Channel Name to send data to: ${adminChannel}`);
 
             if (!adminChannel) return;
 
@@ -211,6 +205,34 @@ client.on(Events.MessageCreate, async (message) => {
           XP: 0,
           level: 0,
         });
+      } else {
+        const give = 1;
+        const requiredXP = 5 * data.level ** 2 + 50 * data.level + 100;
+        const channel = message.channel as TextChannel;
+        // @ts-ignore
+        if (data.XP + give >= requiredXP) {
+          // @ts-ignore
+          // eslint-disable-next-line no-param-reassign
+          data.XP += give;
+          // @ts-ignore
+          // eslint-disable-next-line no-param-reassign
+          data.level += 1;
+          await data.save();
+
+          if (!channel) return;
+
+          const levelUpEmbed = new EmbedBuilder()
+            .setTitle('Level Up!')
+            .setDescription(`${author} has leveled up to level ${data.level}!`)
+            .setColor('#00ff00');
+
+          channel.send({ embeds: [levelUpEmbed] });
+        } else {
+          // @ts-ignore
+          // eslint-disable-next-line no-param-reassign
+          data.XP += give;
+          await data.save();
+        }
       }
     }
   );
@@ -226,43 +248,6 @@ client.on(Events.MessageCreate, async (message) => {
       }
     }
   });
-
-  const channel = message.channel as TextChannel;
-
-  const give = 1;
-
-  const data = await levelSchema.findOne({
-    guildId: guild.id,
-    userId: author.id,
-  });
-
-  // eslint-disable-next-line no-useless-return
-  if (!data) return;
-
-  // @ts-ignore
-  const requiredXP = 5 * data.level ** 2 + 50 * data.level + 100;
-
-  // @ts-ignore
-  if (data.XP + give >= requiredXP) {
-    // @ts-ignore
-    data.XP += give;
-    // @ts-ignore
-    data.level += 1;
-    await data.save();
-
-    if (!channel) return;
-
-    const levelUpEmbed = new EmbedBuilder()
-      .setTitle('Level Up!')
-      .setDescription(`${author} has leveled up to level ${data.level}!`)
-      .setColor('#00ff00');
-
-    channel.send({ embeds: [levelUpEmbed] });
-  } else {
-    // @ts-ignore
-    data.XP += give;
-    await data.save();
-  }
 });
 
 // On user join, send a message to welcome them, DM the user with a modal to ask for their username
