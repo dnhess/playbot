@@ -1,7 +1,6 @@
 // export * as auction from './auction';
 export * as collectible from './collectible';
 export * as create from './create';
-export * as dbtest from './dbtest';
 export * as drops from './drops';
 export * as enablewelcome from './enable-welcome';
 export * as enablewelcomemessagedm from './enable-welcome-message-dm';
