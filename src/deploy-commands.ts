@@ -26,10 +26,17 @@ const rest = new REST({ version: '10' }).setToken(config.DISCORD_TOKEN);
 
     // The put method is used to fully refresh all commands in the guild with the current set
     // TODO: Remove config.GUILD_ID to deploy global commands
-    await rest.put(
-      Routes.applicationGuildCommands(config.CLIENT_ID, config.GUILD_ID),
-      { body: commands }
-    );
+    // If NODE_ENV is production, deploy global commands
+    if (process.env.NODE_ENV === 'production') {
+      await rest.put(Routes.applicationCommands(config.CLIENT_ID), {
+        body: commands,
+      });
+    } else {
+      await rest.put(
+        Routes.applicationGuildCommands(config.CLIENT_ID, config.GUILD_ID),
+        { body: commands }
+      );
+    }
 
     console.log(
       `Successfully reloaded ${commands.length} application (/) commands.`
