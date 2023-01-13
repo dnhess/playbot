@@ -1,0 +1,1 @@
+worker: yarn deploy:commands && yarn start
