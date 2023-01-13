@@ -2,7 +2,7 @@
 import type { CommandInteraction } from 'discord.js';
 import {
   EmbedBuilder,
-  PermissionFlagsBits,
+  PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
 
@@ -17,8 +17,7 @@ export const data = new SlashCommandBuilder()
       .setDescription('The channel to send the welcome message in')
       .setRequired(true)
   )
-  .setDefaultMemberPermissions(PermissionFlagsBits.ADMINISTRATOR);
-
+  .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
 // eslint-disable-next-line consistent-return
 export const execute = async (interaction: CommandInteraction) => {
   const channel = interaction.options.getString('channel');

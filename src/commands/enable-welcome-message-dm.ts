@@ -2,7 +2,7 @@
 import type { CommandInteraction } from 'discord.js';
 import {
   EmbedBuilder,
-  PermissionFlagsBits,
+  PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
 
@@ -70,7 +70,7 @@ export const data = new SlashCommandBuilder()
       .setMaxLength(45)
       .setRequired(false)
   )
-  .setDefaultMemberPermissions(PermissionFlagsBits.ADMINISTRATOR);
+  .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
 
 // eslint-disable-next-line consistent-return
 export const execute = async (interaction: CommandInteraction) => {

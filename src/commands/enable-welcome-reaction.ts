@@ -2,7 +2,7 @@
 import type { CommandInteraction } from 'discord.js';
 import {
   EmbedBuilder,
-  PermissionFlagsBits,
+  PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
 
@@ -23,8 +23,7 @@ export const data = new SlashCommandBuilder()
       .setDescription('The emoji to react with')
       .setRequired(true)
   )
-  .setDefaultMemberPermissions(PermissionFlagsBits.ADMINISTRATOR)
-  .setDefaultPermission(false);
+  .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
 
 // eslint-disable-next-line consistent-return
 export const execute = async (interaction: CommandInteraction) => {
