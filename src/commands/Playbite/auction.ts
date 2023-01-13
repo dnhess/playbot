@@ -3,8 +3,8 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import { DateTime } from 'luxon';
 
-import config from '../config';
-import { convertAuctionsResponseToAuctionData } from '../interfaces/IAuctions';
+import config from '../../config';
+import { convertAuctionsResponseToAuctionData } from '../../interfaces/IAuctions';
 
 export const data = new SlashCommandBuilder()
   .setName('auction')

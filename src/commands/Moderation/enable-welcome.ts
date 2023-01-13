@@ -6,7 +6,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-import { welcomeSchema } from '../Schemas/welcome';
+import { welcomeSchema } from '../../Schemas/welcome';
 
 export const data = new SlashCommandBuilder()
   .setName('enable-welcome')

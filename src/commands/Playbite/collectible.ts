@@ -2,8 +2,8 @@ import fetch from 'cross-fetch';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
-import config from '../config';
-import { convertCollectiblesResponseToCollectiblesData } from '../interfaces/ICollectibles';
+import config from '../../config';
+import { convertCollectiblesResponseToCollectiblesData } from '../../interfaces/ICollectibles';
 
 export const data = new SlashCommandBuilder()
   .setName('collectible')

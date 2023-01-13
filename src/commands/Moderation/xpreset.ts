@@ -2,11 +2,11 @@
 import type { CommandInteraction } from 'discord.js';
 import {
   EmbedBuilder,
-  PermissionFlagsBits,
+  PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
 
-import { levelSchema } from '../Schemas/level';
+import { levelSchema } from '../../Schemas/level';
 
 export const data = new SlashCommandBuilder()
   .setName('xp-reset')
@@ -17,7 +17,7 @@ export const data = new SlashCommandBuilder()
       .setDescription('The user to get the rank of')
       .setRequired(true)
   )
-  .setDefaultMemberPermissions(PermissionFlagsBits.ADMINISTRATOR);
+  .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
 
 // eslint-disable-next-line consistent-return
 export const execute = async (interaction: CommandInteraction) => {

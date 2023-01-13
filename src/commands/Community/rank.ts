@@ -6,7 +6,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-import { levelSchema } from '../Schemas/level';
+import { levelSchema } from '../../Schemas/level';
 
 const canvacord = require('canvacord');
 

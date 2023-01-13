@@ -2,7 +2,7 @@ import fetch from 'cross-fetch';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
-import config from '../config';
+import config from '../../config';
 
 type TUserStatsResponse = {
   displayName: string;

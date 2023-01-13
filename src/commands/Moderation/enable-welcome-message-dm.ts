@@ -6,7 +6,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-import { welcomeDMSchema } from '../Schemas/welcomeDM';
+import { welcomeDMSchema } from '../../Schemas/welcomeDM';
 
 export const data = new SlashCommandBuilder()
   .setName('enable-welcome-message-dm')

@@ -6,7 +6,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-import { joinReactionSchema } from '../Schemas/joinReaction';
+import { joinReactionSchema } from '../../Schemas/joinReaction';
 
 export const data = new SlashCommandBuilder()
   .setName('enable-welcome-reaction')

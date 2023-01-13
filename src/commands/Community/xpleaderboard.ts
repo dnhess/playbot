@@ -2,7 +2,7 @@
 import type { CommandInteraction } from 'discord.js';
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
-import { levelSchema } from '../Schemas/level';
+import { levelSchema } from '../../Schemas/level';
 
 export const data = new SlashCommandBuilder()
   .setName('xp-leaderboard')
