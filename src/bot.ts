@@ -68,6 +68,16 @@ client.once(Events.ClientReady, async (c) => {
     value: game.id,
   }));
 
+  const initalRandomGame = choices[Math.floor(Math.random() * choices.length)];
+
+  client.user?.setPresence({
+    activities: [
+      {
+        name: initalRandomGame.name,
+      },
+    ],
+  });
+
   setInterval(() => {
     // Pick a random game from choices
     const randomGame = choices[Math.floor(Math.random() * choices.length)];
