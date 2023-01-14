@@ -414,8 +414,11 @@ client.on(Events.ChannelCreate, async (channel) => {
 
       const { name, id, type } = channel;
 
-      let typeText = '';
+      // If missing values or is a bot return
+      if (!name || !id || !type || executor?.executor?.bot) return;
 
+      let typeText = '';
+      // @ts-ignore
       if (type === 0) {
         typeText = 'Text';
       } else if (type === 2) {
@@ -487,8 +490,12 @@ client.on(Events.ChannelDelete, async (channel) => {
       // @ts-ignore
       const { name, id, type } = channel;
 
+      // If missing values or is a bot return
+      if (!name || !id || !type || executor?.executor?.bot) return;
+
       let typeText = '';
 
+      // @ts-ignore
       if (type === 0) {
         typeText = 'Text';
       } else if (type === 2) {
@@ -561,6 +568,9 @@ client.on(Events.GuildBanAdd, async (member) => {
       const { id } = member.user;
       const name = member.user.username;
 
+      // If the executor is a bot or missing values then return
+      if (!executor || executor?.executor?.bot || !id || !name) return;
+
       // Check if loggin is enabled for this guild
       guildLogsSchema.findOne(
         // @ts-ignore
@@ -619,6 +629,9 @@ client.on(Events.GuildBanRemove, async (member) => {
       const { id } = member.user;
       const name = member.user.username;
 
+      // If missing values or executor is a bot, return
+      if (!id || !name || !executor || executor?.executor?.bot) return;
+
       // Check if loggin is enabled for this guild
       guildLogsSchema.findOne(
         // @ts-ignore
@@ -670,6 +683,9 @@ client.on(Events.MessageDelete, async (message) => {
       const executor = audit.entries.first();
       // @ts-ignore
       const mes = message.content;
+
+      // If missing values or message is from a bot return
+      if (!mes || message?.author?.bot || !executor) return;
 
       // Check if loggin is enabled for this guild
       guildLogsSchema.findOne(
@@ -723,6 +739,9 @@ client.on(Events.MessageUpdate, async (message, newMessage) => {
       const executor = audit.entries.first();
       // @ts-ignore
       const mes = message.content;
+
+      // If the message is from a bot, return
+      if (message?.author?.bot || !executor || !mes) return;
 
       // Check if loggin is enabled for this guild
       guildLogsSchema.findOne(
@@ -781,6 +800,9 @@ client.on(Events.GuildMemberRemove, async (member) => {
       // @ts-ignore
       const { id } = member.user;
       const name = member.user.username;
+
+      // If missing values or message is from a bot return
+      if (!executor || !id || !name || member?.user?.bot) return;
 
       // Check if loggin is enabled for this guild
       guildLogsSchema.findOne(
