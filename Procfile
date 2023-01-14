@@ -1,1 +1,1 @@
-worker: node -r newrelic build/index.js
+worker: node build/index.js
