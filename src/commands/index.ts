@@ -1,7 +1,9 @@
-// export * as auction from './auction';
+/* eslint-disable import/no-cycle */
+
 export * as ping from './Community/ping';
 export * as rank from './Community/rank';
 export * as xpleaderboard from './Community/xpleaderboard';
+export * as ban from './Moderation/ban';
 export * as enablelogging from './Moderation/enable-logging';
 export * as enablewelcome from './Moderation/enable-welcome';
 export * as enablewelcomemessagedm from './Moderation/enable-welcome-message-dm';

@@ -41,6 +41,9 @@ const rest = new REST({ version: '10' }).setToken(config.DISCORD_TOKEN);
     console.log(
       `Successfully reloaded ${commands.length} application (/) commands.`
     );
+
+    // Stop the process
+    process.exit(0);
   } catch (error) {
     // And of course, make sure you catch and log any errors!
     console.error(error);
