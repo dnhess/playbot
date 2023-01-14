@@ -41,4 +41,11 @@ export const messages = [
       };
     },
   },
+  {
+    message: 'app.playbite.com',
+    // Return response with a clickable link
+    response: () => {
+      return `https://app.playbite.com`;
+    },
+  },
 ];

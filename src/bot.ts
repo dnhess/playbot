@@ -227,7 +227,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 
 // On message create, check if the message matches given text
-// TODO: Figure out how to make this work by storing the message in a db so I don't have to redeploy the bot every time I want to change the message
 client.on(Events.MessageCreate, async (message) => {
   const { guild, author } = message;
   // If bot sent the message, ignore it
@@ -291,8 +290,6 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 // On user join, send a message to welcome them, DM the user with a modal to ask for their username
-// TODO: Figure out how to make this work by storing the message in a db so I don't have to redeploy the bot every time I want to change the message
-// TODO: Also figure out how to make this work by checking to see if it is enabled in the db
 client.on(Events.GuildMemberAdd, (member) => {
   // If guild id is in welcomeSchema, send a welcome message to the given channel
   welcomeSchema.findOne(
@@ -396,6 +393,7 @@ client.on(Events.GuildMemberAdd, (member) => {
 });
 
 // MOD LOGS
+// TODO: Separate this into a different file
 client.on(Events.ChannelCreate, async (channel) => {
   channel.guild
     .fetchAuditLogs({
