@@ -1,6 +1,8 @@
+import fetch from 'cross-fetch';
 import type { TextChannel } from 'discord.js';
 import {
   ActionRowBuilder,
+  AuditLogEvent,
   ButtonBuilder,
   ButtonStyle,
   Client,
@@ -17,7 +19,9 @@ import mongoose from 'mongoose';
 
 import * as commandModules from './commands';
 import config from './config';
+import { convertGameResponseToGameData } from './interfaces/IGame';
 import { messages } from './messages/messages';
+import { guildLogsSchema } from './Schemas/enableLogging';
 import { joinReactionSchema } from './Schemas/joinReaction';
 import { levelSchema } from './Schemas/level';
 import { welcomeSchema } from './Schemas/welcome';
@@ -28,19 +32,55 @@ const commands = Object(commandModules);
 export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildBans,
+    GatewayIntentBits.GuildEmojisAndStickers,
+    GatewayIntentBits.GuildIntegrations,
+    GatewayIntentBits.GuildWebhooks,
+    GatewayIntentBits.GuildInvites,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildPresences,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.GuildMessageTyping,
     GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.DirectMessageReactions,
+    GatewayIntentBits.DirectMessageTyping,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildScheduledEvents,
+    GatewayIntentBits.AutoModerationConfiguration,
+    GatewayIntentBits.AutoModerationExecution,
   ],
 });
 
 client.once(Events.ClientReady, async (c) => {
   console.log(`Ready! Logged in as ${c.user.tag}!`);
 
-  client.user?.setActivity('Listening for your commands!');
+  const games = await fetch(`${config.BASE_API_URL}/feed?plat=web`);
+  const gamesJson = await games.json();
+
+  const gamesData = convertGameResponseToGameData(
+    gamesJson.filter((game: { title: string }) => game.title === 'All')[0]
+  );
+
+  const choices: { name: string; value: string }[] = gamesData.map((game) => ({
+    name: game.name,
+    value: game.id,
+  }));
+
+  setInterval(() => {
+    // Pick a random game from choices
+    const randomGame = choices[Math.floor(Math.random() * choices.length)];
+
+    client.user?.setPresence({
+      activities: [
+        {
+          name: randomGame.name,
+        },
+      ],
+    });
+    // Set the presence every hour
+  }, 1000 * 60 * 60);
 
   // Mongo connection
   if (!config.MONODB_URL) {
@@ -353,6 +393,430 @@ client.on(Events.GuildMemberAdd, (member) => {
       }
     }
   );
+});
+
+// MOD LOGS
+client.on(Events.ChannelCreate, async (channel) => {
+  channel.guild
+    .fetchAuditLogs({
+      type: AuditLogEvent.ChannelCreate,
+    })
+    .then((audit) => {
+      const executor = audit.entries.first();
+
+      const { name, id, type } = channel;
+
+      let typeText = '';
+
+      if (type === 0) {
+        typeText = 'Text';
+      } else if (type === 2) {
+        typeText = 'Voice';
+      } else if (type === 4) {
+        typeText = 'Category';
+      } else if (type === 5) {
+        typeText = 'News';
+      } else if (type === 15) {
+        typeText = 'Forum';
+      }
+
+      console.log(`Channel created: ${name} (${id}) of type ${type}`);
+
+      // Check if loggin is enabled for this guild
+      guildLogsSchema.findOne(
+        { guildId: channel.guild.id },
+        async (err: any, data: { channel: string }) => {
+          if (err) throw err;
+
+          if (data) {
+            const mChannel = channel.guild.channels.cache.get(data.channel);
+
+            if (!mChannel) return;
+
+            const logEmbed = new EmbedBuilder()
+              .setColor('Red')
+              .setTitle('Channel Created')
+              .addFields(
+                {
+                  name: 'Channel Name',
+                  value: `${name} (<#${id}>)`,
+                  inline: false,
+                },
+                {
+                  name: 'Channel Type',
+                  value: `${typeText}`,
+                  inline: false,
+                },
+                {
+                  name: 'Channel ID',
+                  value: `${id}`,
+                  inline: false,
+                },
+                {
+                  name: 'Created By',
+                  value: `${executor?.executor?.username}#${executor?.executor?.discriminator}`,
+                  inline: false,
+                }
+              );
+
+            // @ts-ignore
+            mChannel.send({ embeds: [logEmbed] });
+          }
+        }
+      );
+    });
+});
+
+client.on(Events.ChannelDelete, async (channel) => {
+  // @ts-ignore
+  channel.guild
+    .fetchAuditLogs({
+      type: AuditLogEvent.ChannelDelete,
+    })
+    // @ts-ignore
+    .then((audit) => {
+      const executor = audit.entries.first();
+      // @ts-ignore
+      const { name, id, type } = channel;
+
+      let typeText = '';
+
+      if (type === 0) {
+        typeText = 'Text';
+      } else if (type === 2) {
+        typeText = 'Voice';
+      } else if (type === 4) {
+        typeText = 'Category';
+      } else if (type === 5) {
+        typeText = 'News';
+      } else if (type === 15) {
+        typeText = 'Forum';
+      }
+
+      console.log(`Channel created: ${name} (${id}) of type ${type}`);
+
+      // Check if loggin is enabled for this guild
+      guildLogsSchema.findOne(
+        // @ts-ignore
+        { guildId: channel.guild.id },
+        async (err: any, data: { channel: string }) => {
+          if (err) throw err;
+
+          if (data) {
+            // @ts-ignore
+            const mChannel = channel.guild.channels.cache.get(data.channel);
+            if (!mChannel) return;
+            const logEmbed = new EmbedBuilder()
+              .setColor('Red')
+              .setTitle('Channel Deleted')
+              .addFields(
+                {
+                  name: 'Channel Name',
+                  value: `${name}`,
+                  inline: false,
+                },
+                {
+                  name: 'Channel Type',
+                  value: `${typeText}`,
+                  inline: false,
+                },
+                {
+                  name: 'Channel ID',
+                  value: `${id}`,
+                  inline: false,
+                },
+                {
+                  name: 'Deleted By',
+                  value: `${executor?.executor?.username}#${executor?.executor?.discriminator}`,
+                  inline: false,
+                }
+              );
+
+            // @ts-ignore
+            mChannel.send({ embeds: [logEmbed] });
+          }
+        }
+      );
+    });
+});
+
+client.on(Events.GuildBanAdd, async (member) => {
+  // @ts-ignore
+  member.guild
+    .fetchAuditLogs({
+      type: AuditLogEvent.MemberBanAdd,
+    })
+    // @ts-ignore
+    .then((audit) => {
+      const executor = audit.entries.first();
+      // @ts-ignore
+      const { id } = member.user;
+      const name = member.user.username;
+
+      // Check if loggin is enabled for this guild
+      guildLogsSchema.findOne(
+        // @ts-ignore
+        { guildId: member.guild.id },
+        async (err: any, data: { channel: string }) => {
+          if (err) throw err;
+
+          if (data) {
+            // @ts-ignore
+            const mChannel = member.guild.channels.cache.get(data.channel);
+            if (!mChannel) return;
+            const logEmbed = new EmbedBuilder()
+              .setColor('Red')
+              .setTitle('Member Banned')
+              .addFields(
+                {
+                  name: 'Member Name',
+                  value: `${name} (<@${id}>)`,
+                  inline: false,
+                },
+                {
+                  name: 'Member ID',
+                  value: `${id}`,
+                  inline: false,
+                },
+                {
+                  name: 'Banned By',
+                  value: `${executor?.executor?.username}#${executor?.executor?.discriminator}`,
+                  inline: false,
+                },
+                {
+                  name: 'Reason',
+                  value: `${executor?.reason}`,
+                  inline: false,
+                }
+              );
+
+            // @ts-ignore
+            mChannel.send({ embeds: [logEmbed] });
+          }
+        }
+      );
+    });
+});
+
+client.on(Events.GuildBanRemove, async (member) => {
+  // @ts-ignore
+  member.guild
+    .fetchAuditLogs({
+      type: AuditLogEvent.MemberBanRemove,
+    })
+    // @ts-ignore
+    .then((audit) => {
+      const executor = audit.entries.first();
+      // @ts-ignore
+      const { id } = member.user;
+      const name = member.user.username;
+
+      // Check if loggin is enabled for this guild
+      guildLogsSchema.findOne(
+        // @ts-ignore
+        { guildId: member.guild.id },
+        async (err: any, data: { channel: string }) => {
+          if (err) throw err;
+
+          if (data) {
+            // @ts-ignore
+            const mChannel = member.guild.channels.cache.get(data.channel);
+            if (!mChannel) return;
+            const logEmbed = new EmbedBuilder()
+              .setColor('Red')
+              .setTitle('Member Unbanned')
+              .addFields(
+                {
+                  name: 'Member Name',
+                  value: `${name} (<@${id}>)`,
+                  inline: false,
+                },
+                {
+                  name: 'Member ID',
+                  value: `${id}`,
+                  inline: false,
+                },
+                {
+                  name: 'Unbanned By',
+                  value: `${executor?.executor?.username}#${executor?.executor?.discriminator}`,
+                  inline: false,
+                }
+              );
+
+            // @ts-ignore
+            mChannel.send({ embeds: [logEmbed] });
+          }
+        }
+      );
+    });
+});
+
+client.on(Events.MessageDelete, async (message) => {
+  // @ts-ignore
+  message.guild
+    .fetchAuditLogs({
+      type: AuditLogEvent.MessageDelete,
+    })
+    // @ts-ignore
+    .then((audit) => {
+      const executor = audit.entries.first();
+      // @ts-ignore
+      const mes = message.content;
+
+      // Check if loggin is enabled for this guild
+      guildLogsSchema.findOne(
+        // @ts-ignore
+        { guildId: message.guild.id },
+        async (err: any, data: { channel: string }) => {
+          if (err) throw err;
+
+          if (data) {
+            // @ts-ignore
+            const mChannel = message.guild.channels.cache.get(data.channel);
+            if (!mChannel) return;
+            const logEmbed = new EmbedBuilder()
+              .setColor('Red')
+              .setTitle('Message Deleted')
+              .addFields(
+                {
+                  name: 'Message Content',
+                  value: `${mes}`,
+                  inline: false,
+                },
+                {
+                  name: 'Member Channel',
+                  value: `${message.channel}`,
+                  inline: false,
+                },
+                {
+                  name: 'Deleted By',
+                  value: `${executor?.executor?.username}#${executor?.executor?.discriminator}`,
+                  inline: false,
+                }
+              );
+
+            // @ts-ignore
+            mChannel.send({ embeds: [logEmbed] });
+          }
+        }
+      );
+    });
+});
+
+client.on(Events.MessageUpdate, async (message, newMessage) => {
+  // @ts-ignore
+  message.guild
+    .fetchAuditLogs({
+      // @ts-ignore
+      type: AuditLogEvent.MessageUpdate,
+    })
+    // @ts-ignore
+    .then((audit) => {
+      const executor = audit.entries.first();
+      // @ts-ignore
+      const mes = message.content;
+
+      // Check if loggin is enabled for this guild
+      guildLogsSchema.findOne(
+        // @ts-ignore
+        { guildId: message.guild.id },
+        async (err: any, data: { channel: string }) => {
+          if (err) throw err;
+
+          if (data) {
+            // @ts-ignore
+            const mChannel = message.guild.channels.cache.get(data.channel);
+            if (!mChannel) return;
+            const logEmbed = new EmbedBuilder()
+              .setColor('Red')
+              .setTitle('Message Edited')
+              .addFields(
+                {
+                  name: 'Old Message Content',
+                  value: `${mes}`,
+                  inline: false,
+                },
+                {
+                  name: 'New Message Content',
+                  value: `${newMessage}`,
+                  inline: false,
+                },
+                {
+                  name: 'Member Channel',
+                  value: `${message.channel}`,
+                  inline: false,
+                },
+                {
+                  name: 'Edited By',
+                  value: `${executor?.executor?.username}#${executor?.executor?.discriminator}`,
+                  inline: false,
+                }
+              );
+
+            // @ts-ignore
+            mChannel.send({ embeds: [logEmbed] });
+          }
+        }
+      );
+    });
+});
+
+client.on(Events.GuildMemberRemove, async (member) => {
+  // @ts-ignore
+  member.guild
+    .fetchAuditLogs({
+      type: AuditLogEvent.MemberKick,
+    })
+    // @ts-ignore
+    .then((audit) => {
+      const executor = audit.entries.first();
+      // @ts-ignore
+      const { id } = member.user;
+      const name = member.user.username;
+
+      // Check if loggin is enabled for this guild
+      guildLogsSchema.findOne(
+        // @ts-ignore
+        { guildId: member.guild.id },
+        async (err: any, data: { channel: string }) => {
+          if (err) throw err;
+
+          if (data) {
+            // @ts-ignore
+            const mChannel = member.guild.channels.cache.get(data.channel);
+            if (!mChannel) return;
+            const logEmbed = new EmbedBuilder()
+              .setColor('Red')
+              .setTitle('Member Kicked')
+              .addFields(
+                {
+                  name: 'Member Name',
+                  value: `${name} (<@${id}>)`,
+                  inline: false,
+                },
+                {
+                  name: 'Member ID',
+                  value: `${id}`,
+                  inline: false,
+                },
+                {
+                  name: 'Kicked By',
+                  value: `${executor?.executor?.username}#${executor?.executor?.discriminator}`,
+                  inline: false,
+                },
+                {
+                  name: 'Reason',
+                  value: `${executor?.reason}`,
+                  inline: false,
+                }
+              );
+
+            // @ts-ignore
+            mChannel.send({ embeds: [logEmbed] });
+          }
+        }
+      );
+    });
 });
 
 client.login(config.DISCORD_TOKEN);
