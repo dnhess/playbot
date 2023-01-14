@@ -166,7 +166,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
             // Get the channel name from the interaction
             const adminChannel = client.channels.cache.find(
               // @ts-ignore
-              (channel) => channel.name === data.channel
+              (channel) => channel.id === data.channel
             );
 
             console.log(`Channel Name to send data to: ${adminChannel}`);
@@ -264,7 +264,7 @@ client.on(Events.GuildMemberAdd, (member) => {
         console.log(`Welcome message enabled for ${member.guild.name}`);
         console.log(`Sending welcome message to ${data.channel}`);
         const welcomeChannel = member.guild.channels.cache.find(
-          (channel) => channel.name === data.channel
+          (channel) => channel.id === data.channel
         );
 
         if (!welcomeChannel) return;
@@ -304,7 +304,7 @@ client.on(Events.GuildMemberAdd, (member) => {
 
         // Add emoji to welcome message
         const welcomeChannel = member.guild.channels.cache.find(
-          (channel) => channel.name === data.channel
+          (channel) => channel.id === data.channel
         );
 
         if (!welcomeChannel || !emoji) return;

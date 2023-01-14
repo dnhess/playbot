@@ -1,6 +1,7 @@
 // @ts-nocheck
 import type { CommandInteraction } from 'discord.js';
 import {
+  ChannelType,
   EmbedBuilder,
   PermissionsBitField,
   SlashCommandBuilder,
@@ -11,16 +12,17 @@ import { welcomeSchema } from '../../Schemas/welcome';
 export const data = new SlashCommandBuilder()
   .setName('enable-welcome')
   .setDescription('Enables welcome messages on the server')
-  .addStringOption((option) =>
+  .addChannelOption((option) =>
     option
       .setName('channel')
       .setDescription('The channel to send the welcome message in')
+      .addChannelTypes(ChannelType.GuildText)
       .setRequired(true)
   )
   .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
 // eslint-disable-next-line consistent-return
 export const execute = async (interaction: CommandInteraction) => {
-  const channel = interaction.options.getString('channel');
+  const channel = interaction.options.getChannel('channel');
   const perm = new EmbedBuilder()
     .setColor('#7E47F3')
     .setDescription(`:x: You do not have the permissions to use this command!`);
@@ -40,7 +42,7 @@ export const execute = async (interaction: CommandInteraction) => {
     },
     {
       guildId,
-      channel,
+      channel: channel.id,
     },
     { upsert: true }
   );

@@ -1,6 +1,7 @@
 // @ts-nocheck
 import type { CommandInteraction } from 'discord.js';
 import {
+  ChannelType,
   EmbedBuilder,
   PermissionsBitField,
   SlashCommandBuilder,
@@ -11,10 +12,11 @@ import { joinReactionSchema } from '../../Schemas/joinReaction';
 export const data = new SlashCommandBuilder()
   .setName('enable-welcome-reaction')
   .setDescription('Applies a reaction to the welcome message')
-  .addStringOption((option) =>
+  .addChannelOption((option) =>
     option
       .setName('channel')
       .setDescription('The channel to send the welcome message in')
+      .addChannelTypes(ChannelType.GuildText)
       .setRequired(true)
   )
   .addStringOption((option) =>
@@ -27,32 +29,12 @@ export const data = new SlashCommandBuilder()
 
 // eslint-disable-next-line consistent-return
 export const execute = async (interaction: CommandInteraction) => {
-  const channel = interaction.options.getString('channel');
+  const channel = interaction.options.getChannel('channel');
   const emoji = interaction.options.getString('emoji');
-  const perm = new EmbedBuilder()
-    .setColor('#7E47F3')
-    .setDescription(`:x: You do not have the permissions to use this command!`);
-
-  if (!interaction.member.permissions.has('ADMINISTRATOR')) {
-    return interaction.reply({ embeds: [perm] });
-  }
 
   await interaction.deferReply({ ephemeral: true });
 
   const { guildId } = interaction;
-
-  // Check to see if joinReactionSchema exists if so delete
-  // const joinReactionSchemaExists = await joinReactionSchema.findOne({
-  //   guildId,
-  //   channel,
-  // });
-
-  // if (joinReactionSchemaExists) {
-  //   await joinReactionSchema.deleteOne({
-  //     guildId,
-  //     channel,
-  //   });
-  // }
 
   // Add the welcome message to the database
   await joinReactionSchema.replaceOne(
@@ -61,10 +43,15 @@ export const execute = async (interaction: CommandInteraction) => {
     },
     {
       guildId,
-      channel,
+      channel: channel.id,
       emojiName: emoji,
     },
     { upsert: true }
+  );
+
+  // Find the emoji in the guild
+  const emojiInGuild = interaction.guild.emojis.cache.find(
+    (e) => e.name === emoji
   );
 
   // Replay with a success message only if the welcome message was added to the database
@@ -72,7 +59,7 @@ export const execute = async (interaction: CommandInteraction) => {
   const embed = new EmbedBuilder()
     .setColor('#7E47F3')
     .setDescription(
-      `:white_check_mark: Successfully enabled welcome reaction ${emoji} in ${channel} !`
+      `:white_check_mark: Successfully enabled welcome reaction ${emojiInGuild} in ${channel} !`
     );
 
   return interaction.editReply({ embeds: [embed] });

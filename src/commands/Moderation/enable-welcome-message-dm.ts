@@ -1,6 +1,7 @@
 // @ts-nocheck
 import type { CommandInteraction } from 'discord.js';
 import {
+  ChannelType,
   EmbedBuilder,
   PermissionsBitField,
   SlashCommandBuilder,
@@ -17,10 +18,11 @@ export const data = new SlashCommandBuilder()
       .setDescription('The description of the welcome message')
       .setRequired(true)
   )
-  .addStringOption((option) =>
+  .addChannelOption((option) =>
     option
       .setName('channel')
       .setDescription('The channel to send the modal response to')
+      .addChannelTypes(ChannelType.GuildText)
       .setRequired(true)
   )
   .addStringOption((option) =>
@@ -76,21 +78,13 @@ export const data = new SlashCommandBuilder()
 export const execute = async (interaction: CommandInteraction) => {
   const title = interaction.options.getString('title');
   const description = interaction.options.getString('description');
-  const channel = interaction.options.getString('channel');
+  const channel = interaction.options.getChannel('channel');
   const reply = interaction.options.getString('reply');
   const message1 = interaction.options.getString('message-1');
   const message2 = interaction.options.getString('message-2');
   const message3 = interaction.options.getString('message-3');
   const message4 = interaction.options.getString('message-4');
   const message5 = interaction.options.getString('message-5');
-
-  const perm = new EmbedBuilder()
-    .setColor('#7E47F3')
-    .setDescription(`:x: You do not have the permissions to use this command!`);
-
-  if (!interaction.member.permissions.has('ADMINISTRATOR')) {
-    return interaction.reply({ embeds: [perm] });
-  }
 
   await interaction.deferReply({ ephemeral: true });
 
@@ -108,19 +102,24 @@ export const execute = async (interaction: CommandInteraction) => {
       guildId,
       messages,
       description,
-      channel,
+      channel: channel.id,
       title,
       reply,
     },
     { upsert: true }
   );
 
+  // Messages to send exclude null
+  const messagesToSend = messages.filter((message) => message !== null);
+
   // Replay with a success message only if the welcome message was added to the database
   // This message is only visible to the user who ran the command
   const embed = new EmbedBuilder()
     .setColor('#7E47F3')
     .setDescription(
-      `:white_check_mark: Successfully enabled welcome DM messages!`
+      `:white_check_mark: Successfully enabled welcome DM messages!\n\n**Title:** ${title}\n**Description:** ${description}\n**Channel:** ${channel}\n**Reply:** ${reply}\n**Messages:**\n${messagesToSend.join(
+        ','
+      )}`
     );
 
   return interaction.editReply({ embeds: [embed] });
