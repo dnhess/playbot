@@ -6,9 +6,6 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-// eslint-disable-next-line import/no-cycle
-import { client } from '../../bot';
-
 export const data = new SlashCommandBuilder()
   .setName('ban')
   .setDescription('Bans a user')
@@ -30,7 +27,7 @@ export const data = new SlashCommandBuilder()
   .setDefaultMemberPermissions(PermissionsBitField.Flags.BanMembers);
 
 // eslint-disable-next-line consistent-return
-export const execute = async (interaction: CommandInteraction) => {
+export const execute = async (interaction: CommandInteraction, client) => {
   const user = interaction.options.getUser('user');
   const reason = interaction.options.getString('reason');
   const duration = interaction.options.getString('duration');
