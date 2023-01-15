@@ -87,7 +87,7 @@ export const execute = async (interaction: CommandInteraction, client) => {
             .catch((err) => {
               console.log(err);
 
-              interaction.reply({
+              return interaction.reply({
                 embeds: [
                   new EmbedBuilder()
                     .setColor('#7E47F3')
@@ -106,7 +106,7 @@ export const execute = async (interaction: CommandInteraction, client) => {
             .catch((err) => {
               console.log(err);
 
-              interaction.reply({
+              return interaction.reply({
                 embeds: [
                   new EmbedBuilder()
                     .setColor('#7E47F3')
@@ -124,7 +124,7 @@ export const execute = async (interaction: CommandInteraction, client) => {
   }
 
   // Send a message to the channel
-  await interaction.reply({
+  return interaction.reply({
     embeds: [
       new EmbedBuilder()
         .setColor('#7E47F3')
