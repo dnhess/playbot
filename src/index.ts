@@ -1,3 +1,1 @@
 import './bot';
-
-require('newrelic');

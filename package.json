@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node -r newrelic build/index.js",
+    "start": "node build/index.js",
     "dev": "concurrently \"tsc -w\" \"nodemon build/index.js\"",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "eslint --fix .",
@@ -59,7 +59,6 @@
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
     "luxon": "^3.2.1",
-    "mongoose": "^6.8.3",
-    "newrelic": "^9.7.5"
+    "mongoose": "^6.8.3"
   }
 }
