@@ -1,3 +1,4 @@
+import { track } from '@amplitude/analytics-node';
 import fetch from 'cross-fetch';
 import type { TextChannel } from 'discord.js';
 import {
@@ -115,12 +116,33 @@ client.on(Events.InteractionCreate, async (interaction) => {
   if (interaction.isChatInputCommand()) {
     const { commandName } = interaction;
     console.log(`Received chat input command interaction: ${commandName}`);
+    const eventProperties = {
+      commandName,
+      userName: interaction.user.username,
+    };
+
+    track('Command Interaction', eventProperties, {
+      user_id: interaction.user.id,
+      time: Date.now(),
+    });
+
     // Remove hyphens from command name
     const commandNameNoHyphens = commandName.replace(/-/g, '');
     commands[commandNameNoHyphens]?.execute(interaction, client);
   } else if (interaction.isAutocomplete()) {
     const { commandName } = interaction;
     console.log(`Received qutocomplete interaction: ${commandName}`);
+
+    const eventProperties = {
+      commandName,
+      userName: interaction.user.username,
+    };
+
+    track('Command Autocomplete', eventProperties, {
+      user_id: interaction.user.id,
+      time: Date.now(),
+    });
+
     // Remove hyphens from command name
     const commandNameNoHyphens = commandName.replace(/-/g, '');
 
@@ -128,6 +150,16 @@ client.on(Events.InteractionCreate, async (interaction) => {
   } else if (interaction.isButton()) {
     const { customId } = interaction;
     console.log(`Received button interaction with the id: ${customId}`);
+
+    const eventProperties = {
+      customId,
+      userName: interaction.user.username,
+    };
+
+    track('Button Interaction', eventProperties, {
+      user_id: interaction.user.id,
+      time: Date.now(),
+    });
 
     if (customId === 'welcome-modal-btn') {
       // Get the guild from welcomeDM schema
@@ -165,6 +197,16 @@ client.on(Events.InteractionCreate, async (interaction) => {
   } else if (interaction.type === InteractionType.ModalSubmit) {
     const { customId } = interaction;
     console.log(`Received modal interaction with the id: ${customId}`);
+
+    const eventProperties = {
+      customId,
+      userName: interaction.user.username,
+    };
+
+    track('Modal Interaction', eventProperties, {
+      user_id: interaction.user.id,
+      time: Date.now(),
+    });
 
     if (customId === `welcome-modal-${interaction.guildId}`) {
       // Get the guild from welcomeDM schema

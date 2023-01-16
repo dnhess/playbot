@@ -2,6 +2,28 @@
 # yarn lockfile v1
 
 
+"@amplitude/analytics-core@^0.11.2":
+  version "0.11.2"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-core/-/analytics-core-0.11.2.tgz#ea9c9de0bb17ec9769e9cacbc2b0c55f20e4d40e"
+  integrity sha512-4yOzFc4IwGI7uRvBJIebxjpvG0peyf6zVcfuCRbkPXPz6HgUpssuseJsapdNKGGL+8oAtMA12EDQF5kIfFVvbA==
+  dependencies:
+    "@amplitude/analytics-types" "^0.14.0"
+    tslib "^2.4.1"
+
+"@amplitude/analytics-node@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-node/-/analytics-node-1.0.2.tgz#b05d759bd2332db27794a211da82dc980a81c6dc"
+  integrity sha512-lntyqhvMX6nlbarGKNV3cWq/2gyJTX3m+hFXdSgHUDEKpyA+N+NYGKst2y/7PAmxZOL14AsjkNdXPC1ibphwmQ==
+  dependencies:
+    "@amplitude/analytics-core" "^0.11.2"
+    "@amplitude/analytics-types" "^0.14.0"
+    tslib "^2.4.1"
+
+"@amplitude/analytics-types@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@amplitude/analytics-types/-/analytics-types-0.14.0.tgz#06848235e52fe1d46a6e04bbc5d14090bdde15e3"
+  integrity sha512-O3E/KHyWCb4HAlYevqgCzqQdS+0LhbJV2IeVGox2eyCge+/lGwtGdJV2rJNWcoGf3p+BhnbqJBlhkPMs12iniA==
+
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"
