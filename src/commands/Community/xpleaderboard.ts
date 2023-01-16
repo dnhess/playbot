@@ -35,7 +35,7 @@ export const execute = async (interaction: CommandInteraction) => {
     // eslint-disable-next-line no-await-in-loop
     const member = (await client.users.fetch(userId)) || 'Unknown Member';
 
-    text += `**${i + 1}.** ${member} - Level: ${level} - XP: ${XP}`;
+    text += `**${i + 1}.** ${member} - Level: ${level} - XP: ${XP}\n`;
 
     const embed = new EmbedBuilder()
       .setColor('#7E47F3')
