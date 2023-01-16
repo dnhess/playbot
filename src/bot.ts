@@ -685,7 +685,7 @@ client.on(Events.GuildBanRemove, async (member) => {
 });
 
 client.on(Events.MessageDelete, async (message) => {
-  // @ts-ignore
+  if (!message.guild) return;
   message.guild
     .fetchAuditLogs({
       type: AuditLogEvent.MessageDelete,
