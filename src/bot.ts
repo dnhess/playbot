@@ -283,7 +283,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
 client.on(Events.MessageCreate, async (message) => {
   const { guild, author } = message;
   // If bot sent the message, ignore it
-  if (message.author.username === client?.user?.username || !guild) return;
+  if (
+    message.author.username === client?.user?.username ||
+    !guild ||
+    message.author.bot
+  )
+    return;
 
   levelSchema.findOne(
     { guildId: guild.id, userId: author.id },
