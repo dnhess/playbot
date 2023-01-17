@@ -299,6 +299,9 @@ client.on(Events.MessageCreate, async (message) => {
     async (err: any, data: any) => {
       if (err) throw err;
 
+      // If bot sent the message, ignore it
+      if (message.author.bot) return;
+
       if (!data) {
         levelSchema.create({
           guildId: guild.id,
