@@ -119,6 +119,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     const eventProperties = {
       commandName,
       userName: interaction.user.username,
+      guildId: interaction.guildId,
     };
 
     track('Command Interaction', eventProperties, {
@@ -136,6 +137,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     const eventProperties = {
       commandName,
       userName: interaction.user.username,
+      guildId: interaction.guildId,
     };
 
     track('Command Autocomplete', eventProperties, {
@@ -152,6 +154,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     console.log(`Received button interaction with the id: ${customId}`);
 
     const eventProperties = {
+      guildId: interaction.guildId,
       customId,
       userName: interaction.user.username,
     };
@@ -201,6 +204,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     const eventProperties = {
       customId,
       userName: interaction.user.username,
+      guildId: interaction.guildId,
     };
 
     track('Modal Interaction', eventProperties, {
@@ -322,6 +326,17 @@ client.on(Events.MessageCreate, async (message) => {
             .setTitle('Level Up!')
             .setDescription(`${author} has leveled up to level ${data.level}!`)
             .setColor('#00ff00');
+
+          const eventProperties = {
+            oldLevel: data.level - 1,
+            newLevel: data.level,
+            userName: author.username,
+          };
+
+          track('Level Increase', eventProperties, {
+            user_id: author.id,
+            time: Date.now(),
+          });
 
           channel.send({ embeds: [levelUpEmbed] });
         } else {
