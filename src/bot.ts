@@ -120,6 +120,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       commandName,
       userName: interaction.user.username,
       guildId: interaction.guildId,
+      guildName: interaction.guild?.name,
     };
 
     track('Command Interaction', eventProperties, {
@@ -138,6 +139,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       commandName,
       userName: interaction.user.username,
       guildId: interaction.guildId,
+      guildName: interaction.guild?.name,
     };
 
     track('Command Autocomplete', eventProperties, {
@@ -157,6 +159,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       guildId: interaction.guildId,
       customId,
       userName: interaction.user.username,
+      guildName: interaction.guild?.name,
     };
 
     track('Button Interaction', eventProperties, {
@@ -205,6 +208,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       customId,
       userName: interaction.user.username,
       guildId: interaction.guildId,
+      guildName: interaction.guild?.name,
     };
 
     track('Modal Interaction', eventProperties, {
@@ -334,6 +338,8 @@ client.on(Events.MessageCreate, async (message) => {
             oldLevel: data.level - 1,
             newLevel: data.level,
             userName: author.username,
+            guildId: guild?.id,
+            guildName: guild?.name,
           };
 
           track('Level Increase', eventProperties, {
