@@ -28,7 +28,7 @@ export const data = new SlashCommandBuilder()
 
 // eslint-disable-next-line consistent-return
 export const execute = async (interaction: CommandInteraction, client) => {
-  const user = interaction.options.getUser('user');
+  const user = interaction.options.getMember('user');
   const reason = interaction.options.getString('reason');
   const duration = interaction.options.getString('duration');
 
@@ -53,6 +53,32 @@ export const execute = async (interaction: CommandInteraction, client) => {
         new EmbedBuilder()
           .setColor('#7E47F3')
           .setDescription('You cannot ban me!'),
+      ],
+      ephemeral: true,
+    });
+  }
+
+  // Ensure the user is not trying to ban a user with a higher role
+  if (
+    user.roles.highest.position >= interaction.member.roles.highest.position
+  ) {
+    return interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setColor('#7E47F3')
+          .setDescription('You cannot ban a user with a higher role!'),
+      ],
+      ephemeral: true,
+    });
+  }
+
+  // Ensure the user is managaable
+  if (!user.manageable) {
+    return interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setColor('#7E47F3')
+          .setDescription('I cannot manage this user!'),
       ],
       ephemeral: true,
     });

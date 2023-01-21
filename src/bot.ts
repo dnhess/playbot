@@ -651,7 +651,7 @@ client.on(Events.GuildBanAdd, async (member) => {
       // If the executor is a bot or missing values then return
       if (!executor || !id || !name) return;
 
-      // Check if loggin is enabled for this guild
+      // Check if logging is enabled for this guild
       guildLogsSchema.findOne(
         // @ts-ignore
         { guildId: member.guild.id },

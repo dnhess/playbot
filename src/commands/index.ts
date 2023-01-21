@@ -11,6 +11,7 @@ export * as enablewelcomemessagedm from './Moderation/enable-welcome-message-dm'
 export * as enablewelcomereaction from './Moderation/enable-welcome-reaction';
 export * as lock from './Moderation/lock';
 export * as purge from './Moderation/purge';
+export * as timeout from './Moderation/timeout';
 export * as unban from './Moderation/unban';
 export * as unlock from './Moderation/unlock';
 export * as xpreset from './Moderation/xpreset';
