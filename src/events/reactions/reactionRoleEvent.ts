@@ -11,7 +11,8 @@ import { reactionRoles } from '../../Schemas/reactionRoles';
 export const reactionRoleEvent = async (
   reaction: MessageReaction | PartialMessageReaction,
   user: User | PartialUser,
-  client: Client
+  client: Client,
+  isAdd: boolean
 ) => {
   console.log('Reaction role event fired');
   // If the user is a bot, return
@@ -48,15 +49,16 @@ export const reactionRoleEvent = async (
   console.log(`Reaction role guild ID: ${reaction.message.guild.id}`);
 
   // Fetch the emoji from the guild
-  const emojiInGuild = reaction.message.guild.emojis.cache.find(
+  let emojiInGuild = reaction.message.guild.emojis.cache.find(
     (e) =>
       e.name?.includes(reaction?.emoji.name || '') || e.id === reaction.emoji.id
   );
 
-  // If the emoji is not found, return
-  if (!emojiInGuild) return;
-
-  console.log(`Reaction role emoji ID: ${emojiInGuild}`);
+  // If the emoji is not in the guild, use the emoji from the reaction
+  if (!emojiInGuild) {
+    // @ts-ignore
+    emojiInGuild = reaction.emoji.id || reaction.emoji.name;
+  }
 
   // Find the reaction role in the database
   reactionRoles.findOne(
@@ -106,10 +108,10 @@ export const reactionRoleEvent = async (
         }
 
         // If the member already has the role, remove it
-        if (member.roles.cache.has(data.roleId)) {
+        if (member.roles.cache.has(data.roleId) && !isAdd) {
           console.log(`Removing role ${data.roleId} from ${member.user.tag}`);
           member.roles.remove(data.roleId);
-        } else {
+        } else if (!member.roles.cache.has(data.roleId) && isAdd) {
           console.log(`Adding role ${data.roleId} to ${member.user.tag}`);
           member.roles.add(data.roleId);
         }
