@@ -1,6 +1,7 @@
 export * as ping from './Community/ping';
 export * as rank from './Community/rank';
 export * as xpleaderboard from './Community/xpleaderboard';
+export * as addrole from './Moderation/add-role';
 export * as ban from './Moderation/ban';
 export * as disablewelcome from './Moderation/disable-welcome';
 export * as disablewelcomemessagedm from './Moderation/disable-welcome-message-dms';

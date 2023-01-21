@@ -1,6 +1,12 @@
 import { track } from '@amplitude/analytics-node';
 import fetch from 'cross-fetch';
-import { Client, Events, GatewayIntentBits, InteractionType } from 'discord.js';
+import {
+  Client,
+  Events,
+  GatewayIntentBits,
+  InteractionType,
+  Partials,
+} from 'discord.js';
 // Import mongoose
 import mongoose from 'mongoose';
 
@@ -17,6 +23,7 @@ import { memberUnbanLog } from './events/logging/memberUnbanLog';
 import { messageDeleteLog } from './events/logging/messageDeleteLog';
 import { messageUpdateLog } from './events/logging/messageUpdateLog';
 import { modalWelcomeDM } from './events/modals/modalWelcomeDM';
+import { reactionRoleEvent } from './events/reactions/reactionRoleEvent';
 import { sendJoinReaction } from './events/welcome/sendJoinReaction';
 import { sendWelcome } from './events/welcome/sendWelcome';
 import { sendWelcomeDM } from './events/welcome/sendWelcomeDM';
@@ -46,6 +53,12 @@ export const client = new Client({
     GatewayIntentBits.GuildScheduledEvents,
     GatewayIntentBits.AutoModerationConfiguration,
     GatewayIntentBits.AutoModerationExecution,
+  ],
+  partials: [
+    Partials.GuildMember,
+    Partials.Message,
+    Partials.Reaction,
+    Partials.User,
   ],
 });
 
@@ -218,6 +231,22 @@ client.on(Events.GuildMemberAdd, (member) => {
   sendWelcome(member);
   sendJoinReaction(member);
   sendWelcomeDM(member);
+});
+
+// On emoji reaction, handle the reaction
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+  console.log('reaction added');
+  if (user.bot) return;
+
+  reactionRoleEvent(reaction, user, client, true);
+});
+
+// On emoji reaction remove, handle the reaction
+client.on(Events.MessageReactionRemove, async (reaction, user) => {
+  console.log('reaction removed');
+  if (user.bot) return;
+
+  reactionRoleEvent(reaction, user, client, false);
 });
 
 // MOD LOGS

@@ -6,15 +6,12 @@ import { guildLogsSchema } from '../../Schemas/enableLogging';
 export const memberRemoveLog = async (
   member: GuildMember | PartialGuildMember
 ) => {
-  // @ts-ignore
   member.guild
     .fetchAuditLogs({
       type: AuditLogEvent.MemberKick,
     })
-    // @ts-ignore
     .then((audit) => {
       const executor = audit.entries.first();
-      // @ts-ignore
       const { id } = member.user;
       const name = member.user.username;
 
