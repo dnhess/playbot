@@ -10,6 +10,6 @@ const welcomeDMSchemaSettings = new Schema({
 });
 
 export const welcomeDMSchema = model(
-  'memberDMWelcome',
+  'member-dm-welcome',
   welcomeDMSchemaSettings
 );

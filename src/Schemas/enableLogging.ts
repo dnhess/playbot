@@ -5,4 +5,4 @@ const guildLogsSchemaSettings = new Schema({
   channel: String,
 });
 
-export const guildLogsSchema = model('guildLogs', guildLogsSchemaSettings);
+export const guildLogsSchema = model('guild-logs', guildLogsSchemaSettings);

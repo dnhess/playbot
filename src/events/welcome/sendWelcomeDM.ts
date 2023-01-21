@@ -29,7 +29,7 @@ export const sendWelcomeDM = async (member: GuildMember) => {
 
         const buttonAction = new ActionRowBuilder().addComponents(
           new ButtonBuilder()
-            .setCustomId(`welcome-modal-btn`)
+            .setCustomId(`welcome-modal-btn-${member.guild.id}`)
             .setLabel('Get Started')
             .setStyle(ButtonStyle.Primary)
         );

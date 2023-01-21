@@ -1,22 +1,13 @@
 import { track } from '@amplitude/analytics-node';
 import fetch from 'cross-fetch';
-import {
-  ActionRowBuilder,
-  Client,
-  EmbedBuilder,
-  Events,
-  GatewayIntentBits,
-  InteractionType,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
-} from 'discord.js';
+import { Client, Events, GatewayIntentBits, InteractionType } from 'discord.js';
 // Import mongoose
 import mongoose from 'mongoose';
 
 // eslint-disable-next-line import/no-cycle
 import * as commandModules from './commands';
 import config from './config';
+import { buttonWelcomeDM } from './events/buttons/buttonWelcomeDM';
 import { levelCheck } from './events/levelCheck';
 import { channelCreateLog } from './events/logging/channelCreateLog';
 import { channelDeleteLog } from './events/logging/channelDeleteLog';
@@ -25,12 +16,12 @@ import { memberRemoveLog } from './events/logging/memberRemoveLog';
 import { memberUnbanLog } from './events/logging/memberUnbanLog';
 import { messageDeleteLog } from './events/logging/messageDeleteLog';
 import { messageUpdateLog } from './events/logging/messageUpdateLog';
+import { modalWelcomeDM } from './events/modals/modalWelcomeDM';
 import { sendJoinReaction } from './events/welcome/sendJoinReaction';
 import { sendWelcome } from './events/welcome/sendWelcome';
 import { sendWelcomeDM } from './events/welcome/sendWelcomeDM';
 import { convertGameResponseToGameData } from './interfaces/IGame';
 import { messages } from './messages/messages';
-import { welcomeDMSchema } from './Schemas/welcomeDM';
 
 const commands = Object(commandModules);
 
@@ -170,41 +161,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
       time: Date.now(),
     });
 
-    if (customId === 'welcome-modal-btn') {
-      // Get the guild from welcomeDM schema
-      welcomeDMSchema.findOne(
-        { guildID: interaction.guildId },
-        async (err: any, data: { messages: string[]; title: string }) => {
-          if (err) throw err;
-
-          if (data) {
-            const welcomeModal = new ModalBuilder()
-              .setTitle(data.title)
-              .setCustomId(`welcome-modal-${interaction.guildId}`);
-
-            // Build inputs for each message
-            data.messages.forEach((message, index) => {
-              // If message is null or undefined, return
-              if (!message) return;
-
-              const input = new TextInputBuilder()
-                .setCustomId(`welcome-message-${index}`)
-                .setLabel(`${message}`)
-                .setMinLength(3)
-                .setStyle(TextInputStyle.Paragraph);
-
-              const actionRow = new ActionRowBuilder().addComponents(input);
-              // @ts-ignore
-              welcomeModal.addComponents(actionRow);
-            });
-
-            await interaction.showModal(welcomeModal);
-          }
-        }
-      );
+    if (customId.includes(`welcome-modal-btn`)) {
+      buttonWelcomeDM(interaction);
     }
   } else if (interaction.type === InteractionType.ModalSubmit) {
     const { customId } = interaction;
+
     console.log(`Received modal interaction with the id: ${customId}`);
 
     const eventProperties = {
@@ -219,73 +181,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
       time: Date.now(),
     });
 
-    if (customId === `welcome-modal-${interaction.guildId}`) {
-      // Get the guild from welcomeDM schema
-      welcomeDMSchema.findOne(
-        { guildID: interaction.guildId },
-        async (
-          err: any,
-          data: {
-            messages: string[];
-            title: string;
-            channel: string;
-            reply: string;
-          }
-        ) => {
-          if (err) throw err;
-
-          if (data) {
-            // Get all text input values from modal
-
-            type TextInputResponse = {
-              name: string;
-              value: string;
-            };
-
-            const responses: TextInputResponse[] = [];
-
-            data.messages.forEach((message, index) => {
-              // If message is null or undefined, return
-              if (!message) return;
-              const response = interaction.fields.getTextInputValue(
-                `welcome-message-${index}`
-              );
-              responses.push({
-                name: message,
-                value: response,
-              });
-            });
-
-            console.log(
-              `Received responses from welcome-modal-${interaction.guildId}`
-            );
-            // Post inbed to channel
-            const embed = new EmbedBuilder()
-              .setTitle('Welcome Form Response')
-              .setDescription(
-                `Welcome form response from ${interaction.user.username}#${interaction.user.discriminator}`
-              )
-              .addFields(responses);
-
-            // Get the channel name from the interaction
-            const adminChannel = client.channels.cache.find(
-              // @ts-ignore
-              (channel) => channel.id === data.channel
-            );
-
-            console.log(`Channel Name to send data to: ${adminChannel}`);
-
-            if (!adminChannel) return;
-
-            if (adminChannel) {
-              // @ts-ignore
-              await adminChannel.send({ embeds: [embed] });
-            }
-
-            interaction.reply(data.reply);
-          }
-        }
-      );
+    if (customId.includes(`welcome-modal`)) {
+      modalWelcomeDM(interaction, client);
     }
   }
 });

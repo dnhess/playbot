@@ -5,4 +5,4 @@ const welcomeSchemaSettings = new Schema({
   channel: String,
 });
 
-export const welcomeSchema = model('guildWelcome', welcomeSchemaSettings);
+export const welcomeSchema = model('guild-welcome', welcomeSchemaSettings);

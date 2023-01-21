@@ -7,6 +7,6 @@ const joinReactionSchemaSettings = new Schema({
 });
 
 export const joinReactionSchema = model(
-  'guildWelcomeReaction',
+  'guild-welcome-reaction',
   joinReactionSchemaSettings
 );

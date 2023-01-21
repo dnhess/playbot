@@ -1,5 +1,5 @@
 import type { Message, PartialMessage } from 'discord.js';
-import { EmbedBuilder } from 'discord.js';
+import { AuditLogEvent, EmbedBuilder } from 'discord.js';
 
 import { guildLogsSchema } from '../../Schemas/enableLogging';
 
