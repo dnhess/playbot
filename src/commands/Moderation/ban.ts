@@ -137,7 +137,7 @@ export const execute = async (interaction: CommandInteraction, client) => {
                   new EmbedBuilder()
                     .setColor('#7E47F3')
                     .setDescription(
-                      `:x: I was unable to ban ${user} for ${err}`
+                      `:x: I was unable to ban ${user} please report this issue, and use the built in discord ban to finalize the ban`
                     ),
                 ],
                 ephemeral: true,
@@ -147,6 +147,16 @@ export const execute = async (interaction: CommandInteraction, client) => {
       });
   } catch (err) {
     console.log(err);
+    return interaction.reply({
+      embeds: [
+        new EmbedBuilder()
+          .setColor('#7E47F3')
+          .setDescription(
+            `:x: I was unable to ban ${user} please report this issue, and use the built in discord ban to finalize the ban`
+          ),
+      ],
+      ephemeral: true,
+    });
   }
 
   // Send a message to the channel

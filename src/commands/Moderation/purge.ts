@@ -55,9 +55,6 @@ export const execute = async (interaction: CommandInteraction) => {
 
   // If the filtered messages are less than the number of messages the user wants to delete, return an error
 
-  console.log(filteredMessages?.size);
-  console.log(number);
-
   if (filteredMessages?.size !== 0) {
     const filteredEmbedError = new EmbedBuilder()
       .setColor('#7E47F3')

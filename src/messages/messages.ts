@@ -27,7 +27,7 @@ export const messages = [
     },
   },
   {
-    message: 'collectible',
+    message: 'create collectible',
     response: () => {
       return {
         embeds: [
