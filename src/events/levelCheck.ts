@@ -21,7 +21,6 @@ export const levelCheck = async (message: Message) => {
           level: 0,
         });
       } else {
-        console.log(data);
         // If last message has been sent within 2 minutes, ignore it
         // data.updatedAt is ISO format
         if (data?.updatedAt) {
@@ -32,7 +31,7 @@ export const levelCheck = async (message: Message) => {
 
           if (duration.as('seconds') < 120) {
             console.log(
-              `Skipping level increase... not enough time has passed`
+              `Skipping level increase for ${author?.tag} not enough time has passed`
             );
             return;
           }
