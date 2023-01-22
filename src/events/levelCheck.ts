@@ -8,6 +8,13 @@ import { levelSchema } from '../Schemas/level';
 export const levelCheck = async (message: Message) => {
   const { guild, author } = message;
   if (!guild || author.bot) return;
+
+  // If message is not type text return
+  if (message.channel.type !== 0) {
+    console.log('Message is not type text, skipping level increase');
+    return;
+  }
+
   levelSchema.findOne(
     { guildId: guild.id, userId: author.id },
     async (err: any, data: any) => {
@@ -21,8 +28,6 @@ export const levelCheck = async (message: Message) => {
           level: 0,
         });
       } else {
-        // If last message has been sent within 2 minutes, ignore it
-        // data.updatedAt is ISO format
         if (data?.updatedAt) {
           const updatedAtTime = DateTime.fromJSDate(new Date(data.updatedAt));
           const currentTime = DateTime.local();
