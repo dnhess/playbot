@@ -11,7 +11,9 @@ export const levelCheck = async (message: Message) => {
 
   // If message is not type text return
   if (message.channel.type !== 0) {
-    console.log('Message is not type text, skipping level increase');
+    console.log(
+      `Message from ${author} is not type text, skipping level increase`
+    );
     return;
   }
 
