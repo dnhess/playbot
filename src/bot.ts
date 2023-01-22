@@ -18,7 +18,7 @@ import { levelCheck } from './events/levelCheck';
 import { channelCreateLog } from './events/logging/channelCreateLog';
 import { channelDeleteLog } from './events/logging/channelDeleteLog';
 import { memberBanLog } from './events/logging/memberBanLog';
-// import { memberMuteLog } from './events/logging/memberMuteLog';
+import { memberMuteLog } from './events/logging/memberMuteLog';
 import { memberRemoveLog } from './events/logging/memberRemoveLog';
 import { memberUnbanLog } from './events/logging/memberUnbanLog';
 import { messageDeleteLog } from './events/logging/messageDeleteLog';
@@ -278,8 +278,8 @@ client.on(Events.GuildMemberRemove, async (member) => {
   memberRemoveLog(member);
 });
 
-// client.on(Events.GuildMemberUpdate, async (member) => {
-//   memberMuteLog(member);
-// });
+client.on(Events.GuildMemberUpdate, async (member) => {
+  memberMuteLog(member);
+});
 
 client.login(config.DISCORD_TOKEN);

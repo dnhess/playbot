@@ -8,6 +8,7 @@ export * as disablewelcome from './Moderation/disable-welcome';
 export * as disablewelcomemessagedm from './Moderation/disable-welcome-message-dms';
 export * as disablewelcomereaction from './Moderation/disable-welcome-reaction';
 export * as enablelogging from './Moderation/enable-logging';
+export * as enablereducedlogs from './Moderation/enable-reduced-logs';
 export * as enablewelcome from './Moderation/enable-welcome';
 export * as enablewelcomemessagedm from './Moderation/enable-welcome-message-dm';
 export * as enablewelcomereaction from './Moderation/enable-welcome-reaction';
