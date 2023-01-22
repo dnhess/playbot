@@ -1,5 +1,6 @@
 import type { GuildMember, PartialGuildMember } from 'discord.js';
 import { AuditLogEvent, EmbedBuilder } from 'discord.js';
+import { DateTime } from 'luxon';
 
 import { reducedLogsSchema } from '../../Schemas/reducedLogging';
 
@@ -20,8 +21,23 @@ export const memberMuteLog = async (
     // If user kicked themselves return
     if (executor?.executor?.id === id) return;
 
-    // If action type is 25 return
-    if (executor?.action === AuditLogEvent.MemberRoleUpdate) return;
+    // If action type is not 24 return
+    if (executor?.action !== AuditLogEvent.MemberUpdate) return;
+
+    // Calculate how long until timeout ends in days, hours, minutes, and seconds
+
+    const currentTime = DateTime.local();
+    const timeoutEnd = DateTime.fromISO(
+      (executor?.changes[0]?.new as string) ?? ''
+    );
+
+    // If timeout end is in the past return
+    if (timeoutEnd < currentTime) return;
+
+    const timeUntilTimeoutEnd = timeoutEnd.diff(currentTime);
+    const timedOutFor = timeUntilTimeoutEnd.toFormat(
+      "dd 'days', hh 'hours', mm 'minutes', ss 'seconds'"
+    );
 
     // If reduced logs are enabled, send the log to the reduced logs channel
     reducedLogsSchema.findOne(
@@ -52,6 +68,11 @@ export const memberMuteLog = async (
               {
                 name: 'Timed Out By',
                 value: `${executor?.executor?.username}#${executor?.executor?.discriminator}`,
+                inline: false,
+              },
+              {
+                name: 'Duration',
+                value: `${timedOutFor}`,
                 inline: false,
               },
               {
