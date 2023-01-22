@@ -10,7 +10,7 @@ import {
 export const data = new SlashCommandBuilder()
   .setName('disable-reactions')
   .setDescription(
-    'Disables reactions for the @everyone role for a given channel. This only disallows adding new reactions, existing reactions can still be interacted with'
+    'Disables adding new reactions in a given channel. This not prevent adding to existing reactions'
   )
   .addChannelOption((option) =>
     option
