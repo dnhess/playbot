@@ -18,6 +18,7 @@ import { levelCheck } from './events/levelCheck';
 import { channelCreateLog } from './events/logging/channelCreateLog';
 import { channelDeleteLog } from './events/logging/channelDeleteLog';
 import { memberBanLog } from './events/logging/memberBanLog';
+// import { memberMuteLog } from './events/logging/memberMuteLog';
 import { memberRemoveLog } from './events/logging/memberRemoveLog';
 import { memberUnbanLog } from './events/logging/memberUnbanLog';
 import { messageDeleteLog } from './events/logging/messageDeleteLog';
@@ -28,7 +29,6 @@ import { sendJoinReaction } from './events/welcome/sendJoinReaction';
 import { sendWelcome } from './events/welcome/sendWelcome';
 import { sendWelcomeDM } from './events/welcome/sendWelcomeDM';
 import { convertGameResponseToGameData } from './interfaces/IGame';
-import { messages } from './messages/messages';
 
 const commands = Object(commandModules);
 
@@ -213,17 +213,17 @@ client.on(Events.MessageCreate, async (message) => {
 
   levelCheck(message);
 
-  messages.forEach((msg) => {
-    if (message.content.toLocaleLowerCase().includes(msg.message)) {
-      if (typeof msg.response === 'function') {
-        message.channel.send(
-          msg.response ? msg.response(message) : 'No response'
-        );
-      } else {
-        message.channel.send(msg.response);
-      }
-    }
-  });
+  // messages.forEach((msg) => {
+  //   if (message.content.toLocaleLowerCase().includes(msg.message)) {
+  //     if (typeof msg.response === 'function') {
+  //       message.channel.send(
+  //         msg.response ? msg.response(message) : 'No response'
+  //       );
+  //     } else {
+  //       message.channel.send(msg.response);
+  //     }
+  //   }
+  // });
 });
 
 // On user join, send a message to welcome them, DM the user with a modal to ask for their username
@@ -277,5 +277,9 @@ client.on(Events.MessageUpdate, async (message, newMessage) => {
 client.on(Events.GuildMemberRemove, async (member) => {
   memberRemoveLog(member);
 });
+
+// client.on(Events.GuildMemberUpdate, async (member) => {
+//   memberMuteLog(member);
+// });
 
 client.login(config.DISCORD_TOKEN);
