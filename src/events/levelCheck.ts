@@ -29,7 +29,7 @@ export const levelCheck = async (message: Message) => {
 
           const duration = currentTime.diff(updatedAtTime);
 
-          if (duration.as('seconds') < 120) {
+          if (duration.as('seconds') < 3) {
             console.log(
               `Skipping level increase for ${author?.tag} not enough time has passed`
             );
