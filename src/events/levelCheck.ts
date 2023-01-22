@@ -1,6 +1,7 @@
 import { track } from '@amplitude/analytics-node';
 import type { Message, TextChannel } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
+import { DateTime } from 'luxon';
 
 import { levelSchema } from '../Schemas/level';
 
@@ -20,6 +21,23 @@ export const levelCheck = async (message: Message) => {
           level: 0,
         });
       } else {
+        console.log(data);
+        // If last message has been sent within 2 minutes, ignore it
+        // data.updatedAt is ISO format
+        if (data?.updatedAt) {
+          const updatedAtTime = DateTime.fromJSDate(new Date(data.updatedAt));
+          const currentTime = DateTime.local();
+
+          const duration = currentTime.diff(updatedAtTime);
+
+          if (duration.as('seconds') < 120) {
+            console.log(
+              `Skipping level increase... not enough time has passed`
+            );
+            return;
+          }
+        }
+
         const give = 1;
         const requiredXP = 5 * data.level ** 2 + 50 * data.level + 100;
         const channel = message.channel as TextChannel;
