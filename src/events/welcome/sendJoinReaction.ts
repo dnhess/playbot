@@ -13,25 +13,31 @@ export const sendJoinReaction = async (member: GuildMember) => {
         console.log(
           `Sending welcome reaction in ${data.channel} with emoji ${data.emojiName}`
         );
-        // Get emoji name from guild.emoji
-        const emoji = member.guild.emojis.cache.find(
-          // eslint-disable-next-line @typescript-eslint/no-shadow
-          (emoji) => emoji.name === data.emojiName
+
+        const emojiInGuild = member.guild.emojis.cache.find(
+          (e) => e.name?.includes(data.emojiName) || e.id === data.emojiName
         );
+        const emojiId = emojiInGuild ? emojiInGuild.id : data.emojiName;
 
         // Add emoji to welcome message
         const welcomeChannel = member.guild.channels.cache.find(
           (channel) => channel.id === data.channel
         );
 
-        if (!welcomeChannel || !emoji) return;
+        if (!welcomeChannel || !emojiId) {
+          if (!welcomeChannel) {
+            console.log(`Cannot find the welcome channel ${welcomeChannel}`);
+          } else {
+            console.log(`Cannot find emoji ${data.emojiName}`);
+          }
+        }
 
         if (welcomeChannel) {
           // @ts-ignore
           // eslint-disable-next-line @typescript-eslint/no-shadow
           welcomeChannel.messages.fetch({ limit: 1 }).then((messages) => {
             // @ts-ignore
-            messages.first().react(emoji);
+            messages.first().react(emojiId);
           });
         }
       }
