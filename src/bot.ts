@@ -29,6 +29,7 @@ import { sendJoinReaction } from './events/welcome/sendJoinReaction';
 import { sendWelcome } from './events/welcome/sendWelcome';
 import { sendWelcomeDM } from './events/welcome/sendWelcomeDM';
 import { convertGameResponseToGameData } from './interfaces/IGame';
+import { messages } from './messages/messages';
 
 const commands = Object(commandModules);
 
@@ -213,17 +214,17 @@ client.on(Events.MessageCreate, async (message) => {
 
   levelCheck(message);
 
-  // messages.forEach((msg) => {
-  //   if (message.content.toLocaleLowerCase().includes(msg.message)) {
-  //     if (typeof msg.response === 'function') {
-  //       message.channel.send(
-  //         msg.response ? msg.response(message) : 'No response'
-  //       );
-  //     } else {
-  //       message.channel.send(msg.response);
-  //     }
-  //   }
-  // });
+  messages.forEach((msg) => {
+    if (msg.message.test(message.content)) {
+      if (typeof msg.response === 'function') {
+        message.channel.send(
+          msg.response ? msg.response(message) : 'No response'
+        );
+      } else {
+        message.channel.send(msg.response);
+      }
+    }
+  });
 });
 
 // On user join, send a message to welcome them, DM the user with a modal to ask for their username

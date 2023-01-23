@@ -3,31 +3,21 @@ import { EmbedBuilder } from 'discord.js';
 
 export const messages = [
   {
-    message: 'ping',
+    message: /^ping$/,
     response: () => 'pong',
   },
   {
-    message: 'pong',
+    message: /^pong$/,
     response: () => 'ping',
   },
   {
-    message: 'hey',
-    response: () => {
-      return {
-        embeds: [
-          new EmbedBuilder().setTitle('Hello!').setDescription('How are you?'),
-        ],
-      };
-    },
-  },
-  {
-    message: 'hello',
+    message: /^(hey|hello|hi)\b/i,
     response: (message: Message) => {
       return `Hello ${message.author.toString()}!`;
     },
   },
   {
-    message: 'how do I create a collectible',
+    message: /create a collectible/i,
     response: () => {
       return {
         embeds: [
@@ -42,7 +32,7 @@ export const messages = [
     },
   },
   {
-    message: 'app.playbite.com',
+    message: /(?<!https:\/\/)app\.playbite\.com/,
     // Return response with a clickable link
     response: () => {
       return `https://app.playbite.com`;
