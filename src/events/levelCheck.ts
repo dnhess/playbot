@@ -17,6 +17,12 @@ export const levelCheck = async (message: Message) => {
     return;
   }
 
+  // Ignore messages less than 5 characters
+  if (message?.content.length < 5) {
+    console.log('Ignoring message due to less than 5 characters');
+    return;
+  }
+
   levelSchema.findOne(
     { guildId: guild.id, userId: author.id },
     async (err: any, data: any) => {
