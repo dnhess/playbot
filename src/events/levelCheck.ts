@@ -57,10 +57,21 @@ export const levelCheck = async (message: Message) => {
         if (data.XP + give >= requiredXP) {
           // @ts-ignore
           // eslint-disable-next-line no-param-reassign
-          data.XP += give;
+          data.totalXP += give;
           // @ts-ignore
           // eslint-disable-next-line no-param-reassign
           data.level += 1;
+
+          if (data.level >= 10) {
+            // @ts-ignore
+            // eslint-disable-next-line no-param-reassign
+            data.XP = 0;
+          } else {
+            // @ts-ignore
+            // eslint-disable-next-line no-param-reassign
+            data.XP += give;
+          }
+
           await data.save();
 
           if (!channel) return;

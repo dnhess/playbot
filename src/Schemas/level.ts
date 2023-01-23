@@ -6,6 +6,7 @@ const levelSchemaSettings = new Schema(
     userId: String,
     XP: Number,
     level: Number,
+    totalXP: Number,
   },
   { timestamps: true }
 );
