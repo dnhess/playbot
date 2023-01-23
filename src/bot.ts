@@ -214,6 +214,9 @@ client.on(Events.MessageCreate, async (message) => {
 
   levelCheck(message);
 
+  // If message is a reply, ignore it
+  if (message.reference) return;
+
   messages.forEach((msg) => {
     if (msg.message.test(message.content)) {
       if (typeof msg.response === 'function') {
