@@ -19,7 +19,7 @@ export const execute = async (interaction: CommandInteraction) => {
 
   const Data = await levelSchema
     .find({ guildId: guild.id })
-    .sort({ XP: -1, level: -1 })
+    .sort({ totalXP: -1, level: -1 })
     .limit(10);
 
   if (!Data) {
@@ -30,12 +30,14 @@ export const execute = async (interaction: CommandInteraction) => {
 
   // eslint-disable-next-line no-plusplus
   for (let i = 0; i < Data.length; i++) {
-    const { userId, XP, level } = Data[i];
+    const { userId, level, totalXP } = Data[i];
 
     // eslint-disable-next-line no-await-in-loop
     const member = (await client.users.fetch(userId)) || 'Unknown Member';
 
-    text += `**${i + 1}.** ${member} - Level: ${level} - XP: ${XP}\n`;
+    text += `**${i + 1}.** ${member} - Level: ${level} - XP: ${
+      totalXP ?? ''
+    }\n`;
 
     const embed = new EmbedBuilder()
       .setColor('#7E47F3')
