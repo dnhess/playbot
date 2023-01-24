@@ -57,10 +57,35 @@ export const levelCheck = async (message: Message) => {
         if (data.XP + give >= requiredXP) {
           // @ts-ignore
           // eslint-disable-next-line no-param-reassign
-          data.XP += give;
-          // @ts-ignore
-          // eslint-disable-next-line no-param-reassign
           data.level += 1;
+
+          // If data.totalXP is undefined set it to current XP
+          if (!data.totalXP) {
+            // @ts-ignore
+            // eslint-disable-next-line no-param-reassign
+            data.totalXP = data.XP;
+          }
+
+          // Increase level difficulty after level 10... this is a bit of a hack
+          // because I messed up and didn't reset the XP when I increased the
+          // level. This is in place so it is fair for everyone who hasn't already
+          // reached level 10 before this change.
+          if (data.level >= 10) {
+            // @ts-ignore
+            // eslint-disable-next-line no-param-reassign
+            data.totalXP += give;
+            // @ts-ignore
+            // eslint-disable-next-line no-param-reassign
+            data.XP = 0;
+          } else {
+            // @ts-ignore
+            // eslint-disable-next-line no-param-reassign
+            data.XP += give;
+            // @ts-ignore
+            // eslint-disable-next-line no-param-reassign
+            data.totalXP += give;
+          }
+
           await data.save();
 
           if (!channel) return;
@@ -88,6 +113,16 @@ export const levelCheck = async (message: Message) => {
           // @ts-ignore
           // eslint-disable-next-line no-param-reassign
           data.XP += give;
+          if (data.level < 10) {
+            // @ts-ignore
+            // eslint-disable-next-line no-param-reassign
+            data.totalXP = data.XP;
+          } else {
+            // @ts-ignore
+            // eslint-disable-next-line no-param-reassign
+            data.totalXP += give;
+          }
+
           await data.save();
         }
       }
