@@ -1,3 +1,4 @@
+import { track } from '@amplitude/analytics-node';
 import type { GuildMember } from 'discord.js';
 
 import { joinReactionSchema } from '../../Schemas/joinReaction';
@@ -33,6 +34,24 @@ export const sendJoinReaction = async (member: GuildMember) => {
         }
 
         if (welcomeChannel) {
+          const eventProperties = {
+            guildId: member.guild.id,
+            guildName: member.guild.name,
+            userName: member.user.username,
+            userId: member.user.id,
+          };
+
+          track(
+            'Welcome',
+            {
+              type: 'Welcome Reaction',
+              ...eventProperties,
+            },
+            {
+              user_id: member.user.id,
+              time: Date.now(),
+            }
+          );
           // @ts-ignore
           // eslint-disable-next-line @typescript-eslint/no-shadow
           welcomeChannel.messages.fetch({ limit: 1 }).then((messages) => {

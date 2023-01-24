@@ -1,3 +1,4 @@
+import { track } from '@amplitude/analytics-node';
 import type {
   Client,
   MessageReaction,
@@ -70,7 +71,6 @@ export const reactionRoleEvent = async (
     },
     async (err: any, data: any) => {
       if (err) throw err;
-      console.log(data);
       if (!reaction.message.guild) return;
       if (data) {
         console.log(`Reaction role found for ${reaction.message.guild.name}!`);
@@ -107,12 +107,28 @@ export const reactionRoleEvent = async (
           return;
         }
 
+        const eventProperties = {
+          guildId: reaction.message.guild.id,
+          guildName: reaction.message.guild.name,
+          userName: member.user.username,
+          userId: member.id,
+          roleName: roleToAdd.name,
+        };
+
         // If the member already has the role, remove it
         if (member.roles.cache.has(data.roleId) && !isAdd) {
           console.log(`Removing role ${data.roleId} from ${member.user.tag}`);
+          track('Reaction', {
+            type: 'remove',
+            ...eventProperties,
+          });
           member.roles.remove(data.roleId);
         } else if (!member.roles.cache.has(data.roleId) && isAdd) {
           console.log(`Adding role ${data.roleId} to ${member.user.tag}`);
+          track('Reaction', {
+            type: 'add',
+            ...eventProperties,
+          });
           member.roles.add(data.roleId);
         }
       }

@@ -1,3 +1,4 @@
+import { track } from '@amplitude/analytics-node';
 import type { GuildMember } from 'discord.js';
 import {
   ActionRowBuilder,
@@ -35,6 +36,24 @@ export const sendWelcomeDM = async (member: GuildMember) => {
         );
 
         try {
+          const eventProperties = {
+            guildId: member.guild.id,
+            guildName: member.guild.name,
+            userName: member.user.username,
+            userId: member.user.id,
+          };
+
+          track(
+            'Welcome',
+            {
+              type: 'Welcome DM',
+              ...eventProperties,
+            },
+            {
+              user_id: member.user.id,
+              time: Date.now(),
+            }
+          );
           // @ts-ignore
           member.send({ embeds: [welcomeEmbed], components: [buttonAction] });
         } catch (e) {
