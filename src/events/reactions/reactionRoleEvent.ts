@@ -118,17 +118,31 @@ export const reactionRoleEvent = async (
         // If the member already has the role, remove it
         if (member.roles.cache.has(data.roleId) && !isAdd) {
           console.log(`Removing role ${data.roleId} from ${member.user.tag}`);
-          track('Reaction', {
-            type: 'remove',
-            ...eventProperties,
-          });
+          track(
+            'Reaction',
+            {
+              type: 'remove',
+              ...eventProperties,
+            },
+            {
+              user_id: member.id,
+              time: Date.now(),
+            }
+          );
           member.roles.remove(data.roleId);
         } else if (!member.roles.cache.has(data.roleId) && isAdd) {
           console.log(`Adding role ${data.roleId} to ${member.user.tag}`);
-          track('Reaction', {
-            type: 'add',
-            ...eventProperties,
-          });
+          track(
+            'Reaction',
+            {
+              type: 'add',
+              ...eventProperties,
+            },
+            {
+              user_id: member.id,
+              time: Date.now(),
+            }
+          );
           member.roles.add(data.roleId);
         }
       }
