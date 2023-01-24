@@ -23,6 +23,25 @@ export const levelCheck = async (message: Message) => {
     return;
   }
 
+  const eventProperties = {
+    guildId: guild.id,
+    guildName: guild.name,
+    userName: author.username,
+    userId: author.id,
+  };
+
+  track(
+    'Message Received',
+    {
+      type: 'Level Check',
+      ...eventProperties,
+    },
+    {
+      user_id: author.id,
+      time: Date.now(),
+    }
+  );
+
   levelSchema.findOne(
     { guildId: guild.id, userId: author.id },
     async (err: any, data: any) => {
@@ -95,7 +114,7 @@ export const levelCheck = async (message: Message) => {
             .setDescription(`${author} has leveled up to level ${data.level}!`)
             .setColor('#00ff00');
 
-          const eventProperties = {
+          const levelEventProperties = {
             oldLevel: data.level - 1,
             newLevel: data.level,
             userName: author.username,
@@ -103,7 +122,7 @@ export const levelCheck = async (message: Message) => {
             guildName: guild?.name,
           };
 
-          track('Level Increase', eventProperties, {
+          track('Level Increase', levelEventProperties, {
             user_id: author.id,
             time: Date.now(),
           });
