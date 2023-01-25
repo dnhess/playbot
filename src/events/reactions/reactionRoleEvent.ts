@@ -51,8 +51,7 @@ export const reactionRoleEvent = async (
 
   // Fetch the emoji from the guild
   let emojiInGuild = reaction.message.guild.emojis.cache.find(
-    (e) =>
-      e.name?.includes(reaction?.emoji.name || '') || e.id === reaction.emoji.id
+    (e) => e.id === reaction.emoji.id
   );
 
   // If the emoji is not in the guild, use the emoji from the reaction
