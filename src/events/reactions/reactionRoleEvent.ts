@@ -61,6 +61,8 @@ export const reactionRoleEvent = async (
     emojiInGuild = reaction.emoji.id || reaction.emoji.name;
   }
 
+  console.log(`Emoji in guild: ${emojiInGuild}`);
+
   // Find the reaction role in the database
   reactionRoles.findOne(
     {
