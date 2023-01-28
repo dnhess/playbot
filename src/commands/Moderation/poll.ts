@@ -71,7 +71,9 @@ export const data = new SlashCommandBuilder()
           .addStringOption((option) =>
             option
               .setName('items')
-              .setDescription('The items to choose from')
+              .setDescription(
+                'The items to choose from (Ex: item1, item2, item3))'
+              )
               .setRequired(true)
           )
           .addStringOption((option) =>
@@ -104,6 +106,14 @@ export const execute = async (interaction: CommandInteraction) => {
 
     const itemArray = items.split(', ');
     const customEmojis = emoji?.split(', ');
+
+    // If failed to split items, return
+    if (!itemArray) {
+      return interaction.reply({
+        content: `The items you entered are not valid!`,
+        ephemeral: true,
+      });
+    }
 
     const emojis = [
       '1️⃣',
@@ -141,7 +151,7 @@ export const execute = async (interaction: CommandInteraction) => {
       });
     }
 
-    if (itemArray.length > 26) {
+    if (itemArray.length >= 26) {
       return interaction.reply({
         content: 'You can only have up to 26 items!',
         ephemeral: true,
@@ -283,15 +293,25 @@ export const execute = async (interaction: CommandInteraction) => {
         ] = `${emojis[index]} - ${itemArray[index]} - ${result} votes`;
       });
 
+      if (resultsArray.length === 0) {
+        resultsArray.push('No votes!');
+      }
+
+      const totalVotes = results.reduce((a, b) => a + b, 0);
+
       const resultsEmbed = new EmbedBuilder()
         .setTitle(question)
         .setDescription(resultsArray.join('\n'))
         .setFooter({
-          text: 'Poll has ended and the results are in!',
+          text: `The poll has ended! Total votes: ${totalVotes || 0}`,
         })
         .setColor('#7E47F3');
 
-      message.edit({ embeds: [resultsEmbed] });
+      // Edit the message, add the new embed, and ping the user
+      message.edit({
+        content: `<@${interaction.user.id}>, your poll has ended!`,
+        embeds: [resultsEmbed],
+      });
 
       message.reactions.removeAll();
     });
