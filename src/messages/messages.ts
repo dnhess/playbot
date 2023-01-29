@@ -1,4 +1,3 @@
-import type { Message } from 'discord.js';
 import { EmbedBuilder } from 'discord.js';
 
 export const messages = [
@@ -9,12 +8,6 @@ export const messages = [
   {
     message: /^pong$/,
     response: () => 'ping',
-  },
-  {
-    message: /^(hey|hello|hi)\b/i,
-    response: (message: Message) => {
-      return `Hello ${message.author.toString()}!`;
-    },
   },
   {
     message: /create a collectible/i,
