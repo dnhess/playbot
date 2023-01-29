@@ -2,14 +2,6 @@ import { EmbedBuilder } from 'discord.js';
 
 export const messages = [
   {
-    message: /^ping$/,
-    response: () => 'pong',
-  },
-  {
-    message: /^pong$/,
-    response: () => 'ping',
-  },
-  {
     message: /create a collectible/i,
     response: () => {
       return {

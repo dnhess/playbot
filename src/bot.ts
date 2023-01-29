@@ -221,6 +221,7 @@ client.on(Events.MessageCreate, async (message) => {
     if (msg.message.test(message.content)) {
       if (typeof msg.response === 'function') {
         message.channel.send(
+          // @ts-ignore
           msg.response ? msg.response(message) : 'No response'
         );
       } else {
