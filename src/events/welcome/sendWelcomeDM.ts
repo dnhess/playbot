@@ -54,8 +54,15 @@ export const sendWelcomeDM = async (member: GuildMember) => {
               time: Date.now(),
             }
           );
-          // @ts-ignore
-          member.send({ embeds: [welcomeEmbed], components: [buttonAction] });
+          member
+            // @ts-ignore
+            .send({ embeds: [welcomeEmbed], components: [buttonAction] })
+            .catch((e) => {
+              console.log(
+                `Failed to send welcome DM to ${member.user.username}`
+              );
+              console.log(e);
+            });
         } catch (e) {
           console.log(`Failed to send welcome DM to ${member.user.username}`);
         }
