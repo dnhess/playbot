@@ -23,4 +23,10 @@ export const messages = [
       return `https://app.playbite.com`;
     },
   },
+  {
+    message: /visa\s+(gift\s+)?cards/i,
+    response: () => {
+      return `hey! 👋 we actually don't want to do that, we want it to always be about prizes, products, and brands you love 🙂 not "money" 😅`;
+    },
+  },
 ];
