@@ -314,6 +314,15 @@ export const execute = async (interaction: CommandInteraction) => {
       });
 
       message.reactions.removeAll();
+
+      // Send a DM to the user with the link to the message
+      interaction.user
+        .send({
+          content: `Your poll has ended! Check the results here: ${message.url}`,
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     });
 
     return interaction.reply({
