@@ -7,7 +7,7 @@ import { convertGameResponseToGameData } from '../../interfaces/IGame';
 
 export const data = new SlashCommandBuilder()
   .setName('top')
-  .setDescription('Get the top user in all the games');
+  .setDescription('Get the top user in all the games over the last 24 hours');
 
 export const execute = async (interaction: CommandInteraction) => {
   // Defer the reply
