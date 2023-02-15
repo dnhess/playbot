@@ -25,4 +25,5 @@ export * as create from './Playbite/create';
 export * as drops from './Playbite/drops';
 export * as game from './Playbite/game';
 export * as play from './Playbite/play';
+export * as top from './Playbite/top';
 export * as user from './Playbite/user';
