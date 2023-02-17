@@ -10,10 +10,10 @@ const action = async (client: Client) => {
   // Get all cron jobs with the cronId of 'top'
   const jobs = await cronJobSchema.find({ cronId: 'top' });
 
-  // Run the cron job only if the current time is 11:59 PM CST using luxon
+  // Run the cron job only if the current time is 9:00 PM CST using luxon
   const now = DateTime.local();
   const time = now.setZone('America/Chicago').toFormat('HH:mm');
-  if (time !== '23:59') return;
+  if (time !== '21:00') return;
 
   console.log('Running cron job top');
   // Loop through each job
