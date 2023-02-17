@@ -7,13 +7,14 @@ import { cronJobSchema } from '../Schemas/cronJobs';
 
 const action = async (client: Client) => {
   console.log('Checking to see if cron job top should run...');
-  // Get all cron jobs with the cronId of 'top'
-  const jobs = await cronJobSchema.find({ cronId: 'top' });
 
   // Run the cron job only if the current time is 9:00 PM CST using luxon
   const now = DateTime.local();
   const time = now.setZone('America/Chicago').toFormat('HH:mm');
   if (time !== '21:00') return;
+
+  // Get all cron jobs with the cronId of 'top'
+  const jobs = await cronJobSchema.find({ cronId: 'top' });
 
   console.log('Running cron job top');
   // Loop through each job
