@@ -13,6 +13,7 @@ import mongoose from 'mongoose';
 // eslint-disable-next-line import/no-cycle
 import * as commandModules from './commands';
 import config from './config';
+import topJob from './cronJobs/top';
 import { buttonWelcomeDM } from './events/buttons/buttonWelcomeDM';
 import { levelCheck } from './events/levelCheck';
 import { channelCreateLog } from './events/logging/channelCreateLog';
@@ -117,6 +118,9 @@ client.once(Events.ClientReady, async (c) => {
 
   if (mongoose.connection.readyState === 1) {
     console.log('Connected to MongoDB');
+
+    // Start cron jobs
+    topJob(client).start();
   }
 });
 
