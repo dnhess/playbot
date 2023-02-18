@@ -15,9 +15,6 @@ export const memberMuteLog = async (
     // If missing values or message is from a bot return
     if (!executor || !id || !name || member?.user?.bot) return;
 
-    // If no reason is provided return
-    if (!executor?.reason) return;
-
     // If user kicked themselves return
     if (executor?.executor?.id === id) return;
 

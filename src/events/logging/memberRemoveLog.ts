@@ -23,6 +23,9 @@ export const memberRemoveLog = async (
       // If user kicked themselves return
       if (executor?.executor?.id === id) return;
 
+      // If they left the server return
+      if (executor?.target?.id === id) return;
+
       // Check if loggin is enabled for this guild
       guildLogsSchema.findOne(
         // @ts-ignore
