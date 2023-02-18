@@ -29,4 +29,11 @@ export const messages = [
       return `hey! 👋 we actually don't want to do that, we want it to always be about prizes, products, and brands you love 🙂 not "money" 😅`;
     },
   },
+  {
+    // match on "web version" or "web app"
+    message: /web\s+(version|app)/i,
+    response: () => {
+      return `https://app.playbite.com`;
+    },
+  },
 ];
