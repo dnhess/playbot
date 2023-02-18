@@ -22,7 +22,6 @@ export * as unlock from './Moderation/unlock';
 export * as xpreset from './Moderation/xpreset';
 export * as collectible from './Playbite/collectible';
 export * as create from './Playbite/create';
-export * as drops from './Playbite/drops';
 export * as game from './Playbite/game';
 export * as managetopleaderboardreport from './Playbite/manage-top-leaderboard-report';
 export * as play from './Playbite/play';
