@@ -54,7 +54,7 @@ export const memberMuteLog = async (
             .addFields(
               {
                 name: 'Member Name',
-                value: `${name} (<@${id}>)`,
+                value: `${name}#${member.user.discriminator} (<@${id}>)`,
                 inline: false,
               },
               {
@@ -64,7 +64,7 @@ export const memberMuteLog = async (
               },
               {
                 name: 'Timed Out By',
-                value: `${executor?.executor?.username}#${executor?.executor?.discriminator}`,
+                value: `${executor?.executor?.username}#${executor?.executor?.discriminator} (<@${executor?.executor?.id}>)`,
                 inline: false,
               },
               {
@@ -74,7 +74,7 @@ export const memberMuteLog = async (
               },
               {
                 name: 'Reason',
-                value: `${executor?.reason}`,
+                value: `${executor?.reason || 'No reason provided'}`,
                 inline: false,
               }
             );
