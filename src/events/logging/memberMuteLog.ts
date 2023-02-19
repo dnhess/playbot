@@ -36,6 +36,8 @@ export const memberMuteLog = async (
       "dd 'days', hh 'hours', mm 'minutes', ss 'seconds'"
     );
 
+    if (timedOutFor === 'Invalid Duration') return;
+
     // If reduced logs are enabled, send the log to the reduced logs channel
     reducedLogsSchema.findOne(
       {
