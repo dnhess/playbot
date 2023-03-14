@@ -16,15 +16,14 @@ import config from './config';
 import topJob from './cronJobs/top';
 import { buttonWelcomeDM } from './events/buttons/buttonWelcomeDM';
 import { levelCheck } from './events/levelCheck';
+import { auditLogEventCreateLog } from './events/logging/auditLogEventCreateLog';
 import { channelCreateLog } from './events/logging/channelCreateLog';
 import { channelDeleteLog } from './events/logging/channelDeleteLog';
 import { memberMuteLog } from './events/logging/memberMuteLog';
-import { memberUnbanLog } from './events/logging/memberUnbanLog';
 import { messageUpdateLog } from './events/logging/messageUpdateLog';
 import { modalWelcomeDM } from './events/modals/modalWelcomeDM';
 import { reactionRoleEvent } from './events/reactions/reactionRoleEvent';
 import { sendJoinReaction } from './events/welcome/sendJoinReaction';
-import { auditLogEventCreateLog } from './events/logging/auditLogEventCreateLog';
 import { sendWelcome } from './events/welcome/sendWelcome';
 import { sendWelcomeDM } from './events/welcome/sendWelcomeDM';
 import { convertGameResponseToGameData } from './interfaces/IGame';
@@ -289,11 +288,10 @@ client.on(Events.GuildMemberUpdate, async (member) => {
   memberMuteLog(member);
 });
 
-// @ts-ignore
-client.on(Events.GuildAuditLogEntryCreate, async auditLog => {
-  console.log('in audit log event')
-  console.log(auditLog)
-  auditLogEventCreateLog(auditLog)
-})
+client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
+  console.log('in audit log event');
+  console.log(auditLog);
+  auditLogEventCreateLog(auditLog);
+});
 
 client.login(config.DISCORD_TOKEN);
