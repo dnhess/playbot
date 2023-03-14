@@ -15,10 +15,12 @@ export const messageDeleteLog = async (message: Message | PartialMessage) => {
       // @ts-ignore
       const mes = message.content;
 
+      console.log(executor, message)
+
       // If missing values or message is from a bot return
       if (!mes || message?.author?.bot || !executor) return;
 
-      // If executor is older than 3 seconds return
+      // If executor is older than  seconds return
       if (Date.now() - executor.createdTimestamp > 3000) return;
 
       // Check if loggin is enabled for this guild
