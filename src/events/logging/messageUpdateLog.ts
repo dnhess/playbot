@@ -54,6 +54,7 @@ export const messageUpdateLog = async (
                 },
                 {
                   name: 'Edited By',
+                  // @ts-ignore
                   value: `${executor?.tag}`,
                   inline: false,
                 }
