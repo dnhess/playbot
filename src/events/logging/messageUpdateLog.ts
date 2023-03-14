@@ -54,7 +54,7 @@ export const messageUpdateLog = async (
                 },
                 {
                   name: 'Edited By',
-                  value: `${executor?.executor?.username}#${executor?.executor?.discriminator}`,
+                  value: `${executor?.tag}`,
                   inline: false,
                 }
               );
