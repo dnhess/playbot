@@ -20,6 +20,13 @@ export const auditLogEventCreateLog = async (auditLog) => {
           );
           if (!mChannel) return;
 
+          // Get last message from channel
+          const lastMessage = await auditLog.extra.channel.messages.fetch({
+            limit: 1,
+          });
+
+          console.log(lastMessage);
+
           const logEmbed = new EmbedBuilder()
             .setColor('Red')
             .setTitle('Message Deleted')
@@ -31,7 +38,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
               },
               {
                 name: 'Member Channel',
-                value: `${auditLog.extra.channel.name}`,
+                value: `${auditLog.extra.channel}`,
                 inline: false,
               },
               {
