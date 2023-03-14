@@ -6,20 +6,14 @@ import { guildLogsSchema } from '../../Schemas/enableLogging';
 export const auditLogEventCreateLog = async (auditLog, guild) => {
   const { action, target, executor } = auditLog;
 
-  console.log('guild', guild);
-
-  console.log(auditLog);
-
   if (action === AuditLogEvent.MessageDelete) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.extra.channel.guildId },
+      { guildId: guild.id },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
-            data.channel
-          );
+          const mChannel = guild.channels.cache.get(data.channel);
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -51,14 +45,12 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
 
   if (action === AuditLogEvent.MessageBulkDelete) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.extra.channel.guildId },
+      { guildId: guild.id },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
-            data.channel
-          );
+          const mChannel = guild.channels.cache.get(data.channel);
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -85,14 +77,12 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
 
   if (action === AuditLogEvent.MessagePin) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.extra.channel.guildId },
+      { guildId: guild.id },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
-            data.channel
-          );
+          const mChannel = guild.channels.cache.get(data.channel);
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -124,14 +114,12 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
 
   if (action === AuditLogEvent.MessageUnpin) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.extra.channel.guildId },
+      { guildId: guild.id },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
-            data.channel
-          );
+          const mChannel = guild.channels.cache.get(data.channel);
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -163,14 +151,12 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
 
   if (action === AuditLogEvent.MemberKick) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.extra.channel.guildId },
+      { guildId: guild.id },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
-            data.channel
-          );
+          const mChannel = guild.channels.cache.get(data.channel);
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -202,14 +188,12 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
 
   if (action === AuditLogEvent.MemberBanAdd) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.extra.channel.guildId },
+      { guildId: guild.id },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
-            data.channel
-          );
+          const mChannel = guild.channels.cache.get(data.channel);
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -241,14 +225,12 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
 
   if (action === AuditLogEvent.MemberBanRemove) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.extra.channel.guildId },
+      { guildId: guild.id },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
-            data.channel
-          );
+          const mChannel = guild.channels.cache.get(data.channel);
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
