@@ -290,8 +290,10 @@ client.on(Events.GuildMemberUpdate, async (member) => {
 });
 
 // @ts-ignore
-client.on(Events.GuildAuditLogEntryCreate, async (entry) => {
-  auditLogEventCreateLog(entry)
+client.on(Events.GuildAuditLogEntryCreate, async auditLog => {
+  console.log('in audit log event')
+  console.log(auditLog)
+  auditLogEventCreateLog(auditLog)
 })
 
 client.login(config.DISCORD_TOKEN);
