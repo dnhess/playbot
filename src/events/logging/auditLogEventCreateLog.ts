@@ -10,7 +10,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
 
   if (action === AuditLogEvent.MessageDelete) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.guildId },
+      { guildId: auditLog.extra.channel.guildId },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
@@ -47,7 +47,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
 
   if (action === AuditLogEvent.MessageBulkDelete) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.guildId },
+      { guildId: auditLog.extra.channel.guildId },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
@@ -79,7 +79,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
 
   if (action === AuditLogEvent.MessagePin) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.guildId },
+      { guildId: auditLog.extra.channel.guildId },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
@@ -116,7 +116,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
 
   if (action === AuditLogEvent.MessageUnpin) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.guildId },
+      { guildId: auditLog.extra.channel.guildId },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
@@ -153,7 +153,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
 
   if (action === AuditLogEvent.MemberKick) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.guildId },
+      { guildId: auditLog.extra.channel.guildId },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
@@ -190,7 +190,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
 
   if (action === AuditLogEvent.MemberBanAdd) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.guildId },
+      { guildId: auditLog.extra.channel.guildId },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 
@@ -227,7 +227,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
 
   if (action === AuditLogEvent.MemberBanRemove) {
     guildLogsSchema.findOne(
-      { guildId: auditLog.guildId },
+      { guildId: auditLog.extra.channel.guildId },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
 

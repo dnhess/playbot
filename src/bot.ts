@@ -289,8 +289,6 @@ client.on(Events.GuildMemberUpdate, async (member) => {
 });
 
 client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
-  console.log('in audit log event');
-  console.log(auditLog);
   auditLogEventCreateLog(auditLog);
 });
 
