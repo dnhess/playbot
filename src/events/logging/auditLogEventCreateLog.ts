@@ -31,7 +31,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
               },
               {
                 name: 'Member Channel',
-                value: `${mChannel}`,
+                value: `${auditLog.extra.channel.name}`,
                 inline: false,
               },
               {
