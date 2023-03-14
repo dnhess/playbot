@@ -54,7 +54,8 @@ export const messageUpdateLog = async (
                 },
                 {
                   name: 'Edited By',
-                  value: `<@${message.member.user.id}>`,
+                  // @ts-ignore
+                  value: `<@${message?.member?.user?.id}>`,
                   inline: false,
                 }
               );
