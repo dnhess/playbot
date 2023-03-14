@@ -6,6 +6,8 @@ import { guildLogsSchema } from '../../Schemas/enableLogging';
 export const auditLogEventCreateLog = async (auditLog) => {
   const { action, executorId, target, targetId } = auditLog;
 
+  console.log(auditLog)
+
   if (action === AuditLogEvent.MessageDelete) {
     guildLogsSchema.findOne(
       { guildId: auditLog.guildId },
