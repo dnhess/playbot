@@ -18,8 +18,8 @@ export const messageDeleteLog = async (message: Message | PartialMessage) => {
       // If missing values or message is from a bot return
       if (!mes || message?.author?.bot || !executor) return;
 
-      // If message id does not match up with the executor id then they deleted the message
-      if (message.id !== executor.target.id) return;
+      // If executor is older than 3 seconds return
+      if (Date.now() - executor.createdTimestamp > 3000) return;
 
       // Check if loggin is enabled for this guild
       guildLogsSchema.findOne(
