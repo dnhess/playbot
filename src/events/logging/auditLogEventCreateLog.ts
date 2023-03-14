@@ -6,6 +6,8 @@ import { guildLogsSchema } from '../../Schemas/enableLogging';
 export const auditLogEventCreateLog = async (auditLog) => {
   const { action, target, executor } = auditLog;
 
+  console.log(auditLog);
+
   if (action === AuditLogEvent.MessageDelete) {
     guildLogsSchema.findOne(
       { guildId: auditLog.extra.channel.guildId },
@@ -264,19 +266,6 @@ export const auditLogEventCreateLog = async (auditLog) => {
             );
 
           mChannel.send({ embeds: [logEmbed] });
-        }
-      }
-    );
-  }
-
-  if (action === AuditLogEvent.MemberUpdate) {
-    guildLogsSchema.findOne(
-      { guildId: auditLog.extra.channel.guildId },
-      async (err: any, data: { channel: string }) => {
-        if (err) throw err;
-
-        if (data) {
-          console.log(auditLog);
         }
       }
     );
