@@ -18,15 +18,13 @@ import { buttonWelcomeDM } from './events/buttons/buttonWelcomeDM';
 import { levelCheck } from './events/levelCheck';
 import { channelCreateLog } from './events/logging/channelCreateLog';
 import { channelDeleteLog } from './events/logging/channelDeleteLog';
-import { memberBanLog } from './events/logging/memberBanLog';
 import { memberMuteLog } from './events/logging/memberMuteLog';
-import { memberRemoveLog } from './events/logging/memberRemoveLog';
 import { memberUnbanLog } from './events/logging/memberUnbanLog';
-import { messageDeleteLog } from './events/logging/messageDeleteLog';
 import { messageUpdateLog } from './events/logging/messageUpdateLog';
 import { modalWelcomeDM } from './events/modals/modalWelcomeDM';
 import { reactionRoleEvent } from './events/reactions/reactionRoleEvent';
 import { sendJoinReaction } from './events/welcome/sendJoinReaction';
+import { auditLogEventCreateLog } from './events/logging/auditLogEventCreateLog';
 import { sendWelcome } from './events/welcome/sendWelcome';
 import { sendWelcomeDM } from './events/welcome/sendWelcomeDM';
 import { convertGameResponseToGameData } from './interfaces/IGame';
@@ -267,28 +265,33 @@ client.on(Events.ChannelDelete, async (channel) => {
   channelDeleteLog(channel);
 });
 
-client.on(Events.GuildBanAdd, async (member) => {
-  memberBanLog(member);
-});
+// client.on(Events.GuildBanAdd, async (member) => {
+//   memberBanLog(member);
+// });
 
-client.on(Events.GuildBanRemove, async (member) => {
-  memberUnbanLog(member);
-});
+// client.on(Events.GuildBanRemove, async (member) => {
+//   memberUnbanLog(member);
+// });
 
-client.on(Events.MessageDelete, async (message) => {
-  messageDeleteLog(message);
-});
+// client.on(Events.MessageDelete, async (message) => {
+//   messageDeleteLog(message);
+// });
 
 client.on(Events.MessageUpdate, async (message, newMessage) => {
   messageUpdateLog(message, newMessage);
 });
 
-client.on(Events.GuildMemberRemove, async (member) => {
-  memberRemoveLog(member);
-});
+// client.on(Events.GuildMemberRemove, async (member) => {
+//   memberRemoveLog(member);
+// });
 
 client.on(Events.GuildMemberUpdate, async (member) => {
   memberMuteLog(member);
 });
+
+// @ts-ignore
+client.on(Events.GuildAuditLogEntryCreate, async (entry) => {
+  auditLogEventCreateLog(entry)
+})
 
 client.login(config.DISCORD_TOKEN);
