@@ -4,9 +4,7 @@ import { AuditLogEvent, EmbedBuilder } from 'discord.js';
 import { guildLogsSchema } from '../../Schemas/enableLogging';
 
 export const auditLogEventCreateLog = async (auditLog) => {
-  const { action, executorId, target, targetId, executor } = auditLog;
-
-  console.log(auditLog);
+  const { action, target, executor } = auditLog;
 
   if (action === AuditLogEvent.MessageDelete) {
     guildLogsSchema.findOne(
@@ -19,13 +17,6 @@ export const auditLogEventCreateLog = async (auditLog) => {
             data.channel
           );
           if (!mChannel) return;
-
-          // Get last message from channel
-          const lastMessage = await auditLog.extra.channel.messages.fetch({
-            limit: 1,
-          });
-
-          console.log(lastMessage);
 
           const logEmbed = new EmbedBuilder()
             .setColor('Red')
@@ -273,6 +264,19 @@ export const auditLogEventCreateLog = async (auditLog) => {
             );
 
           mChannel.send({ embeds: [logEmbed] });
+        }
+      }
+    );
+  }
+
+  if (action === AuditLogEvent.MemberUpdate) {
+    guildLogsSchema.findOne(
+      { guildId: auditLog.extra.channel.guildId },
+      async (err: any, data: { channel: string }) => {
+        if (err) throw err;
+
+        if (data) {
+          console.log(auditLog);
         }
       }
     );
