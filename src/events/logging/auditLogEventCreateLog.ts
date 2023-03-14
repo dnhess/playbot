@@ -4,7 +4,7 @@ import { AuditLogEvent, EmbedBuilder } from 'discord.js';
 import { guildLogsSchema } from '../../Schemas/enableLogging';
 
 export const auditLogEventCreateLog = async (auditLog) => {
-  const { action, executorId, target, targetId } = auditLog;
+  const { action, executorId, target, targetId, executor } = auditLog;
 
   console.log(auditLog);
 
@@ -25,18 +25,18 @@ export const auditLogEventCreateLog = async (auditLog) => {
             .setTitle('Message Deleted')
             .addFields(
               {
-                name: 'Message Content',
-                value: `${target.content}`,
+                name: 'Message From',
+                value: `${target.username}#${target.discriminator}`,
                 inline: false,
               },
               {
                 name: 'Member Channel',
-                value: `${target.channel}`,
+                value: `${mChannel}`,
                 inline: false,
               },
               {
                 name: 'Deleted By',
-                value: `${executorId.username}#${executorId.discriminator}`,
+                value: `${executor.username}#${executor.discriminator}`,
                 inline: false,
               }
             );
@@ -70,7 +70,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
               },
               {
                 name: 'Deleted By',
-                value: `${executorId.username}#${executorId.discriminator}`,
+                value: `${executor.username}#${executor.discriminator}`,
                 inline: false,
               }
             );
@@ -109,7 +109,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
               },
               {
                 name: 'Pinned By',
-                value: `${executorId.username}#${executorId.discriminator}`,
+                value: `${executor.username}#${executor.discriminator}`,
                 inline: false,
               }
             );
@@ -148,7 +148,7 @@ export const auditLogEventCreateLog = async (auditLog) => {
               },
               {
                 name: 'Unpinned By',
-                value: `${executorId.username}#${executorId.discriminator}`,
+                value: `${executor.username}#${executor.discriminator}`,
                 inline: false,
               }
             );
@@ -177,12 +177,12 @@ export const auditLogEventCreateLog = async (auditLog) => {
             .addFields(
               {
                 name: 'Member',
-                value: `${targetId.username}#${targetId.discriminator}`,
+                value: `${target.username}#${target.discriminator}`,
                 inline: false,
               },
               {
                 name: 'Kicked By',
-                value: `${executorId.username}#${executorId.discriminator}`,
+                value: `${executor.username}#${executor.discriminator}`,
                 inline: false,
               },
               {
@@ -216,12 +216,12 @@ export const auditLogEventCreateLog = async (auditLog) => {
             .addFields(
               {
                 name: 'Member',
-                value: `${targetId.username}#${targetId.discriminator}`,
+                value: `${target.username}#${target.discriminator}`,
                 inline: false,
               },
               {
                 name: 'Banned By',
-                value: `${executorId.username}#${executorId.discriminator}`,
+                value: `${executor.username}#${executor.discriminator}`,
                 inline: false,
               },
               {
@@ -255,12 +255,12 @@ export const auditLogEventCreateLog = async (auditLog) => {
             .addFields(
               {
                 name: 'Member',
-                value: `${targetId.username}#${targetId.discriminator}`,
+                value: `${target.username}#${target.discriminator}`,
                 inline: false,
               },
               {
                 name: 'Unbanned By',
-                value: `${executorId.username}#${executorId.discriminator}`,
+                value: `${executor.username}#${executor.discriminator}`,
                 inline: false,
               }
             );
