@@ -5,7 +5,7 @@ import { guildLogsSchema } from '../../Schemas/enableLogging';
 
 export const messageUpdateLog = async (
   message: Message | PartialMessage,
-  newMessage: Message | PartialMessage
+  newMessage: Message | PartialMessage,
 ) => {
   // @ts-ignore
   message.guild
@@ -54,8 +54,7 @@ export const messageUpdateLog = async (
                 },
                 {
                   name: 'Edited By',
-                  // @ts-ignore
-                  value: `${executor?.tag}`,
+                  value: `<@${message.member.user.id}>`,
                   inline: false,
                 }
               );
