@@ -18,6 +18,9 @@ export const messageDeleteLog = async (message: Message | PartialMessage) => {
       // If missing values or message is from a bot return
       if (!mes || message?.author?.bot || !executor) return;
 
+      // If message id does not match up with the executor id then they deleted the message
+      if (message.id !== executor.target.id) return;
+
       // Check if loggin is enabled for this guild
       guildLogsSchema.findOne(
         // @ts-ignore
@@ -29,6 +32,7 @@ export const messageDeleteLog = async (message: Message | PartialMessage) => {
             // @ts-ignore
             const mChannel = message.guild.channels.cache.get(data.channel);
             if (!mChannel) return;
+
             const logEmbed = new EmbedBuilder()
               .setColor('Red')
               .setTitle('Message Deleted')
