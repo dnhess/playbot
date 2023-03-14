@@ -15,7 +15,9 @@ export const auditLogEventCreateLog = async (auditLog) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.guild.channels.cache.get(data.channel);
+          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
+            data.channel
+          );
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -52,7 +54,9 @@ export const auditLogEventCreateLog = async (auditLog) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.guild.channels.cache.get(data.channel);
+          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
+            data.channel
+          );
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -84,7 +88,9 @@ export const auditLogEventCreateLog = async (auditLog) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.guild.channels.cache.get(data.channel);
+          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
+            data.channel
+          );
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -121,7 +127,9 @@ export const auditLogEventCreateLog = async (auditLog) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.guild.channels.cache.get(data.channel);
+          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
+            data.channel
+          );
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -158,7 +166,9 @@ export const auditLogEventCreateLog = async (auditLog) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.guild.channels.cache.get(data.channel);
+          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
+            data.channel
+          );
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -195,7 +205,9 @@ export const auditLogEventCreateLog = async (auditLog) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.guild.channels.cache.get(data.channel);
+          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
+            data.channel
+          );
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
@@ -232,7 +244,9 @@ export const auditLogEventCreateLog = async (auditLog) => {
         if (err) throw err;
 
         if (data) {
-          const mChannel = auditLog.guild.channels.cache.get(data.channel);
+          const mChannel = auditLog.extra.channel.guild.channels.cache.get(
+            data.channel
+          );
           if (!mChannel) return;
 
           const logEmbed = new EmbedBuilder()
