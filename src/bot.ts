@@ -288,8 +288,8 @@ client.on(Events.GuildMemberUpdate, async (member) => {
   memberMuteLog(member);
 });
 
-client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
-  auditLogEventCreateLog(auditLog);
+client.on(Events.GuildAuditLogEntryCreate, async (auditLog, guild) => {
+  auditLogEventCreateLog(auditLog, guild);
 });
 
 client.login(config.DISCORD_TOKEN);

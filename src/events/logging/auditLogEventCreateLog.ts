@@ -3,8 +3,10 @@ import { AuditLogEvent, EmbedBuilder } from 'discord.js';
 
 import { guildLogsSchema } from '../../Schemas/enableLogging';
 
-export const auditLogEventCreateLog = async (auditLog) => {
+export const auditLogEventCreateLog = async (auditLog, guild) => {
   const { action, target, executor } = auditLog;
+
+  console.log('guild', guild);
 
   console.log(auditLog);
 
