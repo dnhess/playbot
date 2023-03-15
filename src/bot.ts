@@ -20,7 +20,6 @@ import { auditLogEventCreateLog } from './events/logging/auditLogEventCreateLog'
 import { channelCreateLog } from './events/logging/channelCreateLog';
 import { channelDeleteLog } from './events/logging/channelDeleteLog';
 import { memberMuteLog } from './events/logging/memberMuteLog';
-import { messageUpdateLog } from './events/logging/messageUpdateLog';
 import { modalWelcomeDM } from './events/modals/modalWelcomeDM';
 import { reactionRoleEvent } from './events/reactions/reactionRoleEvent';
 import { sendJoinReaction } from './events/welcome/sendJoinReaction';
@@ -276,9 +275,9 @@ client.on(Events.ChannelDelete, async (channel) => {
 //   messageDeleteLog(message);
 // });
 
-client.on(Events.MessageUpdate, async (message, newMessage) => {
-  messageUpdateLog(message, newMessage);
-});
+// client.on(Events.MessageUpdate, async (message, newMessage) => {
+//   messageUpdateLog(message, newMessage);
+// });
 
 // client.on(Events.GuildMemberRemove, async (member) => {
 //   memberRemoveLog(member);
