@@ -21,6 +21,9 @@ export const memberMuteLog = async (
     // If action type is not 24 return
     if (executor?.action !== AuditLogEvent.MemberUpdate) return;
 
+    // If no reason is provided return
+    if (!executor?.reason) return;
+
     // Calculate how long until timeout ends in days, hours, minutes, and seconds
 
     const currentTime = DateTime.local();
