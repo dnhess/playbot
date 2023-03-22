@@ -19,7 +19,6 @@ import { levelCheck } from './events/levelCheck';
 import { auditLogEventCreateLog } from './events/logging/auditLogEventCreateLog';
 import { channelCreateLog } from './events/logging/channelCreateLog';
 import { channelDeleteLog } from './events/logging/channelDeleteLog';
-import { memberMuteLog } from './events/logging/memberMuteLog';
 import { modalWelcomeDM } from './events/modals/modalWelcomeDM';
 import { reactionRoleEvent } from './events/reactions/reactionRoleEvent';
 import { sendJoinReaction } from './events/welcome/sendJoinReaction';
@@ -283,9 +282,9 @@ client.on(Events.ChannelDelete, async (channel) => {
 //   memberRemoveLog(member);
 // });
 
-client.on(Events.GuildMemberUpdate, async (member) => {
-  memberMuteLog(member);
-});
+// client.on(Events.GuildMemberUpdate, async (member) => {
+//   memberMuteLog(member);
+// });
 
 client.on(Events.GuildAuditLogEntryCreate, async (auditLog, guild) => {
   auditLogEventCreateLog(auditLog, guild);
