@@ -26,6 +26,7 @@ import { sendWelcome } from './events/welcome/sendWelcome';
 import { sendWelcomeDM } from './events/welcome/sendWelcomeDM';
 import { convertGameResponseToGameData } from './interfaces/IGame';
 import { messages } from './messages/messages';
+import { checkRegion } from './messages/ocr';
 
 const commands = Object(commandModules);
 
@@ -228,6 +229,8 @@ client.on(Events.MessageCreate, async (message) => {
       }
     }
   });
+
+  checkRegion(message);
 });
 
 // On user join, send a message to welcome them, DM the user with a modal to ask for their username
