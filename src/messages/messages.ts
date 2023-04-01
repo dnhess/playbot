@@ -36,4 +36,10 @@ export const messages = [
       return `https://app.playbite.com`;
     },
   },
+  {
+    message: /(?=.*\bbest\b)(?=.*\bgame\b)(?=.*\btickets?\b).+/gi,
+    response: () => {
+      return `What ever game you are the best at!`;
+    },
+  },
 ];
