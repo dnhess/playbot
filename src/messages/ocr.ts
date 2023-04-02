@@ -4,6 +4,16 @@ import Tesseract from 'tesseract.js';
 export const checkRegion = (message: Message) => {
   message?.attachments?.forEach((attachment: { url: any }) => {
     const { url } = attachment;
+
+    // If the attachment is not an image, return
+    if (
+      !url.endsWith('.png') &&
+      !url.endsWith('.jpg') &&
+      !url.endsWith('.jpeg')
+    ) {
+      return;
+    }
+
     Tesseract.recognize(url)
       .then(({ data: { text } }) => {
         // Reply to the message with the text if it contains the phrase "Prizes are not available"
