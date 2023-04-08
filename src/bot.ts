@@ -9,6 +9,8 @@ import {
 } from 'discord.js';
 // Import mongoose
 import mongoose from 'mongoose';
+// Import Rollbar
+import Rollbar from 'rollbar';
 
 // eslint-disable-next-line import/no-cycle
 import * as commandModules from './commands';
@@ -117,6 +119,17 @@ client.once(Events.ClientReady, async (c) => {
 
     // Start cron jobs
     topJob(client).start();
+  }
+
+  // Setup Rollbar
+  if (config.ROLLBAR_ACCESS_TOKEN) {
+    const rollbar = new Rollbar({
+      accessToken: config.ROLLBAR_ACCESS_TOKEN,
+      captureUncaught: true,
+      captureUnhandledRejections: true,
+    });
+
+    rollbar.log('Rollbar is setup');
   }
 });
 

@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { Error } from 'mongoose';
 
 dotenv.config();
 
@@ -8,10 +9,17 @@ const {
   DISCORD_TOKEN,
   BASE_API_URL,
   MONODB_URL,
+  ROLLBAR_ACCESS_TOKEN,
 } = process.env;
 
 // If any of the required environment variables are missing, throw an error
-if (!CLIENT_ID || !DISCORD_TOKEN || !BASE_API_URL || !MONODB_URL) {
+if (
+  !CLIENT_ID ||
+  !DISCORD_TOKEN ||
+  !BASE_API_URL ||
+  !MONODB_URL ||
+  !ROLLBAR_ACCESS_TOKEN
+) {
   if (!CLIENT_ID) {
     throw new Error('CLIENT_ID is missing from .env');
   }
@@ -24,6 +32,9 @@ if (!CLIENT_ID || !DISCORD_TOKEN || !BASE_API_URL || !MONODB_URL) {
   if (!MONODB_URL) {
     throw new Error('MONODB_URL is missing from .env');
   }
+  if (!ROLLBAR_ACCESS_TOKEN) {
+    throw new Error('ROLLBAR_TOKEN is missing from .env');
+  }
 }
 
 const config: Record<string, string> = {
@@ -32,6 +43,7 @@ const config: Record<string, string> = {
   DISCORD_TOKEN,
   BASE_API_URL,
   MONODB_URL,
+  ROLLBAR_ACCESS_TOKEN,
 };
 
 export default config;
