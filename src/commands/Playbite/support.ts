@@ -9,7 +9,7 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: CommandInteraction) => {
   const email = bold('support@playbite.com');
-  return interaction.reply(`Hello! Please email ${email} for support. For faster help please include the following information:
+  return interaction.reply(`Hello! Please email ${email} for help. For faster help please include the following information:
   - Your Playbite username
   - Country
   - Device
