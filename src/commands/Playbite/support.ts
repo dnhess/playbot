@@ -1,5 +1,5 @@
 import type { CommandInteraction } from 'discord.js';
-import { bold, SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder } from 'discord.js';
 
 export const data = new SlashCommandBuilder()
   .setName('support')
@@ -8,11 +8,10 @@ export const data = new SlashCommandBuilder()
   );
 
 export const execute = async (interaction: CommandInteraction) => {
-  const email = bold('support@playbite.com');
-  return interaction.reply(`Hello! Please email ${email} for help. For faster help please include the following information:
+  return interaction.reply(`Hello! Please submit a request on http://support.playbite.com/ for help. To make sure we can help quickly, please include the following information:
+  - Your email
   - Your Playbite username
   - Country
   - Device
-  - A detailed description of the issue
-  `);
+  - A detailed description of the issue`);
 };
