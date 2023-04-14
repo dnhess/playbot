@@ -9,6 +9,6 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: CommandInteraction) => {
   return interaction.reply(
-    `Hello! Sorry you saw an inappropriate ad. We work hard to ensure the quality of ads is as good as can be. Can you please upload a picture or name of the ad you saw here so we can turn it off? Thanks! https://playbite.zendesk.com/hc/en-us/requests/new`
+    `Hello! Sorry you saw an inappropriate ad. We work hard to ensure the quality of ads is as good as can be. Can you please upload a picture or name of the ad you saw here so we can turn it off? Thanks! https://s.playbite.com/help`
   );
 };

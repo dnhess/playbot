@@ -8,7 +8,7 @@ export const data = new SlashCommandBuilder()
   );
 
 export const execute = async (interaction: CommandInteraction) => {
-  return interaction.reply(`Hello! Please submit a request on http://support.playbite.com/ for help. To make sure we can help quickly, please include the following information:
+  return interaction.reply(`Hello! Please submit a request on https://s.playbite.com/help for help. To make sure we can help quickly, please include the following information:
   - Your email
   - Your Playbite username
   - Country
