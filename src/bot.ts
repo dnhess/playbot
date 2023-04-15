@@ -119,6 +119,12 @@ client.once(Events.ClientReady, async (c) => {
 client.on(Events.InteractionCreate, async (interaction) => {
   try {
     if (interaction.isChatInputCommand()) {
+      if (!interaction.guild) {
+        console.log('Direct message interaction received and ignored');
+        rollbar?.info('Direct message interaction received and ignored');
+        return;
+      }
+
       const { commandName } = interaction;
       console.log(`Received chat input command interaction: ${commandName}`);
       const eventProperties = {
@@ -137,6 +143,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
       const commandNameNoHyphens = commandName.replace(/-/g, '');
       commands[commandNameNoHyphens]?.execute(interaction, client);
     } else if (interaction.isAutocomplete()) {
+      if (!interaction.guild) {
+        console.log('Direct message interaction received and ignored');
+        rollbar?.info('Direct message interaction received and ignored');
+        return;
+      }
+
       const { commandName } = interaction;
       console.log(`Received qutocomplete interaction: ${commandName}`);
 
