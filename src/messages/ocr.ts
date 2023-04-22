@@ -3,8 +3,8 @@ import type { Worker } from 'tesseract.js';
 import { createWorker } from 'tesseract.js';
 
 let workerPool: Worker[] = [];
-const workerPoolSize = 4; // Adjust the pool size as needed
-const availableWorkers: boolean[] = new Array(workerPoolSize).fill(true);
+const workerPoolSize = 1; // Adjust the pool size as needed
+const workerStatuses: boolean[] = new Array(workerPoolSize).fill(false); // false indicates the worker is not busy
 
 const createWorkerPool = async (poolSize: number): Promise<Worker[]> => {
   const workerPromises: Promise<Worker>[] = [];
@@ -17,26 +17,32 @@ const createWorkerPool = async (poolSize: number): Promise<Worker[]> => {
   return Promise.all(workerPromises);
 };
 
+const loadAndInitializeWorker = async (worker: Worker): Promise<void> => {
+  await worker.loadLanguage('eng');
+  await worker.initialize('eng');
+};
+
 const initializeWorkerPool = async (): Promise<void> => {
   workerPool = await createWorkerPool(workerPoolSize);
+  await Promise.all(
+    workerPool.map((worker) => loadAndInitializeWorker(worker))
+  );
 };
 
 initializeWorkerPool();
 
-const getAvailableWorkerIndex = (): Promise<number> => {
-  return new Promise((resolve) => {
-    const checkAvailability = () => {
-      for (let i = 0; i < availableWorkers.length; i += 1) {
-        if (availableWorkers[i]) {
-          resolve(i);
-          return;
-        }
-      }
-      setTimeout(checkAvailability, 100); // Wait a bit before checking again
-    };
+const getAvailableWorkerIndex = async (): Promise<number> => {
+  for (let i = 0; i < workerStatuses.length; i += 1) {
+    if (!workerStatuses[i]) {
+      return i;
+    }
+  }
 
-    checkAvailability();
-  });
+  // If no worker is available, create a new one and push it to the workerPool array
+  const newWorker = await createWorker({ cacheMethod: 'none' });
+  workerPool.push(newWorker);
+  workerStatuses.push(false);
+  return workerPool.length - 1;
 };
 
 const recognizeAndReply = async (
@@ -44,14 +50,10 @@ const recognizeAndReply = async (
   message: Message
 ): Promise<void> => {
   const workerIndex = await getAvailableWorkerIndex();
-  availableWorkers[workerIndex] = false;
+  workerStatuses[workerIndex] = true; // Mark the worker as busy
   const worker = workerPool[workerIndex];
 
   try {
-    await worker.load();
-    await worker.loadLanguage('eng');
-    await worker.initialize('eng');
-
     const {
       data: { text },
     } = await worker.recognize(url);
@@ -64,9 +66,21 @@ const recognizeAndReply = async (
   } catch (error) {
     console.error(error);
     console.log('Error while trying to OCR image.');
+
+    // If there is an error with the worker, try to restart it
+    try {
+      await worker.terminate();
+      const restartedWorker = await createWorker({ cacheMethod: 'none' });
+      await restartedWorker.load();
+      await restartedWorker.loadLanguage('eng');
+      await restartedWorker.initialize('eng');
+      workerPool[workerIndex] = restartedWorker;
+    } catch (restartError) {
+      console.error(restartError);
+      console.log('Failed to restart the worker.');
+    }
   } finally {
-    availableWorkers[workerIndex] = true;
-    await worker.terminate(); // Terminate the worker when it's no longer needed
+    workerStatuses[workerIndex] = false; // Mark the worker as available
   }
 };
 
@@ -91,3 +105,7 @@ export const checkRegion = (message: Message): Promise<void> => {
       console.log('Error while processing OCR tasks.');
     });
 };
+
+process.on('exit', async () => {
+  await Promise.all(workerPool.map((worker) => worker.terminate()));
+});
