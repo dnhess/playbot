@@ -71,7 +71,6 @@ const recognizeAndReply = async (
     try {
       await worker.terminate();
       const restartedWorker = await createWorker({ cacheMethod: 'none' });
-      await restartedWorker.load();
       await restartedWorker.loadLanguage('eng');
       await restartedWorker.initialize('eng');
       workerPool[workerIndex] = restartedWorker;
