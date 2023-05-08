@@ -48,6 +48,7 @@ export const execute = async (interaction: CommandInteraction) => {
       }
     });
   } catch (error) {
+    // test
     console.error(error);
     await interaction.reply({
       content:
