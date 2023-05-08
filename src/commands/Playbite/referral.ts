@@ -48,6 +48,7 @@ export const execute = async (interaction: CommandInteraction) => {
       }
     });
   } catch (error) {
+    console.error(error);
     await interaction.reply({
       content:
         "It seems I can't send you a DM. Please make sure your DM settings allow messages from server members.",
