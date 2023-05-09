@@ -1,7 +1,10 @@
 import type { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from 'discord.js';
 
+import { pendingTasksSchema, tasks } from '../../Schemas/pending-tasks';
 import { UserSchema } from '../../Schemas/user';
+import { user } from '..';
+// import { UserSchema } from '../../Schemas/user';
 
 export const data = new SlashCommandBuilder()
   .setName('referral')
@@ -21,32 +24,27 @@ export const execute = async (interaction: CommandInteraction) => {
       ephemeral: true,
     });
 
-    interaction.client.once('messageCreate', async (message) => {
-      if (message.author.id === userId) {
-        const desiredUsername = message.content;
+    await pendingTasksSchema.replaceOne({
+      guildId: interaction.guildId,
+      userId: userId
+    }, {
+      guildId: interaction.guildId,
+      userId: userId,
+      task: tasks.userName
+    }, {
+      upsert: true
+    })
 
-        const referralLink = `https://s.playbite.com/invite/${desiredUsername}`;
+    const user = await UserSchema.findById({
+      userId: userId
+    })
 
-        await UserSchema.replaceOne(
-          {
-            discord_id: userId,
-          },
-          {
-            discord_id: userId,
-            username: interaction.user.username,
-            playbite_username: null,
-            discriminator: interaction.user.discriminator,
-            avatar_url: interaction.user.displayAvatarURL(),
-            last_message: interaction.createdTimestamp,
-          },
-          { upsert: true }
-        );
+    if (user && user.playbite_username) {
+      const previousUserLink = `https://s.playbite.com/invite/${user.playbite_username}`
 
-        const referralEmbed = `Here's your referral link: ${referralLink}`;
+      await dmChannel.send(`This is the previous link I created for you: ${previousUserLink}, feel free to reply to this message if it has changed!`)
+    }
 
-        await dmChannel.send(referralEmbed);
-      }
-    });
   } catch (error) {
     console.error(error);
     await interaction.reply({
