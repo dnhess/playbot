@@ -3,7 +3,6 @@ import { SlashCommandBuilder } from 'discord.js';
 
 import { pendingTasksSchema, tasks } from '../../Schemas/pending-tasks';
 import { UserSchema } from '../../Schemas/user';
-import { user } from '..';
 // import { UserSchema } from '../../Schemas/user';
 
 export const data = new SlashCommandBuilder()
@@ -24,27 +23,32 @@ export const execute = async (interaction: CommandInteraction) => {
       ephemeral: true,
     });
 
-    await pendingTasksSchema.replaceOne({
-      guildId: interaction.guildId,
-      userId: userId
-    }, {
-      guildId: interaction.guildId,
-      userId: userId,
-      task: tasks.userName
-    }, {
-      upsert: true
-    })
+    await pendingTasksSchema.replaceOne(
+      {
+        guildId: interaction.guildId,
+        userId,
+      },
+      {
+        guildId: interaction.guildId,
+        userId,
+        task: tasks.userName,
+      },
+      {
+        upsert: true,
+      }
+    );
 
     const user = await UserSchema.findById({
-      userId: userId
-    })
+      userId,
+    });
 
     if (user && user.playbite_username) {
-      const previousUserLink = `https://s.playbite.com/invite/${user.playbite_username}`
+      const previousUserLink = `https://s.playbite.com/invite/${user.playbite_username}`;
 
-      await dmChannel.send(`This is the previous link I created for you: ${previousUserLink}, feel free to reply to this message if it has changed!`)
+      await dmChannel.send(
+        `This is the previous link I created for you: ${previousUserLink}, feel free to reply to this message if it has changed!`
+      );
     }
-
   } catch (error) {
     console.error(error);
     await interaction.reply({

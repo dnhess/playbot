@@ -1,6 +1,7 @@
 import { track } from '@amplitude/analytics-node';
 import fetch from 'cross-fetch';
 import {
+  ChannelType,
   Client,
   Events,
   GatewayIntentBits,
@@ -28,7 +29,6 @@ import { convertGameResponseToGameData } from './interfaces/IGame';
 import { messages } from './messages/messages';
 import { checkRegion } from './messages/ocr';
 import rollbar from './rollbarConfig';
-import { ChannelType } from 'discord.js';
 import { pendingTasksSchema, tasks } from './Schemas/pending-tasks';
 import { UserSchema } from './Schemas/user';
 
@@ -61,7 +61,7 @@ export const client = new Client({
     Partials.Message,
     Partials.Reaction,
     Partials.User,
-    Partials.Channel
+    Partials.Channel,
   ],
 });
 
@@ -123,50 +123,48 @@ client.once(Events.ClientReady, async (c) => {
 client.on(Events.MessageCreate, async (interaction) => {
   if (interaction.channel.type === ChannelType.DM) {
     // Get user id from pending tasks
-    const userId = interaction.author.id
+    const userId = interaction.author.id;
 
     // TODO change this if there will be more than 1 eventually
     const hasPendingUsernameTask = await pendingTasksSchema.findOne({
-      userId: userId,
-      task: tasks.userName
-    })
+      userId,
+      task: tasks.userName,
+    });
 
     if (hasPendingUsernameTask) {
-      // Get content of message: 
-      const messageContent = interaction.content
+      // Get content of message:
+      const messageContent = interaction.content;
 
       // update user schema
 
       const referralLink = `https://s.playbite.com/invite/${messageContent}`;
 
       await UserSchema.replaceOne(
-          {
-            discord_id: userId,
-          },
-          {
-            discord_id: userId,
-            username: interaction.author.username,
-            playbite_username: messageContent,
-            discriminator: interaction.author.discriminator,
-            avatar_url: interaction.author.avatarURL,
-            last_message: interaction.createdTimestamp,
-          },
-          { upsert: true }
-        );
+        {
+          discord_id: userId,
+        },
+        {
+          discord_id: userId,
+          username: interaction.author.username,
+          playbite_username: messageContent,
+          discriminator: interaction.author.discriminator,
+          avatar_url: interaction.author.avatarURL,
+          last_message: interaction.createdTimestamp,
+        },
+        { upsert: true }
+      );
 
       const referralEmbed = `Here's your referral link: ${referralLink}`;
 
-      interaction.reply(referralEmbed)
+      interaction.reply(referralEmbed);
 
-      pendingTasksSchema.deleteOne(
-        {
-          userId: userId,
-          task: tasks.userName
-        }
-      )
+      pendingTasksSchema.deleteOne({
+        userId,
+        task: tasks.userName,
+      });
     }
   }
-})
+});
 
 client.on(Events.InteractionCreate, async (interaction) => {
   try {
