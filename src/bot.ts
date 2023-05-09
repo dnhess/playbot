@@ -29,7 +29,7 @@ import { convertGameResponseToGameData } from './interfaces/IGame';
 import { messages } from './messages/messages';
 import { checkRegion } from './messages/ocr';
 import rollbar from './rollbarConfig';
-import { pendingTasksSchema, tasks } from './Schemas/pending-tasks';
+import { pendingTasksSchema, Tasks } from './Schemas/pending-tasks';
 import { UserSchema } from './Schemas/user';
 
 const commands = Object(commandModules);
@@ -128,7 +128,7 @@ client.on(Events.MessageCreate, async (interaction) => {
     // TODO change this if there will be more than 1 eventually
     const hasPendingUsernameTask = await pendingTasksSchema.findOne({
       userId,
-      task: tasks.userName,
+      task: Tasks.userName,
     });
 
     if (hasPendingUsernameTask) {
@@ -160,7 +160,7 @@ client.on(Events.MessageCreate, async (interaction) => {
 
       pendingTasksSchema.deleteOne({
         userId,
-        task: tasks.userName,
+        task: Tasks.userName,
       });
     }
   }

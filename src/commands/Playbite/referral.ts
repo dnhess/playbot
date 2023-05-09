@@ -1,9 +1,7 @@
 import type { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from 'discord.js';
 
-import { pendingTasksSchema, tasks } from '../../Schemas/pending-tasks';
-import { UserSchema } from '../../Schemas/user';
-// import { UserSchema } from '../../Schemas/user';
+import { pendingTasksSchema, Tasks } from '../../Schemas/pending-tasks';
 
 export const data = new SlashCommandBuilder()
   .setName('referral')
@@ -31,24 +29,12 @@ export const execute = async (interaction: CommandInteraction) => {
       {
         guildId: interaction.guildId,
         userId,
-        task: tasks.userName,
+        task: Tasks.userName,
       },
       {
         upsert: true,
       }
     );
-
-    const user = await UserSchema.findById({
-      userId,
-    });
-
-    if (user && user.playbite_username) {
-      const previousUserLink = `https://s.playbite.com/invite/${user.playbite_username}`;
-
-      await dmChannel.send(
-        `This is the previous link I created for you: ${previousUserLink}, feel free to reply to this message if it has changed!`
-      );
-    }
   } catch (error) {
     console.error(error);
     await interaction.reply({

@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
 
-export enum tasks {
-  userName= 'USERNAME'
+export enum Tasks {
+  userName = 'USERNAME',
 }
 
 const pendingTaskSchemaSettings = new Schema(
@@ -13,4 +13,7 @@ const pendingTaskSchemaSettings = new Schema(
   { timestamps: true }
 );
 
-export const pendingTasksSchema = model('pending-tasks', pendingTaskSchemaSettings);
+export const pendingTasksSchema = model(
+  'pending-tasks',
+  pendingTaskSchemaSettings
+);
