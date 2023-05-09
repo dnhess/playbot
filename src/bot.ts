@@ -126,7 +126,7 @@ client.on(Events.MessageCreate, async (interaction) => {
     const userId = interaction.author.id;
 
     // TODO change this if there will be more than 1 eventually
-    const hasPendingUsernameTask = await pendingTasksSchema.findOne({
+    const hasPendingUsernameTask = await pendingTasksSchema.findOneAndDelete({
       userId,
       task: Tasks.userName,
     });
@@ -157,11 +157,6 @@ client.on(Events.MessageCreate, async (interaction) => {
       const referralEmbed = `Here's your referral link: ${referralLink}`;
 
       interaction.reply(referralEmbed);
-
-      pendingTasksSchema.deleteOne({
-        userId,
-        task: Tasks.userName,
-      });
     }
   }
 });
