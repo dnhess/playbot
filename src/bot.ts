@@ -148,7 +148,7 @@ client.on(Events.MessageCreate, async (interaction) => {
           username: interaction.author.username,
           playbite_username: messageContent,
           discriminator: interaction.author.discriminator,
-          avatar_url: interaction.author.avatarURL,
+          avatar_url: interaction.author.avatarURL(),
           last_message: interaction.createdTimestamp,
         },
         { upsert: true }
