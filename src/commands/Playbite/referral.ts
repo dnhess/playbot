@@ -1,7 +1,7 @@
 import type { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from 'discord.js';
 
-import { UserSchema } from '../../Schemas/user';
+import { pendingTasksSchema, Tasks } from '../../Schemas/pending-tasks';
 
 export const data = new SlashCommandBuilder()
   .setName('referral')
@@ -21,32 +21,20 @@ export const execute = async (interaction: CommandInteraction) => {
       ephemeral: true,
     });
 
-    interaction.client.once('messageCreate', async (message) => {
-      if (message.author.id === userId) {
-        const desiredUsername = message.content;
-
-        const referralLink = `https://s.playbite.com/invite/${desiredUsername}`;
-
-        await UserSchema.replaceOne(
-          {
-            discord_id: userId,
-          },
-          {
-            discord_id: userId,
-            username: interaction.user.username,
-            playbite_username: null,
-            discriminator: interaction.user.discriminator,
-            avatar_url: interaction.user.displayAvatarURL(),
-            last_message: interaction.createdTimestamp,
-          },
-          { upsert: true }
-        );
-
-        const referralEmbed = `Here's your referral link: ${referralLink}`;
-
-        await dmChannel.send(referralEmbed);
+    await pendingTasksSchema.replaceOne(
+      {
+        guildId: interaction.guildId,
+        userId,
+      },
+      {
+        guildId: interaction.guildId,
+        userId,
+        task: Tasks.userName,
+      },
+      {
+        upsert: true,
       }
-    });
+    );
   } catch (error) {
     console.error(error);
     await interaction.reply({
