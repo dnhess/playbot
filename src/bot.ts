@@ -68,42 +68,52 @@ export const client = new Client({
 client.once(Events.ClientReady, async (c) => {
   console.log(`Ready! Logged in as ${c.user.tag}!`);
 
-  const games = await fetch(`${config.BASE_API_URL}/feed?plat=web`);
-  const gamesJson = await games.json();
+  try {
+    console.log('starting games fetching');
+    const games = await fetch(`${config.BASE_API_URL}/feed?plat=web`);
+    const gamesJson = await games.json();
 
-  const gamesData = convertGameResponseToGameData(
-    gamesJson.filter((game: { title: string }) => game.title === 'All')[0]
-  );
+    const gamesData = convertGameResponseToGameData(
+      gamesJson.filter((game: { title: string }) => game.title === 'All')[0]
+    );
 
-  const choices: { name: string; value: string }[] = gamesData.map((game) => ({
-    name: game.name,
-    value: game.id,
-  }));
+    const choices: { name: string; value: string }[] = gamesData.map(
+      (game) => ({
+        name: game.name,
+        value: game.id,
+      })
+    );
 
-  const initalRandomGame = choices[Math.floor(Math.random() * choices.length)];
-
-  client.user?.setPresence({
-    activities: [
-      {
-        name: initalRandomGame.name,
-      },
-    ],
-  });
-
-  setInterval(() => {
-    // Pick a random game from choices
-    const randomGame = choices[Math.floor(Math.random() * choices.length)];
+    const initalRandomGame =
+      choices[Math.floor(Math.random() * choices.length)];
 
     client.user?.setPresence({
       activities: [
         {
-          name: randomGame.name,
+          name: initalRandomGame.name,
         },
       ],
     });
-    // Set the presence every hour
-  }, 1000 * 60 * 60);
 
+    setInterval(() => {
+      // Pick a random game from choices
+      const randomGame = choices[Math.floor(Math.random() * choices.length)];
+
+      client.user?.setPresence({
+        activities: [
+          {
+            name: randomGame.name,
+          },
+        ],
+      });
+      // Set the presence every hour
+    }, 1000 * 60 * 60);
+  } catch (error) {
+    console.error(`Error during ClientReady event: ${error}`);
+    console.log('Failed to set presence');
+  }
+
+  console.log('starting monogoose connection...');
   // ts ignore
   // @ts-ignore
   await mongoose.connect(config.MONODB_URL, {
@@ -118,6 +128,11 @@ client.once(Events.ClientReady, async (c) => {
     // Start cron jobs
     topJob(client).start();
   }
+
+  // Outout any monoogse errors
+  mongoose.connection.on('error', (err) => {
+    console.error(err);
+  });
 });
 
 client.on(Events.MessageCreate, async (interaction) => {
