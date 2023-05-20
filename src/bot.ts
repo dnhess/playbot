@@ -283,6 +283,14 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
       rollbar?.error(error, eventProperties);
     }
+
+    // If interaction is a command, reply with an error
+    if (interaction.isCommand()) {
+      interaction.reply({
+        content:
+          'There was an error while executing this command, this has been reported!',
+      });
+    }
   }
 });
 
