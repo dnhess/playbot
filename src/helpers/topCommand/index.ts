@@ -10,7 +10,7 @@ export const fetchGamesWithTopUsersOverOneDayEmbed = async () => {
   const gamesJson = await games.json();
 
   const gamesData = convertGameResponseToGameData(
-    gamesJson.filter((game: { title: string }) => game.title === 'All')[0]
+    gamesJson.filter((game: { title: string }) => game.title === 'All Games')[0]
   );
 
   // Build an array of promises to fetch the top user for each game. The fetch url is formatted like this: https://api.playbite.com/api/games/6f8a4196-7700-4776-9737-fb573c606d20/rankings?type=day

@@ -71,10 +71,12 @@ client.once(Events.ClientReady, async (c) => {
   try {
     console.log('starting games fetching');
     const games = await fetch(`${config.BASE_API_URL}/feed?plat=web`);
-    const gamesJson = await games.json();
 
+    const gamesJson = await games.json();
     const gamesData = convertGameResponseToGameData(
-      gamesJson.filter((game: { title: string }) => game.title === 'All')[0]
+      gamesJson.filter(
+        (game: { title: string }) => game.title === 'All Games'
+      )[0]
     );
 
     const choices: { name: string; value: string }[] = gamesData.map(

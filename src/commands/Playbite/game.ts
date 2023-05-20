@@ -26,7 +26,7 @@ export const autocomplete = async (
   const gamesJson = await games.json();
 
   const gamesData = convertGameResponseToGameData(
-    gamesJson.filter((game: { title: string }) => game.title === 'All')[0]
+    gamesJson.filter((game: { title: string }) => game.title === 'All Games')[0]
   );
 
   const choices: { name: string; value: string }[] = gamesData.map((game) => ({
@@ -55,7 +55,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const gamesData = convertGameResponseToGameData(
     gameJson.filter(
-      (gameItem: { title: string }) => gameItem.title === 'All'
+      (gameItem: { title: string }) => gameItem.title === 'All Games'
     )[0]
   );
 
