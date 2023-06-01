@@ -34,7 +34,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   try {
     const userJson: TUserStatsResponse = await userStats.json();
-
     const fields = userJson?.stats.map((statItem: any) => ({
       name: `${statItem.icon} ${statItem.description}`.replace(
         'undefined ',
@@ -46,9 +45,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
     const embed = new EmbedBuilder()
       .setColor('#7E47F3')
-      .setTitle(userJson.displayName)
-      .setDescription(userJson.bio)
-      .setThumbnail(userJson.imageUrl)
+      .setTitle(userJson?.displayName ?? '')
+      .setDescription(userJson?.bio === '' ? ' ' : userJson?.bio)
+      .setThumbnail(userJson?.imageUrl ?? '')
       .addFields(fields)
       .setTimestamp();
 
