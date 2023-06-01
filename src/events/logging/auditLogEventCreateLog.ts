@@ -49,7 +49,6 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
       { guildId: guild.id },
       async (err: any, data: { channel: string }) => {
         if (err) throw err;
-
         if (data) {
           const mChannel = guild.channels.cache.get(data.channel);
           if (!mChannel) return;
@@ -60,7 +59,7 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
             .addFields(
               {
                 name: 'Message Count',
-                value: `${target.count}`,
+                value: `${target.rawPosition}`,
                 inline: false,
               },
               {
