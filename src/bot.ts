@@ -29,6 +29,7 @@ import { convertGameResponseToGameData } from './interfaces/IGame';
 import { messages } from './messages/messages';
 import { checkRegion } from './messages/ocr';
 import rollbar from './rollbarConfig';
+import { levelSchema } from './Schemas/level';
 import { pendingTasksSchema, Tasks } from './Schemas/pending-tasks';
 import { UserSchema } from './Schemas/user';
 
@@ -454,6 +455,23 @@ client.on(Events.GuildAuditLogEntryCreate, async (auditLog, guild) => {
       rollbar?.error(error, eventProperties);
     }
   }
+});
+
+// Guild Member Leave
+client.on(Events.GuildMemberRemove, async (member) => {
+  // Get their id
+  const { id } = member;
+
+  // Get the guild
+  const { guild } = member;
+
+  // Delete them from the levels schema
+  await levelSchema.findOneAndDelete({
+    userId: id,
+    guildId: guild.id,
+  });
+
+  console.log(`Deleted member ${id} from levels schema`);
 });
 
 client.login(config.DISCORD_TOKEN);
