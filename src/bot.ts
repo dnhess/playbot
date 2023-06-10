@@ -472,6 +472,7 @@ client.on(Events.GuildMemberRemove, async (member) => {
   });
 
   console.log(`Deleted member ${id} from levels schema`);
+  rollbar?.info(`Deleted member ${id} from levels schema`);
 });
 
 client.login(config.DISCORD_TOKEN);
