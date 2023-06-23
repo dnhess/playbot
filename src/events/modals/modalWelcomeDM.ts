@@ -52,7 +52,7 @@ export const modalWelcomeDM = async (
         const embed = new EmbedBuilder()
           .setTitle('Welcome Form Response')
           .setDescription(
-            `Welcome form response from ${interaction.user.username}#${interaction.user.discriminator}`
+            `Welcome form response from ${interaction.user.username}#${interaction.user?.discriminator}`
           )
           .addFields(responses);
 

@@ -37,7 +37,7 @@ export const execute = async (interaction: CommandInteraction) => {
     const embed = new EmbedBuilder()
       .setColor('#7E47F3')
       .setDescription(
-        `:white_check_mark: Successfully reset the xp of ${target.tag}`
+        `:white_check_mark: Successfully reset the xp of ${target?.username}`
       );
 
     await interaction.reply({ embeds: [embed] });

@@ -23,7 +23,7 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
             .addFields(
               {
                 name: 'Message From',
-                value: `${target.username}#${target.discriminator} (<@${target?.id}>)`,
+                value: `${target.username}#${target?.discriminator} (<@${target?.id}>)`,
                 inline: false,
               },
               {
@@ -33,7 +33,7 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
               },
               {
                 name: 'Deleted By',
-                value: `${executor.username}#${executor.discriminator} (<@${executor?.id}>)`,
+                value: `${executor.username}#${executor?.discriminator} (<@${executor?.id}>)`,
                 inline: false,
               }
             );
@@ -100,12 +100,12 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
             .addFields(
               {
                 name: 'Member',
-                value: `${target.username}#${target.discriminator} (<@${target?.id}>)`,
+                value: `${target.username}#${target?.discriminator} (<@${target?.id}>)`,
                 inline: false,
               },
               {
                 name: 'Kicked By',
-                value: `${executor.username}#${executor.discriminator} (<@${executor?.id}>)`,
+                value: `${executor.username}#${executor?.discriminator} (<@${executor?.id}>)`,
                 inline: false,
               },
               {
@@ -146,12 +146,12 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
             .addFields(
               {
                 name: 'Member',
-                value: `${target.username}#${target.discriminator} (<@${target?.id}>)`,
+                value: `${target.username}#${target?.discriminator} (<@${target?.id}>)`,
                 inline: false,
               },
               {
                 name: 'Banned By',
-                value: `${executor.username}#${executor.discriminator} (<@${executor?.id}>)`,
+                value: `${executor.username}#${executor?.discriminator} (<@${executor?.id}>)`,
                 inline: false,
               },
               {
@@ -183,12 +183,12 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
             .addFields(
               {
                 name: 'Member',
-                value: `${target.username}#${target.discriminator} (<@${target?.id}>)`,
+                value: `${target.username}#${target?.discriminator} (<@${target?.id}>)`,
                 inline: false,
               },
               {
                 name: 'Unbanned By',
-                value: `${executor.username}#${executor.discriminator} (<@${executor?.id}>)`,
+                value: `${executor.username}#${executor?.discriminator} (<@${executor?.id}>)`,
                 inline: false,
               }
             );
@@ -237,12 +237,12 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
             .addFields(
               {
                 name: 'Member Name',
-                value: `${target.username}#${target.discriminator} (<@${target?.id}>)`,
+                value: `${target.username}#${target?.discriminator} (<@${target?.id}>)`,
                 inline: false,
               },
               {
                 name: 'Timeout By',
-                value: `${executor.username}#${executor.discriminator} (<@${executor?.id}>)`,
+                value: `${executor.username}#${executor?.discriminator} (<@${executor?.id}>)`,
                 inline: false,
               },
               {

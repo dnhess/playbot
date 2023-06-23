@@ -12,7 +12,9 @@ export const memberUnbanLog = async (member: GuildBan) => {
     // @ts-ignore
     .then((audit) => {
       console.log(
-        `Received unban event for ${member.user.tag} (${member.user.id})`
+        `Received unban event for ${
+          member?.user?.tag || member?.user?.username
+        } (${member.user.id})`
       );
       const executor = audit.entries.first();
       // @ts-ignore

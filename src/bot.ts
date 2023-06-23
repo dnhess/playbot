@@ -67,7 +67,7 @@ export const client = new Client({
 });
 
 client.once(Events.ClientReady, async (c) => {
-  console.log(`Ready! Logged in as ${c.user.tag}!`);
+  console.log(`Ready! Logged in as ${c?.user?.tag}!`);
 
   try {
     console.log('starting games fetching');
@@ -165,7 +165,7 @@ client.on(Events.MessageCreate, async (interaction) => {
           discord_id: userId,
           username: interaction.author.username,
           playbite_username: messageContent,
-          discriminator: interaction.author.discriminator,
+          discriminator: interaction.author?.discriminator || '',
           avatar_url: interaction.author.avatarURL(),
           last_message: interaction.createdTimestamp,
         },

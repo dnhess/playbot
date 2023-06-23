@@ -13,7 +13,9 @@ export const memberBanLog = async (member: GuildBan) => {
     // @ts-ignore
     .then((audit) => {
       console.log(
-        `Received ban event for ${member.user.tag} (${member.user.id})`
+        `Received ban event for ${
+          member?.user?.tag || member?.user?.username
+        } (${member.user.id})`
       );
       const executor = audit.entries.first();
       // @ts-ignore

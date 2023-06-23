@@ -45,14 +45,17 @@ export const execute = async (interaction: CommandInteraction) => {
 
   const toNextLevel = 5 * Data.level ** 2 + 50 * Data.level + 100;
 
+  const discrim =
+    member?.user?.discriminator === '0' ? '0000' : member?.user?.discriminator;
+
   const rank = new canvacord.Rank()
     .setAvatar(member.user.displayAvatarURL({ forceStatic: true }))
     .setCurrentXP(Data.XP)
     .setRequiredXP(toNextLevel)
     .setRank(1, 'RANK', false)
     .setLevel(Data.level, 'Level')
-    .setUsername(member?.user.tag)
-    .setDiscriminator(member.user.discriminator);
+    .setUsername(member?.user?.username)
+    .setDiscriminator(discrim);
 
   const Card = await rank.build();
 

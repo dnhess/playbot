@@ -59,7 +59,7 @@ export const memberMuteLog = async (
             .addFields(
               {
                 name: 'Member Name',
-                value: `${name}#${member.user.discriminator} (<@${id}>)`,
+                value: `${name}#${member.user?.discriminator} (<@${id}>)`,
                 inline: false,
               },
               {

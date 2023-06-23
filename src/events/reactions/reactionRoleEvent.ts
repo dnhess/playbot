@@ -76,7 +76,11 @@ export const reactionRoleEvent = async (
       if (data) {
         console.log(`Reaction role found for ${reaction.message.guild.name}!`);
         const member = reaction.message.guild.members.cache.get(user.id);
-        console.log(`Member: ${member?.user.tag} (${member?.id})`);
+        console.log(
+          `Member: ${member?.user?.tag || member?.user?.username} (${
+            member?.id
+          })`
+        );
         if (!member) return;
 
         // Check if bot has higher role than the role to add
@@ -102,7 +106,9 @@ export const reactionRoleEvent = async (
             );
           } catch (error) {
             console.error(
-              `Could not send message to ${member.user.tag} (${member.id})`
+              `Could not send message to ${
+                member?.user?.tag || member?.user?.username
+              } (${member.id})`
             );
           }
           return;
@@ -118,7 +124,11 @@ export const reactionRoleEvent = async (
 
         // If the member already has the role, remove it
         if (member.roles.cache.has(data.roleId) && !isAdd) {
-          console.log(`Removing role ${data.roleId} from ${member.user.tag}`);
+          console.log(
+            `Removing role ${data.roleId} from ${
+              member?.user?.tag || member?.user?.username
+            }`
+          );
           track(
             'Reaction',
             {
@@ -132,7 +142,11 @@ export const reactionRoleEvent = async (
           );
           member.roles.remove(data.roleId);
         } else if (!member.roles.cache.has(data.roleId) && isAdd) {
-          console.log(`Adding role ${data.roleId} to ${member.user.tag}`);
+          console.log(
+            `Adding role ${data.roleId} to ${
+              member?.user?.tag || member?.user?.username
+            }`
+          );
           track(
             'Reaction',
             {
