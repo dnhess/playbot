@@ -30,13 +30,6 @@ export const messages = [
     },
   },
   {
-    // match on "web version" or "web app"
-    message: /web\s+(version|app)/i,
-    response: () => {
-      return `https://app.playbite.com`;
-    },
-  },
-  {
     message: /(?=.*\bbest\b)(?=.*\bgame\b)(?=.*\btickets?\b).+/gi,
     response: () => {
       return `What ever game you are the best at!`;
