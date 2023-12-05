@@ -7,6 +7,7 @@ import { convertGameResponseToGameData } from '../../interfaces/IGame';
 
 export const fetchGamesWithTopUsersOverOneDayEmbed = async () => {
   const games = await fetch(`${config.BASE_API_URL}/feed?plat=web`);
+
   const gamesJson = await games.json();
 
   const gamesData = convertGameResponseToGameData(
@@ -23,7 +24,13 @@ export const fetchGamesWithTopUsersOverOneDayEmbed = async () => {
   const results = await Promise.all(promises);
 
   const topUsers = results.map((result, index) => {
-    const user = result[0];
+    let user = result[0];
+    if (!user) {
+      user = {
+        name: 'Cannot find user',
+      };
+    }
+
     user.game = gamesData[index].name;
     return user;
   });
