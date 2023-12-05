@@ -7,10 +7,11 @@ import { convertGameResponseToGameData } from '../../interfaces/IGame';
 
 export const fetchGamesWithTopUsersOverOneDayEmbed = async () => {
   const games = await fetch(`${config.BASE_API_URL}/feed?plat=web`);
+
   const gamesJson = await games.json();
 
   const gamesData = convertGameResponseToGameData(
-    gamesJson.filter((game: { title: string }) => game.title === 'All')[0]
+    gamesJson.filter((game: { title: string }) => game.title === 'All Games')[0]
   );
 
   // Build an array of promises to fetch the top user for each game. The fetch url is formatted like this: https://api.playbite.com/api/games/6f8a4196-7700-4776-9737-fb573c606d20/rankings?type=day
@@ -23,7 +24,13 @@ export const fetchGamesWithTopUsersOverOneDayEmbed = async () => {
   const results = await Promise.all(promises);
 
   const topUsers = results.map((result, index) => {
-    const user = result[0];
+    let user = result[0];
+    if (!user) {
+      user = {
+        name: 'Cannot find user',
+      };
+    }
+
     user.game = gamesData[index].name;
     return user;
   });
