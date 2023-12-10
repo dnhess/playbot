@@ -13,9 +13,9 @@
     "check-types": "tsc --noEmit --pretty",
     "precommit": "npm run lint-fix && npm run pretty",
     "prepush": "npm run lint",
-    "prepare": "husky install",
+    "prepare": "cd .. && husky install",
     "deploy:commands": "tsc && node build/deploy-commands.js",
-    "postinstall": "tsc && node build/deploy-commands.js"
+    "deploy-commands": "node build/deploy-commands.js"
   },
   "keywords": [],
   "author": "",
@@ -49,7 +49,7 @@
     "nodemon": "^2.0.20",
     "prettier": "^2.8.3",
     "ts-jest": "^29.0.3",
-    "typescript": "^4.9.4"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "@amplitude/analytics-node": "^1.0.2",
