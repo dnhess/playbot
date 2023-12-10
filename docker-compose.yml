@@ -1,9 +1,26 @@
-
 version: '3'
 services:
-  discord-bot:
+  dev:
     build:
       context: ./discord-bot
-    container_name: discord-bot
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./discord-bot:/usr/src/app
+      - /usr/src/app/node_modules
     env_file:
       - ./discord-bot/.env
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+  prod:
+    build:
+      context: ./discord-bot
+      dockerfile: Dockerfile.prod
+    container_name: discord-bot-prod
+    env_file:
+      - ./discord-bot/.env
+    environment:
+      - NODE_ENV=production
+    
+    command: node build/index.js
