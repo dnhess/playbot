@@ -16,7 +16,7 @@ services:
   prod:
     build:
       context: ./discord-bot
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     container_name: discord-bot-prod
     env_file:
       - ./discord-bot/.env
