@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import { Error } from 'mongoose';
 
 dotenv.config();
 
@@ -21,19 +20,19 @@ if (
   !ROLLBAR_ACCESS_TOKEN
 ) {
   if (!CLIENT_ID) {
-    throw new Error('CLIENT_ID is missing from .env');
+    console.log('CLIENT_ID is missing from .env');
   }
   if (!DISCORD_TOKEN) {
-    throw new Error('DISCORD_TOKEN is missing from .env');
+    console.log('DISCORD_TOKEN is missing from .env');
   }
   if (!BASE_API_URL) {
-    throw new Error('BASE_API_URL is missing from .env');
+    console.log('BASE_API_URL is missing from .env');
   }
   if (!MONODB_URL) {
-    throw new Error('MONODB_URL is missing from .env');
+    console.log('MONODB_URL is missing from .env');
   }
   if (!ROLLBAR_ACCESS_TOKEN) {
-    throw new Error('ROLLBAR_TOKEN is missing from .env');
+    console.log('ROLLBAR_TOKEN is missing from .env');
   }
 }
 
