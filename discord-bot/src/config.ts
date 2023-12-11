@@ -19,6 +19,7 @@ if (
   !MONODB_URL ||
   !ROLLBAR_ACCESS_TOKEN
 ) {
+  console.log('BASE API URL', BASE_API_URL);
   if (!CLIENT_ID) {
     throw new Error('CLIENT_ID is missing from .env');
   }
