@@ -1,6 +1,6 @@
 name: Trigger auto deployment for playbot-dev-test
 
-# When this action will be executed in github
+# When this action will be executed
 on:
   # Automatically trigger it when detected changes in repo
   push:
