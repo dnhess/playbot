@@ -20,23 +20,23 @@ if (
   !ROLLBAR_ACCESS_TOKEN
 ) {
   if (!CLIENT_ID) {
-    console.log('CLIENT_ID is missing from .env');
+    throw new Error('CLIENT_ID is missing from .env');
   }
   if (!DISCORD_TOKEN) {
-    console.log('DISCORD_TOKEN is missing from .env');
+    throw new Error('DISCORD_TOKEN is missing from .env');
   }
   if (!BASE_API_URL) {
-    console.log('BASE_API_URL is missing from .env');
+    throw new Error('BASE_API_URL is missing from .env');
   }
   if (!MONODB_URL) {
-    console.log('MONODB_URL is missing from .env');
+    throw new Error('MONODB_URL is missing from .env');
   }
   if (!ROLLBAR_ACCESS_TOKEN) {
-    console.log('ROLLBAR_TOKEN is missing from .env');
+    throw new Error('ROLLBAR_TOKEN is missing from .env');
   }
 }
 
-const config: Record<string, string | undefined> = {
+const config: Record<string, string> = {
   CLIENT_ID,
   GUILD_ID,
   DISCORD_TOKEN,
