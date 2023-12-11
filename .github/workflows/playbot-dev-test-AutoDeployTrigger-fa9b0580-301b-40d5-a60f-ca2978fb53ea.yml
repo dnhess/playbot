@@ -42,6 +42,13 @@ jobs:
           resourceGroup: playbot
           imageToBuild: playbot.azurecr.io/playbot-dev-test:${{ github.sha }}
           dockerfilePath: Dockerfile
+        env: # Or as an environment variable
+          AMPLITUDE_API_KEY: ${{ secrets.AMPLITUDE_API_KEY }}
+          BASE_API_URL: ${{ secrets.BASE_API_URL }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          GUILD_ID: ${{ secrets.GUILD_ID }}
+          MONODB_URL: ${{ secrets.MONODB_URL }}
 
      
 
