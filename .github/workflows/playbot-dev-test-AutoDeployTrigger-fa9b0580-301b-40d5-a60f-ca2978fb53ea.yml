@@ -1,0 +1,42 @@
+name: Trigger auto deployment for playbot-dev-test
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ azure-setup ]
+    paths:
+    - '"./discord-bot/Dockerfile"/**'
+    - '.github/workflows/playbot-dev-test-AutoDeployTrigger-fa9b0580-301b-40d5-a60f-ca2978fb53ea.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.PLAYBOTDEVTEST_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}"./discord-bot/Dockerfile" 
+          registryUrl: playbot.azurecr.io
+          registryUsername: ${{ secrets.PLAYBOTDEVTEST_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.PLAYBOTDEVTEST_REGISTRY_PASSWORD }}
+          containerAppName: playbot-dev-test
+          resourceGroup: playbot
+          imageToBuild: playbot.azurecr.io/playbot-dev-test:${{ github.sha }}
+          dockerfilePath: Dockerfile
+
+     
+
