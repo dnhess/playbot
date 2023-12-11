@@ -7,6 +7,7 @@ on:
     branches: 
       [ azure-setup ]
     paths:
+    - '"./discord-bot/"'
     - '.github/workflows/playbot-dev-test-AutoDeployTrigger-fa9b0580-301b-40d5-a60f-ca2978fb53ea.yml'
 
   # Allow manual trigger 
