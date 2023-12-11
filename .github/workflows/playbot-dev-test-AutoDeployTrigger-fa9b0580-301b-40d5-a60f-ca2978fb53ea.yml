@@ -26,6 +26,9 @@ jobs:
       - name: ✅ Checkout to the branch
         uses: actions/checkout@v2
 
+      - name: Echo base url secret
+        run: "BASE Url: ${{ secrets.BASE_API_URL }}"
+
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -42,7 +45,7 @@ jobs:
           resourceGroup: playbot
           imageToBuild: playbot.azurecr.io/playbot-dev-test:${{ github.sha }}
           dockerfilePath: Dockerfile
-        env: # Or as an environment variable
+        env:
           AMPLITUDE_API_KEY: ${{ secrets.AMPLITUDE_API_KEY }}
           BASE_API_URL: ${{ secrets.BASE_API_URL }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
