@@ -36,7 +36,7 @@ if (
   }
 }
 
-const config: Record<string, string> = {
+const config: Record<string, string | undefined> = {
   CLIENT_ID,
   GUILD_ID,
   DISCORD_TOKEN,
