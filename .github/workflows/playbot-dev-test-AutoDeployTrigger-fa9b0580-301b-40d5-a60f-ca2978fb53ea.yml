@@ -1,6 +1,6 @@
 name: Trigger auto deployment for playbot-dev-test
 
-# When this action will be executed
+# When this action will be executed in github
 on:
   # Automatically trigger it when detected changes in repo
   push:
@@ -26,10 +26,6 @@ jobs:
       - name: ✅ Checkout to the branch
         uses: actions/checkout@v2
 
-      - name: Base URL
-        run: |
-          echo ${{ secrets.BASE_API_URL }}
-
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -46,6 +42,7 @@ jobs:
           resourceGroup: playbot
           imageToBuild: playbot.azurecr.io/playbot-dev-test:${{ github.sha }}
           dockerfilePath: Dockerfile
+        env:
           AMPLITUDE_API_KEY: ${{ secrets.AMPLITUDE_API_KEY }}
           BASE_API_URL: ${{ secrets.BASE_API_URL }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
