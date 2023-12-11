@@ -26,6 +26,10 @@ jobs:
       - name: ✅ Checkout to the branch
         uses: actions/checkout@v2
 
+      - name: Base URL
+        run: |
+          echo ${{ secrets.BASE_API_URL }}
+
       - name: Azure Login
         uses: azure/login@v1
         with:
