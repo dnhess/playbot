@@ -41,7 +41,7 @@ jobs:
           containerAppName: playbot-dev-test
           resourceGroup: playbot
           imageToBuild: playbot.azurecr.io/playbot-dev-test:${{ github.sha }}
-          dockerfilePath: Dockerfile
+          dockerfilePath: Dockerfile.prepare
         env:
           AMPLITUDE_API_KEY: ${{ secrets.AMPLITUDE_API_KEY }}
           BASE_API_URL: ${{ secrets.BASE_API_URL }}
