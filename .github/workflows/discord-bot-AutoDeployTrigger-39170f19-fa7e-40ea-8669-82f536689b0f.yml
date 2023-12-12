@@ -37,13 +37,14 @@ jobs:
           resourceGroup: playbot
           imageToBuild: playbot.azurecr.io/discord-bot:${{ github.sha }}
           dockerfilePath: Dockerfile
-          environmentVariables: >-
-            AMPLITUDE_API_KEY=${{ secrets.AMPLITUDE_API_KEY }},
-            BASE_API_URL=${{ secrets.BASE_API_URL }},
-            CLIENT_ID=${{ secrets.CLIENT_ID }},
-            DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }},
-            GUILD_ID=${{ secrets.GUILD_ID }},
-            MONODB_URL=${{ secrets.MONODB_URL }},
+          environmentVariables: |
+            AMPLITUDE_API_KEY=${{ secrets.AMPLITUDE_API_KEY }}
+            BASE_API_URL=${{ secrets.BASE_API_URL }}
+            CLIENT_ID=${{ secrets.CLIENT_ID }}
+            DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}
+            GUILD_ID=${{ secrets.GUILD_ID }}
+            MONODB_URL=${{ secrets.MONODB_URL }}
             ROLLBAR_ACCESS_TOKEN=${{ secrets.ROLLBAR_ACCESS_TOKEN }}
+
      
 
