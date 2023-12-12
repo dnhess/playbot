@@ -29,7 +29,7 @@ jobs:
           echo "GUILD_ID=${{ secrets.GUILD_ID }}" >> ./discord-bot/.env
           echo "MONODB_URL=${{ secrets.MONODB_URL }}" >> ./discord-bot/.env
           echo "ROLLBAR_ACCESS_TOKEN=${{ secrets.ROLLBAR_ACCESS_TOKEN }}" >> ./discord-bot/.env
-          echo "AMPLITUDE_API_KEY"=${{ AMPLITUDE_API_KEY }} >> ./discord-bot/.env
+          echo "AMPLITUDE_API_KEY=${{ AMPLITUDE_API_KEY }}" >> ./discord-bot/.env
 
       - name: Azure Login
         uses: azure/login@v1
