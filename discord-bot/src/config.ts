@@ -1,7 +1,3 @@
-import dotenv from 'dotenv';
-
-dotenv.config();
-
 const {
   CLIENT_ID,
   GUILD_ID = '',
