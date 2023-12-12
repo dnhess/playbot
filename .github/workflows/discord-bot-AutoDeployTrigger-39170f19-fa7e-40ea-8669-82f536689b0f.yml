@@ -24,7 +24,7 @@ jobs:
       - name: Set custom environment variables
         shell: bash
         run: |
-          echo "BASE_API_URL=${{ secrets.BASE_API_URL }}" >> $GITHUB_ENV
+          echo "BASE_API_URL=asdfsdafsdafasdf" >> $GITHUB_ENV
           echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> $GITHUB_ENV
           echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" >> $GITHUB_ENV
           echo "GUILD_ID=${{ secrets.GUILD_ID }}" >> $GITHUB_ENV
