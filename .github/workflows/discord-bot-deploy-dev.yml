@@ -26,11 +26,11 @@ jobs:
         run: |
           echo "BASE_API_URL=${{ secrets.BASE_API_URL }}" >> ./discord-bot/.env
           echo "AMPLITUDE_API_KEY=${{ secrets.AMPLITUDE_API_KEY }}" >> ./discord-bot/.env
-          echo "DEV_CLIENT_ID=${{ secrets.CLIENT_ID }}" >> ./discord-bot/.env
-          echo "DEV_DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" >> ./discord-bot/.env
-          echo "DEV_GUILD_ID=${{ secrets.GUILD_ID }}" >> ./discord-bot/.env
-          echo "DEV_MONODB_URL=${{ secrets.MONODB_URL }}" >> ./discord-bot/.env
-          echo "DEV_ROLLBAR_ACCESS_TOKEN=${{ secrets.ROLLBAR_ACCESS_TOKEN }}" >> ./discord-bot/.env
+          echo "CLIENT_ID=${{ secrets.DEV_CLIENT_ID }}" >> ./discord-bot/.env
+          echo "DISCORD_TOKEN=${{ secrets.DEV_DISCORD_TOKEN }}" >> ./discord-bot/.env
+          echo "GUILD_ID=${{ secrets.DEV_GUILD_ID }}" >> ./discord-bot/.env
+          echo "MONODB_URL=${{ secrets.DEV_MONODB_URL }}" >> ./discord-bot/.env
+          echo "ROLLBAR_ACCESS_TOKEN=${{ secrets.DEV_ROLLBAR_ACCESS_TOKEN }}" >> ./discord-bot/.env
 
       - name: Azure Login
         uses: azure/login@v1
