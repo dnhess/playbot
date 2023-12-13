@@ -62,7 +62,7 @@ const credentials = containerregistry.listRegistryCredentialsOutput({
 });
 
 // Create a container image for the service.
-const discordBotImage = new docker.Image("image", {
+const discordBotImage = new docker.Image("discord-app", {
     imageName: pulumi.interpolate`${registry.loginServer}/${discordBotImageName}:${imageTag}`,
     build: {
         context: discordBotPath,
@@ -76,7 +76,7 @@ const discordBotImage = new docker.Image("image", {
 });
 
 // Create a container app for the service (discord-bot).
-const containerApp = new app.ContainerApp("app", {
+const containerApp = new app.ContainerApp(discordBotContainerName, {
   resourceGroupName: resourceGroup.name,
   managedEnvironmentId: managedEnv.id,
   configuration: {
@@ -98,12 +98,6 @@ const containerApp = new app.ContainerApp("app", {
       containers: [{
           name: discordBotContainerName,
           image: discordBotImage.imageName,
-      }],
-      initContainers: [{
-        resources: {
-                cpu: cpu,
-                memory: `${memory}Gi`,
-        },
       }],
       scale: {
           maxReplicas: 1,

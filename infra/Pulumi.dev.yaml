@@ -1,6 +1,5 @@
 config:
   azure-native:location: CentralUS
-  azure-native:useOidc: "true"
   infra:containerPort: "80"
   infra:cpu: "0.5"
   infra:discordBotContainerName: discord-bot-dev

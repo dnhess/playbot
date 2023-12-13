@@ -23,7 +23,7 @@ jobs:
         working-directory: infra
       - uses: pulumi/actions@v3
         with:
-          command: preview
+          command: up
           stack-name: dnhess/infra/dev # When using an individual account, only use stack-name.  
           work-dir: infra
         env:
