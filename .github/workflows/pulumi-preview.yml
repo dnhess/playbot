@@ -19,10 +19,23 @@ jobs:
         name: 📝 Running npm install
 
       - uses: pulumi/actions@v3
-        name: 👀 Checking infra changes
+        name: 👀 Checking infra changes for dev
         with:
           command: preview
           stack-name: dnhess/infra/dev # When using an individual account, only use stack-name.  
+          work-dir: infra
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_USE_OIDC: true
+
+      - uses: pulumi/actions@v3
+        name: 👀 Checking infra changes for prod
+        with:
+          command: preview
+          stack-name: dnhess/infra/prod # When using an individual account, only use stack-name.  
           work-dir: infra
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
