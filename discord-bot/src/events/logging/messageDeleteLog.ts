@@ -15,7 +15,7 @@ export const messageDeleteLog = async (message: Message | PartialMessage) => {
       // @ts-ignore
       const mes = message.content;
 
-      console.log(executor, message)
+      console.log(executor, message);
 
       // If missing values or message is from a bot return
       if (!mes || message?.author?.bot || !executor) return;
