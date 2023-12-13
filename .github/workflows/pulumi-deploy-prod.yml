@@ -18,8 +18,9 @@ jobs:
 
       - run: npm install
         working-directory: infra
+        name: 📝 Running npm install
 
-      - name: Create .env file
+      - name: 📓 Creating .env file
         run: |
           echo "BASE_API_URL=${{ secrets.BASE_API_URL }}" >> ./discord-bot/.env
           echo "AMPLITUDE_API_KEY=${{ secrets.AMPLITUDE_API_KEY }}" >> ./discord-bot/.env
@@ -29,6 +30,7 @@ jobs:
           echo "ROLLBAR_ACCESS_TOKEN=${{ secrets.PROD_ROLLBAR_ACCESS_TOKEN }}" >> ./discord-bot/.env
 
       - uses: pulumi/actions@v3
+        name: 🏗️ Deploying infra
         with:
           command: up
           stack-name: dnhess/infra/prod  

@@ -16,8 +16,10 @@ jobs:
 
       - run: npm install
         working-directory: infra
+        name: 📝 Running npm install
 
       - uses: pulumi/actions@v3
+        name: 👀 Checking infra changes
         with:
           command: preview
           stack-name: dnhess/infra/dev # When using an individual account, only use stack-name.  
