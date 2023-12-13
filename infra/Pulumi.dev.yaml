@@ -1,8 +1,9 @@
 config:
   azure-native:location: CentralUS
-  infra:discordBotPath: ../discord-bot
+  azure-native:useOidc: "true"
   infra:containerPort: "80"
-  infra:discordBotImageName: discord-bot-dev-image
-  infra:discordBotContainerName: discord-bot-dev
   infra:cpu: "0.5"
+  infra:discordBotContainerName: discord-bot-dev
+  infra:discordBotImageName: discord-bot-dev-image
+  infra:discordBotPath: ../discord-bot
   infra:memory: "1"
