@@ -8,6 +8,7 @@ import {
   InteractionType,
   Partials,
 } from 'discord.js';
+import express from 'express';
 // Import mongoose
 import mongoose from 'mongoose';
 
@@ -475,6 +476,19 @@ client.on(Events.GuildMemberRemove, async (member) => {
   rollbar?.info(`Deleted member from levels schema`, {
     userId: id,
   });
+});
+
+const app = express();
+const PORT = process.env.PORT || 8080; // Use the environment port or 3000
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.sendStatus(200); // OK
+});
+
+// Start the Express server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 client.login(config.DISCORD_TOKEN);
