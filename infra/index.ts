@@ -101,7 +101,7 @@ const containerApp = new app.ContainerApp(discordBotContainerName, {
           probes: [{  // Adding health check probe here
             httpGet: {
                 path: "/health",
-                port: 8080, // Make sure this matches the port your Express server is listening on
+                port: 80, // Make sure this matches the port your Express server is listening on
             },
             initialDelaySeconds: 3,
             periodSeconds: 3,

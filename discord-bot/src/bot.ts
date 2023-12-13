@@ -479,7 +479,7 @@ client.on(Events.GuildMemberRemove, async (member) => {
 });
 
 const app = express();
-const PORT = process.env.PORT || 8080; // Use the environment port or 3000
+const PORT = 80; // Use the environment port or 3000
 
 // Health check endpoint
 app.get('/health', (req, res) => {
