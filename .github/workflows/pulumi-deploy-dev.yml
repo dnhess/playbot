@@ -13,12 +13,6 @@ jobs:
       - uses: actions/setup-node@v3.5.0
         with:
           node-version: '20'
-      - name: OIDC Login to Azure Cloud
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - run: npm install
         working-directory: infra
       - uses: pulumi/actions@v3
@@ -32,3 +26,10 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           ARM_USE_OIDC: true
+          BASE_API_URL: ${{ secrets.BASE_API_URL }}
+          AMPLITUDE_API_KEY: ${{ secrets.AMPLITUDE_API_KEY }}
+          CLIENT_ID: ${{ secrets.DEV_CLIENT_ID }}
+          DISCORD_TOKEN: ${{ secrets.DEV_DISCORD_TOKEN }}
+          GUILD_ID: ${{ secrets.DEV_GUILD_ID }}
+          MONODB_URL: ${{ secrets.DEV_MONODB_URL }}
+          ROLLBAR_ACCESS_TOKEN: ${{ secrets.DEV_ROLLBAR_ACCESS_TOKEN }}
