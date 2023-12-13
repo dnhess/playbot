@@ -20,5 +20,6 @@ jobs:
         with:
           command: preview
           stack-name: dnhess/infra/dev # When using an individual account, only use stack-name.  
+          work-dir: infra
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
