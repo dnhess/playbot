@@ -98,11 +98,20 @@ const containerApp = new app.ContainerApp(discordBotContainerName, {
       containers: [{
           name: discordBotContainerName,
           image: discordBotImage.imageName,
+          probes: [{  // Adding health check probe here
+            httpGet: {
+                path: "/health",
+                port: 8080, // Make sure this matches the port your Express server is listening on
+            },
+            initialDelaySeconds: 3,
+            periodSeconds: 3,
+            type: "Liveness",  // This is a liveness probe
+        }],
       }],
       scale: {
           maxReplicas: 1,
           minReplicas: 1
-      }
+      },
   },
 });
 
