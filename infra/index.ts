@@ -13,9 +13,15 @@ const cpu = config.getNumber("cpu") || 1;
 const memory = config.getNumber("memory") || 2;
 const discordBotContainerName = config.require("discordBotContainerName")
 const discordBotImageName = config.require("discordBotImageName");
+const environment = config.require("environment");
 
 // Create a resource group for the container registry.
-const resourceGroup = new resources.ResourceGroup("playbot-rg");
+const resourceGroup = new resources.ResourceGroup("playbot-rg", {
+    tags: {
+        environment: environment,
+        app: `${discordBotContainerName}-app`,
+    },
+});
 
 const workspace = new operationalinsights.Workspace("loganalytics", {
   resourceGroupName: resourceGroup.name,
@@ -48,6 +54,10 @@ const registry = new containerregistry.Registry("registry", {
     sku: {
         name: containerregistry.SkuName.Basic,
     },
+    tags: {
+      environment: environment,
+      app: `${discordBotContainerName}-app`,
+  },
 });
 
 // Fetch login credentials for the registry.
@@ -79,6 +89,10 @@ const discordBotImage = new docker.Image("discord-app", {
 const containerApp = new app.ContainerApp(discordBotContainerName, {
   resourceGroupName: resourceGroup.name,
   managedEnvironmentId: managedEnv.id,
+    tags: {
+      environment: environment,
+      app: `${discordBotContainerName}-app`,
+  },
   configuration: {
       ingress: {
           external: true,
@@ -97,7 +111,7 @@ const containerApp = new app.ContainerApp(discordBotContainerName, {
   template: {
       containers: [{
           name: discordBotContainerName,
-          image: discordBotImage.imageName,
+          image: discordBotImage.repoDigest,
           probes: [{  // Adding health check probe here
             httpGet: {
                 path: "/health",

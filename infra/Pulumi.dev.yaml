@@ -6,3 +6,4 @@ config:
   infra:discordBotImageName: discord-bot-dev-image
   infra:discordBotPath: ../discord-bot
   infra:memory: "1"
+  infra:environment: "dev"
