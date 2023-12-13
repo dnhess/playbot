@@ -12,7 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        name: 💼 Checking out code
       - uses: actions/setup-node@v3.5.0
+        name: ☊ Setup Node
         with:
           node-version: '20'
 
