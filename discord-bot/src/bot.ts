@@ -28,7 +28,6 @@ import { sendWelcome } from './events/welcome/sendWelcome';
 import { sendWelcomeDM } from './events/welcome/sendWelcomeDM';
 import { convertGameResponseToGameData } from './interfaces/IGame';
 import { messages } from './messages/messages';
-import { checkRegion } from './messages/ocr';
 import rollbar from './rollbarConfig';
 import { levelSchema } from './Schemas/level';
 import { pendingTasksSchema, Tasks } from './Schemas/pending-tasks';
@@ -69,7 +68,6 @@ export const client = new Client({
 
 client.once(Events.ClientReady, async (c) => {
   console.log(`Ready! Logged in as ${c?.user?.tag}!`);
-
   try {
     console.log('starting games fetching');
     const games = await fetch(`${config.BASE_API_URL}/feed?plat=web`);
@@ -325,8 +323,6 @@ client.on(Events.MessageCreate, async (message) => {
         }
       }
     });
-
-    checkRegion(message);
   } catch (error) {
     console.error(`Error during MessageCreate event: ${error}`);
 
