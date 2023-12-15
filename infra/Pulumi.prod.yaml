@@ -5,5 +5,5 @@ config:
   infra:discordBotImageName: discord-bot-prod-image
   infra:discordBotContainerName: discord-bot-prod
   infra:cpu: "0.5"
-  infra:memory: "0.5"
+  infra:memory: "1"
   infra:environment: "production"
