@@ -121,6 +121,10 @@ const containerApp = new app.ContainerApp(discordBotContainerName, {
             periodSeconds: 3,
             type: "Liveness",  // This is a liveness probe
         }],
+          resources: {
+                  cpu: cpu,
+                  memory: `${memory}Gi`,
+              },
       }],
       scale: {
           maxReplicas: 1,
