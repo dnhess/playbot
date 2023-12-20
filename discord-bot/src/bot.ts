@@ -98,6 +98,7 @@ client.once(Events.ClientReady, async (c) => {
     });
 
     setInterval(() => {
+      console.log('setting presence');
       // Pick a random game from choices
       const randomGame = choices[Math.floor(Math.random() * choices.length)];
 
@@ -475,11 +476,20 @@ client.on(Events.GuildMemberRemove, async (member) => {
 });
 
 const app = express();
-const PORT = 80; // Use the environment port or 3000
+const PORT = 3000; // Use the environment port or 3000
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.sendStatus(200); // OK
+  // If mongo is connected and online, and the bot is connected and online, return 200 else return 500
+  if (
+    mongoose.connection.readyState === 1 &&
+    client?.readyAt &&
+    client?.readyAt !== null
+  ) {
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(500);
+  }
 });
 
 // Start the Express server
