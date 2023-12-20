@@ -6,6 +6,7 @@ on:
       - 'dev-*'
     paths:
       - 'discord-bot/**'
+  workflow_dispatch:
 jobs:
   deploy_prod:
     if: github.ref == 'refs/heads/main'
