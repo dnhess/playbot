@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node build/index.js",
+    "start:prod": "node build/deploy-commands.js && node build/index.js",
     "dev": "concurrently \"tsc -w\" \"nodemon build/index.js\"",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint-fix": "eslint --fix .",

@@ -18,9 +18,6 @@ COPY . .
 # Build the code
 RUN npm run build
 
-# Deploy Commands
-RUN npm run deploy-commands
-
 # Run the bot
 
-CMD [ "node", "build/index.js" ]
+CMD [ "npm", "run", "start:prod" ]
