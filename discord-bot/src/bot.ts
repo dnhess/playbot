@@ -34,7 +34,7 @@ import { pendingTasksSchema, Tasks } from './Schemas/pending-tasks';
 import { UserSchema } from './Schemas/user';
 
 const commands = Object(commandModules);
-// test to trigger github action
+
 export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
