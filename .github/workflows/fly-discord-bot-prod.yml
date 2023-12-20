@@ -10,17 +10,10 @@ on:
 jobs:
   deploy_prod:
     if: github.ref == 'refs/heads/main'
-    name: Deploy to prod
+    name: Deploy discord-bot to prod
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: discord-bot/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('discord-bot/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy to Fly
         run: flyctl deploy --remote-only -a prod-discord-bot-playbot
@@ -29,17 +22,10 @@ jobs:
         working-directory: discord-bot
   deploy_dev:
     if: startsWith(github.ref, 'refs/heads/dev-')
-    name: Deploy to dev
+    name: Deploy discord-bot to dev
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: discord-bot/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('discord-bot/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy to Fly
         run: flyctl deploy --remote-only -a dev-discord-bot-playbot
