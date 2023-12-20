@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Deploy to Fly
-        run: flyctl deploy --remote-only -a prod-discord-bot-playbot
+        run: flyctl deploy --build-arg NODE_ENV=production --remote-only -a prod-discord-bot-playbot
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_PROD_DISCORD_BOT }}
         working-directory: discord-bot

@@ -1,5 +1,5 @@
 import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v9';
+import { Routes } from 'discord-api-types/v10';
 
 import * as commandModules from './commands';
 import config from './config';
@@ -25,7 +25,6 @@ const rest = new REST({ version: '10' }).setToken(config.DISCORD_TOKEN);
     );
 
     // The put method is used to fully refresh all commands in the guild with the current set
-    // TODO: Remove config.GUILD_ID to deploy global commands
     // If NODE_ENV is production, deploy global commands
     if (process.env.NODE_ENV === 'production') {
       await rest.put(Routes.applicationCommands(config.CLIENT_ID), {
