@@ -2,14 +2,14 @@ name: Fly Deploy
 on:
   push:
     branches:
-      - master
+      - main
       - 'dev-*'
     paths:
       - 'discord-bot/**'
 jobs:
   deploy_prod:
-    if: github.ref == 'refs/heads/master'
-    name: Deploy discord-bot prod
+    if: github.ref == 'refs/heads/main'
+    name: Deploy to prod
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,9 +18,10 @@ jobs:
         run: flyctl deploy --remote-only -a prod-discord-bot-playbot
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_PROD_DISCORD_BOT }}
+        working-directory: discord-bot
   deploy_dev:
     if: startsWith(github.ref, 'refs/heads/dev-')
-    name: Deploy discord-bot dev
+    name: Deploy to dev
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,3 +30,4 @@ jobs:
         run: flyctl deploy --remote-only -a dev-discord-bot-playbot
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_DEV_DISCORD_BOT }}
+        working-directory: discord-bot
