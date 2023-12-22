@@ -23,7 +23,8 @@ jobs:
         run: npm ci
         working-directory: discord-bot
       - name: ESLint
-        run: eslint . --ext .js,.jsx,.ts,.tsx
+        run: npm run eslint
+        working-directory: discord-bot
 
   deploy:
     needs: eslint
