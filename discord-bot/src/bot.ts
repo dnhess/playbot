@@ -98,7 +98,6 @@ client.once(Events.ClientReady, async (c) => {
     });
 
     setInterval(() => {
-      console.log('setting presence');
       // Pick a random game from choices
       const randomGame = choices[Math.floor(Math.random() * choices.length)];
 

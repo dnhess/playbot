@@ -3,6 +3,7 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
+app = "prod-discord-bot-playbot"
 primary_region = "ord"
 
 [build]
@@ -28,4 +29,4 @@ primary_region = "ord"
 [[vm]]
   cpu_kind = "shared"
   cpus = 1
-  memory_mb = 512
+  memory_mb = 256
