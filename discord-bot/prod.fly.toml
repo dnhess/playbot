@@ -3,8 +3,8 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-primary_region = "ord"
 app = "prod-discord-bot-playbot"
+primary_region = "ord"
 
 [build]
 

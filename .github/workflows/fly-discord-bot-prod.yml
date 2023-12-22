@@ -19,14 +19,11 @@ jobs:
         with:
           node-version: 20
           working-directory: discord-bot
-      - run: npm ci
-      - uses: sibiraj-s/action-eslint@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          eslint-args: '--ignore-path=.gitignore --quiet'
-          extensions: 'js,jsx,ts,tsx'
-          annotations: true
-          working-directory: discord-bot
+      - name: Install modules
+        run: npm ci
+        working-directory: discord-bot
+      - name: ESLint
+        run: eslint . --ext .js,.jsx,.ts,.tsx
 
   deploy:
     needs: eslint
