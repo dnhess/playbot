@@ -23,6 +23,6 @@
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
   },
   "rust-analyzer.linkedProjects": [
-    "./api-service/Cargo.toml",
+    "./backend/Cargo.toml",
   ]
 }
