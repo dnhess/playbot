@@ -21,5 +21,8 @@
   "jest.jestCommandLine": "npm run test-local --",
   "[dockerfile]": {
     "editor.defaultFormatter": "ms-azuretools.vscode-docker"
-  }
+  },
+  "rust-analyzer.linkedProjects": [
+    "./api-service/Cargo.toml",
+  ]
 }
