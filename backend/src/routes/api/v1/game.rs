@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 use actix_web::{web, HttpResponse};
 use crate::{utils::{cache_in_redis, fetch_from_redis}, routes::api::v1::games::Game, routes::api::v1::games::fetch_games};
-use futures::future::join_all;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Ranking {
@@ -13,8 +12,16 @@ pub struct Ranking {
 #[derive(Deserialize, Serialize, Debug)]
 pub struct GameResponse {
     game: Game,
-    rankings: Vec<Ranking>,
+    rankings: RankingsByPeriod,
 }
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct RankingsByPeriod {
+    pub all: Vec<Ranking>,
+    pub week: Vec<Ranking>,
+    pub day: Vec<Ranking>,
+}
+
 
 // If the API returns an array of rankings
 type Rankings = Vec<Ranking>;
@@ -80,38 +87,33 @@ pub async fn get_game(
     }
 }
 
-async fn fetch_rankings(game_id: &str) -> Result<Vec<Ranking>, reqwest::Error> {
+async fn fetch_rankings(game_id: &str) -> Result<RankingsByPeriod, reqwest::Error> {
   let base_url = "https://playbiteapi.azurewebsites.net/api/games/";
-  let urls = vec![
-      format!("{}{}/rankings?type=all", base_url, game_id),
-      format!("{}{}/rankings?type=day", base_url, game_id),
-      format!("{}{}/rankings?type=week", base_url, game_id),
-  ];
 
-  let futures = urls.into_iter().map(|url| {
-      fetch_ranking(url)
-  });
+  let all_url = format!("{}{}/rankings?type=all", base_url, game_id);
+  let week_url = format!("{}{}/rankings?type=week", base_url, game_id);
+  let day_url = format!("{}{}/rankings?type=day", base_url, game_id);
 
-  let results = join_all(futures).await;
+  let all_future = fetch_ranking(all_url);
+  let week_future = fetch_ranking(week_url);
+  let day_future = fetch_ranking(day_url);
 
-  // Create an empty vector to hold all rankings
-  let mut all_rankings: Vec<Ranking> = Vec::new();
+  let (all_result, week_result, day_result) = futures::join!(all_future, week_future, day_future);
 
-  // Iterate over each result and extend all_rankings with the contents
-  for ranking_result in results {
-      if let Ok(rankings) = ranking_result {
-          all_rankings.extend(rankings);
-      }
-  }
+  let all_rankings = all_result?;
+  let week_rankings = week_result?;
+  let day_rankings = day_result?;
 
-  Ok(all_rankings)
+  Ok(RankingsByPeriod {
+      all: all_rankings,
+      week: week_rankings,
+      day: day_rankings,
+  })
 }
-
-
 
 async fn fetch_ranking(url: String) -> Result<Vec<Ranking>, reqwest::Error> {
-  let response = reqwest::get(&url).await?.json::<Vec<Ranking>>().await?;
-  Ok(response)
+  reqwest::get(&url).await?.json::<Vec<Ranking>>().await
 }
+
 
 
