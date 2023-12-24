@@ -22,10 +22,6 @@ pub struct RankingsByPeriod {
     pub day: Vec<Ranking>,
 }
 
-
-// If the API returns an array of rankings
-type Rankings = Vec<Ranking>;
-
 #[tracing::instrument(name = "Fetching playbite game", skip(redis_pool))]
 #[actix_web::get("/{name}")]
 pub async fn get_game(
