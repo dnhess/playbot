@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use actix_web::{HttpResponse, web};
 use crate::utils::{cache_in_redis, fetch_from_redis};
+use std::collections::HashSet;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ApiResponse {
@@ -66,12 +67,27 @@ async fn fetch_games_from_api() -> Result<Payload, String> {
       Err(err) => return Err(format!("Failed to parse Playbite response: {:?}", err)),
   };
 
-  let all_games_payload = items.into_iter()
-      .find(|item| item.title == "All Games")
-      .map(|item| item.payload)
-      .ok_or_else(|| "Failed to find 'All Games' payload in Playbite response".to_string());
+  let mut all_games = Vec::new();
+  let mut latest_releases = Vec::new();
+  let mut unique_ids = HashSet::new();
 
-  all_games_payload
+  for item in items {
+      match item.title.as_str() {
+          "All Games" => all_games = item.payload.games,
+          "Latest Releases" => latest_releases = item.payload.games,
+          _ => {}
+      }
+  }
+
+  // Combine all_games and latest_releases into one Vec<Game>, removing duplicates
+  let mut combined_games = Vec::new();
+  for game in all_games.into_iter().chain(latest_releases.into_iter()) {
+      if unique_ids.insert(game.id.clone()) {
+          combined_games.push(game);
+      }
+  }
+
+  Ok(Payload { games: combined_games })
 }
 
 pub(crate) async fn fetch_games(redis_pool: &web::Data<deadpool_redis::Pool>) -> Result<Payload, HttpResponse> {
