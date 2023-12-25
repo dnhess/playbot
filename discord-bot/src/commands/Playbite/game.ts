@@ -3,7 +3,6 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
 import config from '../../config';
-import { convertGameResponseToGameData } from '../../interfaces/IGame';
 
 export const data = new SlashCommandBuilder()
   .setName('game')
@@ -22,17 +21,15 @@ export const autocomplete = async (
   // @ts-ignore
   const focusedOption = interaction.options.getFocused();
 
-  const games = await fetch(`${config.BASE_API_URL}/feed?plat=web`);
-  const gamesJson = await games.json();
+  const gameResponse = await fetch(`${config.BACKEND_URL}/games`);
+  const gamesJson = await gameResponse.json();
 
-  const gamesData = convertGameResponseToGameData(
-    gamesJson.filter((game: { title: string }) => game.title === 'All Games')[0]
+  const choices: { name: string; value: string }[] = gamesJson.games.map(
+    (game: { name: any; id: any }) => ({
+      name: game.name,
+      value: game.name,
+    })
   );
-
-  const choices: { name: string; value: string }[] = gamesData.map((game) => ({
-    name: game.name,
-    value: game.id,
-  }));
 
   if (focusedOption) {
     const filteredChoices = choices.filter((choice) =>
@@ -48,42 +45,27 @@ export const autocomplete = async (
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();
-  const gameId = interaction.options.getString('name');
-  const game = await fetch(`${config.BASE_API_URL}/feed?plat=web`);
+  const gameName = interaction.options.getString('name');
 
-  const gameJson = await game.json();
+  const gameResponse = await fetch(`${config.BACKEND_URL}/game/${gameName}`);
 
-  const gamesData = convertGameResponseToGameData(
-    gameJson.filter(
-      (gameItem: { title: string }) => gameItem.title === 'All Games'
-    )[0]
-  );
-
-  // Find the game where the id matches the game id
-  const foundGame = gamesData.find((gameItem) => gameItem.id === gameId);
-
-  if (!foundGame) {
-    return interaction.editReply(`Game not found.`);
+  if (gameResponse.status === 404) {
+    return interaction.editReply(`Game "${gameName}" not found.`);
+  }
+  if (gameResponse.status !== 200) {
+    return interaction.editReply(
+      `There was an error getting the game "${gameName}". Send this to a developer: ${gameResponse.status}`
+    );
   }
 
-  const rankings = await Promise.all([
-    fetch(`${config.BASE_API_URL}/games/${gameId}/rankings?type=all`),
-    fetch(`${config.BASE_API_URL}/games/${gameId}/rankings?type=day`),
-    fetch(`${config.BASE_API_URL}/games/${gameId}/rankings?type=week`),
-  ]);
+  const gameJson = await gameResponse.json();
 
-  // Get the json from the rankings
-  const rankingsJson = await Promise.all(rankings.map((r) => r.json()));
-
-  // Get all, day, week rankings as index 0, 1, 2
-  const allRankings = rankingsJson[0];
-  const dayRankings = rankingsJson[1];
-  const weekRankings = rankingsJson[2];
+  const { game, rankings } = gameJson;
 
   // Get the top 10 rankings for each
-  const top10All = allRankings.slice(0, 10);
-  const top10Day = dayRankings.slice(0, 10);
-  const top10Week = weekRankings.slice(0, 10);
+  const top10All = rankings.all.slice(0, 10);
+  const top10Day = rankings.day.slice(0, 10);
+  const top10Week = rankings.week.slice(0, 10);
 
   // Map the rankings to a string
   const top10AllString = top10All.map(
@@ -117,10 +99,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   return interaction.editReply({
     embeds: [
       new EmbedBuilder()
-        .setTitle(foundGame?.name)
-        .setDescription(foundGame?.description)
+        .setTitle(game?.name)
+        .setDescription(game?.description)
         .setColor('#7E47F3')
-        .setThumbnail(foundGame?.promoImageUrl || '')
+        .setThumbnail(game?.promoImageUrl || '')
         .addFields(fields),
     ],
   });

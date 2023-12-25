@@ -4,32 +4,13 @@ import { EmbedBuilder } from 'discord.js';
 
 import type { UserCounts } from '../../commands/Playbite/top';
 import config from '../../config';
-import { convertGameResponseToGameData } from '../../interfaces/IGame';
 
 export const fetchGamesWithTopUsersOverOneDayEmbed = async () => {
-  const games = await fetch(`${config.BASE_API_URL}/feed?plat=web`);
+  const games = await fetch(`${config.BACKEND_URL}/games`);
 
   const gamesJson = await games.json();
 
-  const filteredGameData1 = convertGameResponseToGameData(
-    gamesJson.filter((game) => game.title === 'All Games')[0]
-  );
-
-  // Filter and convert the second set of data
-  const filteredGameData2 = convertGameResponseToGameData(
-    gamesJson.filter((game) => game.title === 'Latest Releases')[0]
-  );
-
-  // Combine the two sets of data and deduplicate based on game.name
-  const gamesData = [...filteredGameData1, ...filteredGameData2].reduce(
-    (acc, game) => {
-      if (!acc.some((existingGame) => existingGame.name === game.name)) {
-        acc.push(game);
-      }
-      return acc;
-    },
-    []
-  );
+  const { games: gamesData } = gamesJson;
 
   // Build an array of promises to fetch the top user for each game. The fetch url is formatted like this: https://api.playbite.com/api/games/6f8a4196-7700-4776-9737-fb573c606d20/rankings?type=day
   const promises = gamesData.map((game) =>

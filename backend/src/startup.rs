@@ -14,6 +14,8 @@ impl Application {
       let port = listener.local_addr().unwrap().port();
       let server = run(listener, settings).await?;
 
+      tracing::event!(target: "backend", tracing::Level::INFO, "Listening on address {}", address);
+
       Ok(Self { port, server })
   }
 

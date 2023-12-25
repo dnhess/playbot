@@ -28,7 +28,7 @@ pub async fn get_game(
   name: web::Path<String>,
   redis_pool: web::Data<deadpool_redis::Pool>,
 ) -> HttpResponse {
-    tracing::event!(target: "backend", tracing::Level::DEBUG, "Accessing game endpoint.");
+    tracing::event!(target: "backend", tracing::Level::INFO, "Accessing game endpoint.");
 
     let mut connection = match redis_pool.get().await {
         Ok(conn) => conn,
@@ -42,7 +42,7 @@ pub async fn get_game(
 
     match fetch_from_redis::<GameResponse>(&format!("game:{}", game_name), &mut connection).await {
         Ok(game) => {
-            tracing::event!(target: "backend", tracing::Level::DEBUG, "Game found in Redis.");
+            tracing::event!(target: "backend", tracing::Level::INFO, "Game found in Redis.");
             HttpResponse::Ok().json(game)
         },
         Err(_) => {
