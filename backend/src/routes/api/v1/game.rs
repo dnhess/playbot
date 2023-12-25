@@ -60,7 +60,7 @@ pub async fn get_game(
                                         game: found_game.clone(),
                                         rankings,
                                     };
-                                    if let Err(e) = cache_in_redis::<GameResponse>(&format!("game:{}", game_name), &game_response, &mut connection).await {
+                                    if let Err(e) = cache_in_redis::<GameResponse>(&format!("game:{}", game_name), &game_response, &mut connection, 3600).await {
                                         tracing::error!("Failed to cache game in Redis: {:?}", e);
                                     }
                                     HttpResponse::Ok().json(game_response)

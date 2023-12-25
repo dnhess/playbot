@@ -98,7 +98,7 @@ pub async fn get_user(
 
               match fetch_user(&user_name).await {
                   Ok(user) => {
-                      if let Err(e) = cache_in_redis::<User>(&format!("user:{}", user_name), &user, &mut connection).await {
+                      if let Err(e) = cache_in_redis::<User>(&format!("user:{}", user_name), &user, &mut connection, 3600).await {
                           tracing::error!("Failed to cache game in Redis: {:?}", e);
                       }
                       HttpResponse::Ok().json(user)

@@ -10,6 +10,7 @@ pub async fn cache_in_redis<T: Serialize>(
     key: &str,
     value: &T,
     connection: &mut Connection,
+    timeout: usize,
 ) -> Result<(), ()> {
     let value_json = match serde_json::to_string(value) {
         Ok(json) => json,
@@ -19,6 +20,8 @@ pub async fn cache_in_redis<T: Serialize>(
     cmd("SET")
         .arg(key)
         .arg(&value_json)
+        .arg("EX")
+        .arg(timeout) 
         .query_async::<_, ()>(connection)
         .await
         .map_err(|_| ())

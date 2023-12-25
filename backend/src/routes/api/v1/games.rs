@@ -101,7 +101,7 @@ pub(crate) async fn fetch_games(redis_pool: &web::Data<deadpool_redis::Pool>) ->
       Err(_) => {
           match fetch_games_from_api().await {
               Ok(games) => {
-                  if let Err(e) = cache_in_redis("all_games", &games, &mut connection).await {
+                  if let Err(e) = cache_in_redis("all_games", &games, &mut connection, 3600).await {
                       tracing::error!("Failed to cache games in Redis: {:?}", e);
                   }
                   Ok(games)
