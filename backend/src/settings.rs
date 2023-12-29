@@ -1,10 +1,11 @@
-
+use mongodb::{ options, Client, error::Error} ;
 /// Global settings for exposing all preconfigured variables
 #[derive(serde::Deserialize, Clone)]
 pub struct Settings {
     pub application: ApplicationSettings,
     pub debug: bool,
-    pub redis: RedisSettings
+    pub redis: RedisSettings,
+    pub mongo: MongoDBSettings
 }
 
 /// Redis settings for the entire app
@@ -15,6 +16,39 @@ pub struct RedisSettings {
     pub pool_max_idle: u64,
     pub pool_timeout_seconds: u64,
     pub pool_expire_seconds: u64,
+}
+
+#[derive(serde::Deserialize, Clone, Debug)]
+pub struct MongoDBSettings {
+    pub uri: String,
+    pub database: String,
+}
+
+impl MongoDBSettings {
+    pub fn get_uri(&self) -> String {
+        let uri = self.uri.clone();
+        uri
+    }
+    
+    pub fn get_database(&self) -> String {
+        let database = self.database.clone();
+        println!("MongoDB Database: {}", database);
+        database
+    }
+    
+    pub async fn init(&self) -> Result<Client, Error> {
+        let client = options::ClientOptions::parse(&self.get_uri()).await?;
+
+        match Client::with_options(client) {
+            Ok(client) => {
+                println!("Connected to MongoDB");
+                Ok(client)
+            },
+            Err(e) => {
+                panic!("Failed to connect to MongoDB: {}", e);
+            }
+        }
+    }
 }
 
 /// Application's specific settings to expose `port`,

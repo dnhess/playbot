@@ -11,7 +11,7 @@ struct User {
   display_name: String,
   #[serde(rename = "imageUrl")]
   image_url: String,
-  bio: String,
+  bio: Option<String>,
   stats: Vec<Stats>,
 }
 
@@ -76,7 +76,7 @@ pub async fn get_user(
   name: web::Path<String>,
   redis_pool: web::Data<deadpool_redis::Pool>,
 ) -> HttpResponse {
-    tracing::event!(target: "backend", tracing::Level::DEBUG, "Accessing user endpoint.");
+    tracing::event!(target: "backend", tracing::Level::INFO, "Accessing user endpoint.");
 
     let mut connection = match redis_pool.get().await {
         Ok(conn) => conn,

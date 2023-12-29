@@ -31,6 +31,10 @@ impl Application {
 async fn run(listener: std::net::TcpListener, settings: crate::settings::Settings) -> Result<actix_web::dev::Server, std::io::Error> {
   // Redis connection pool
   let cfg = deadpool_redis::Config::from_url(settings.clone().redis.uri);
+
+  // Create MonoDB client
+
+  let mongo_client = settings.clone().mongo.init().await.unwrap();
   
   let redis_pool = cfg
     .create_pool(Some(deadpool_redis::Runtime::Tokio1))
@@ -42,6 +46,7 @@ async fn run(listener: std::net::TcpListener, settings: crate::settings::Setting
       actix_web::App::new().service(crate::routes::health_check)
       .configure(crate::routes::games_routes_config)
       .app_data(redis_pool_data.clone())
+      .app_data(actix_web::web::Data::new(mongo_client.clone()))
   })
   .listen(listener)?
   .run();

@@ -11,3 +11,6 @@ redis:
   pool_max_idle: 8
   pool_timeout_seconds: 1
   pool_expire_seconds: 60
+
+mongo: 
+  database: 'test'

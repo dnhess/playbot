@@ -27,6 +27,9 @@ export const execute = async (interaction: CommandInteraction) => {
 
   const member = guild.members.cache.get(Member.id);
 
+  // Console log guild id and member id
+  console.log(guild.id, member.id);
+
   const Data = await levelSchema.findOne({
     guildId: guild.id,
     userId: member.id,
