@@ -4,6 +4,7 @@ use mongodb::{Client, Collection, options::FindOptions};
 use mongodb::error::Result as MongoResult;
 use deadpool_redis::redis::AsyncCommands;
 use deadpool_redis::Connection;
+use mongodb::bson::DateTime;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Level {
@@ -15,7 +16,10 @@ pub struct Level {
     xp: i32,
     level: i32,
     #[serde(rename = "totalXP")]
-    total_xp: i32,
+    total_xp: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "updatedAt")]
+    updated_at: Option<DateTime>
 }
 
 impl Level {
@@ -37,6 +41,8 @@ impl Level {
         let collection: Collection<Self> = client.database(&database).collection("levels");
         let filter = doc! { "guildId": guild_id, "userId": user_id };
         let result = collection.find_one(filter, None).await;
+
+        tracing::event!(target: "backend", tracing::Level::DEBUG, "Result from MongoDB: {:?}.", result);
 
         // If result is none, return a 404
         if let Ok(None) = result {
@@ -74,7 +80,7 @@ impl Level {
       let cursor = collection.find(filter, options).await.ok().expect("Failed to execute find.");
       let serial: Vec<Self> = match futures::TryStreamExt::try_collect(cursor).await {
           Ok(serial) => {
-              if let Err(e) = crate::utils::cache_in_redis::<Vec<Self>>(&key, &serial, redis_conn, 3600).await {
+              if let Err(e) = crate::utils::cache_in_redis::<Vec<Self>>(&key, &serial, redis_conn, 86400).await {
                   tracing::error!("Failed to cache leaderboard in Redis: {:?}", e);
               }
               serial

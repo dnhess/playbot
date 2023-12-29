@@ -17,7 +17,8 @@ struct User {
 
 #[derive(Deserialize, Serialize, Debug)]
 struct Stats {
-  icon: String,
+  #[serde(skip_serializing_if = "Option::is_none")]
+  icon: Option<String>,
   #[serde(deserialize_with = "deserialize_string_or_number")]
   value: String,
   description: String,

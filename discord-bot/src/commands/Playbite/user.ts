@@ -16,9 +16,7 @@ type TUserStatsResponse = {
 
 export const data = new SlashCommandBuilder()
   .setName('user')
-  .setDescription(
-    'Get info and stats for a Playbite user. Contributed by TotallyNotSeth'
-  )
+  .setDescription('Get info and stats for a Playbite user.')
   .addStringOption((option) =>
     option
       .setName('user')
