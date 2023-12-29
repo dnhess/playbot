@@ -28,6 +28,7 @@ impl ReactionRole {
         if let Ok(Some(json)) = cached {
             if let Ok(reaction_roles) = serde_json::from_str(&json) {
                 tracing::event!(target: "backend", tracing::Level::DEBUG, "All guild reaction roles found in Redis.");
+                tracing::event!(target: "backend", tracing::Level::DEBUG, "{:?}", reaction_roles);
                 return Ok(reaction_roles);
             }
         }
@@ -59,7 +60,7 @@ impl ReactionRole {
             tracing::error!("Failed to cache reaction roles in Redis: {:?}", e);
         }
 
-        tracing::event!(target: "backend", tracing::Level::DEBUG, "Reaction roles found in MongoDB {:?}.", reaction_roles.len() > 0);
+        tracing::event!(target: "backend", tracing::Level::DEBUG, "Reaction roles found in MongoDB {:?}.", reaction_roles);
         Ok(reaction_roles)
       }
 
@@ -70,14 +71,17 @@ impl ReactionRole {
         if let Ok(Some(json)) = cached {
             if let Ok(reaction_roles) = serde_json::from_str::<Vec<Self>>(&json) {
                 tracing::event!(target: "backend", tracing::Level::DEBUG, "Reaction roles found in Redis.");
-                let reaction_role = reaction_roles.into_iter().find(|reaction_role| reaction_role.message_id == message_id && reaction_role.emoji == emoji);
+                tracing::event!(target: "backend", tracing::Level::DEBUG, "{:?}", reaction_roles);
+                let reaction_role = reaction_roles.into_iter().find(|reaction_role| reaction_role.message_id == message_id && reaction_role.emoji.trim() == emoji);
+
+                tracing::event!(target: "backend", tracing::Level::DEBUG, "Parsed reaction role: {:?}.", reaction_role);
                 return Ok(reaction_role);
             }
         }
         
         match Self::find_all_by_guild_id(client, redis_conn, guild_id).await {
             Ok(reaction_roles) => {
-                let reaction_role = reaction_roles.into_iter().find(|reaction_role| reaction_role.message_id == message_id && reaction_role.emoji == emoji);
+                let reaction_role = reaction_roles.into_iter().find(|reaction_role| reaction_role.message_id == message_id && reaction_role.emoji.trim() == emoji);
                 let role_key = format!("reaction_roles_for_guild:{}:{}:{}", guild_id, message_id, emoji);
 
                 if let Some(reaction_role) = reaction_role {
