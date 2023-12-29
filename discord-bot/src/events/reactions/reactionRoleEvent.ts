@@ -50,14 +50,12 @@ export const reactionRoleEvent = async (
   console.log(`Reaction role guild ID: ${reaction.message.guild.id}`);
 
   // Fetch the emoji from the guild
-  let emojiInGuild = reaction.message.guild.emojis.cache.find(
-    (e) => e.id === reaction.emoji.id
-  );
+  let emojiInGuild = reaction.emoji.name;
 
   // If the emoji is not in the guild, use the emoji from the reaction
-  if (!emojiInGuild) {
+  if (reaction.emoji.id) {
     // @ts-ignore
-    emojiInGuild = reaction.emoji.id || reaction.emoji.name;
+    emojiInGuild = `<:${reaction.emoji.name}:${reaction.emoji.id}>`;
   }
 
   console.log(`Emoji in guild: ${emojiInGuild}`);
@@ -69,7 +67,9 @@ export const reactionRoleEvent = async (
   ).then(async (res): Promise<void> => {
     const { status } = res;
     if (status === 404) {
-      console.log('No reaction role found for this message');
+      console.log(
+        'No reaction role found for this message, status 404 from API'
+      );
       return;
     }
     const data = await res.json();

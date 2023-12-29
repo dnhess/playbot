@@ -3,10 +3,6 @@
 use tracing_subscriber::layer::SubscriberExt;
 
 pub fn get_subscriber(debug: bool) -> impl tracing::Subscriber + Send + Sync {
-  let _guard = sentry::init(("https://68a8e2ed0a0e3f815b8cfdd79ae5186e@o4506443154456576.ingest.sentry.io/4506443155570688", sentry::ClientOptions {
-      release: sentry::release_name!(),
-      ..Default::default()
-    }));
     let env_filter = if debug {
         "trace".to_string()
     } else {
@@ -18,7 +14,6 @@ pub fn get_subscriber(debug: bool) -> impl tracing::Subscriber + Send + Sync {
     let stdout_log = tracing_subscriber::fmt::layer().pretty();
     let subscriber = tracing_subscriber::Registry::default()
         .with(env_filter)
-        .with(sentry_tracing::layer())
         .with(stdout_log);
 
     let json_log = if !debug {

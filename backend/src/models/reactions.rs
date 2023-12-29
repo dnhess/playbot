@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use mongodb::error::Result as MongoResult;
 use deadpool_redis::redis::AsyncCommands;
 use deadpool_redis::Connection;
-use futures::stream::{StreamExt, TryStreamExt};
+use futures::stream::StreamExt;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ReactionRole {
