@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { BuiltInGraphemeProvider, Font, RankCardBuilder } from 'canvacord';
 import type { CommandInteraction } from 'discord.js';
 import {
   AttachmentBuilder,
@@ -6,9 +7,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-import { levelSchema } from '../../Schemas/level';
-
-const canvacord = require('canvacord');
+import config from '../../config';
 
 export const data = new SlashCommandBuilder()
   .setName('rank')
@@ -27,13 +26,17 @@ export const execute = async (interaction: CommandInteraction) => {
 
   const member = guild.members.cache.get(Member.id);
 
-  // Console log guild id and member id
-  console.log(guild.id, member.id);
+  let Data = await fetch(
+    `${config.BACKEND_URL}/guild/${guild.id}/user/${member.id}/rank`
+  );
 
-  const Data = await levelSchema.findOne({
-    guildId: guild.id,
-    userId: member.id,
-  });
+  if (Data.status !== 200) {
+    return interaction.reply(
+      `There was an error getting the rank for ${member.user.username}`
+    );
+  }
+
+  Data = await Data.json();
 
   const embed = new EmbedBuilder()
     .setColor('#7E47F3')
@@ -44,29 +47,30 @@ export const execute = async (interaction: CommandInteraction) => {
   if (!Data) {
     return interaction.reply({ embeds: [embed] });
   }
-  await interaction.deferReply();
 
   const toNextLevel = 5 * Data.level ** 2 + 50 * Data.level + 100;
-
-  const discrim =
-    member?.user?.discriminator === '0' ? '0000' : member?.user?.discriminator;
-
-  const rank = new canvacord.Rank()
+  Font.loadDefault();
+  const rank = new RankCardBuilder()
     .setAvatar(member.user.displayAvatarURL({ forceStatic: true }))
+    .setDisplayName(member?.nickname)
+    .setUsername(`@${member?.user?.username}`)
     .setCurrentXP(Data.XP)
     .setRequiredXP(toNextLevel)
-    .setRank(1, 'RANK', false)
-    .setLevel(Data.level, 'Level')
-    .setUsername(member?.user?.username)
-    .setDiscriminator(discrim);
+    .setProgressCalculator((currentLevelXP, nextLevelXP) =>
+      Math.round((currentLevelXP / nextLevelXP) * 100)
+    )
+    .setLevel(Data.level)
+    .setStatus('none')
+    .setGraphemeProvider(BuiltInGraphemeProvider.FluentEmojiFlat)
+    .setStyles({
+      container: 'text-2xl',
+    });
 
-  const Card = await rank.build();
+  const Card = await rank.build({
+    format: 'png',
+  });
 
   const attachment = new AttachmentBuilder(Card, { name: 'rank.png' });
 
-  const embed2 = new EmbedBuilder()
-    .setColor('#7E47F3')
-    .setImage('attachment://rank.png');
-
-  return interaction.editReply({ embeds: [embed2], files: [attachment] });
+  return interaction.reply({ files: [attachment] });
 };
