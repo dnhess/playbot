@@ -52,7 +52,7 @@ impl Level {
 
         // If result is Ok, cache it in Redis, using utils cache_in_redis
         if let Ok(Some(ref level)) = result {
-            if let Err(e) = crate::utils::cache_in_redis::<Self>(&key, &level, redis_conn, 3600).await {
+            if let Err(e) = crate::utils::cache_in_redis::<Self>(&key, &level, redis_conn, 300).await {
                 tracing::error!("Failed to cache level in Redis: {:?}", e);
             }
         }
@@ -80,7 +80,7 @@ impl Level {
       let cursor = collection.find(filter, options).await.ok().expect("Failed to execute find.");
       let serial: Vec<Self> = match futures::TryStreamExt::try_collect(cursor).await {
           Ok(serial) => {
-              if let Err(e) = crate::utils::cache_in_redis::<Vec<Self>>(&key, &serial, redis_conn, 86400).await {
+              if let Err(e) = crate::utils::cache_in_redis::<Vec<Self>>(&key, &serial, redis_conn, 3600).await {
                   tracing::error!("Failed to cache leaderboard in Redis: {:?}", e);
               }
               serial
