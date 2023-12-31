@@ -1,6 +1,7 @@
 use actix_web::{web, HttpResponse};
 use crate::models::levels::Level;
 
+// /api/v1/guild/{guild_id}/user/{user_id}/rank
 #[tracing::instrument(name = "Fetching user from levels", skip(redis_pool, mongo_client))]
 #[actix_web::get("")]
 pub async fn get_user_rank(
@@ -40,7 +41,7 @@ pub async fn get_user_rank(
         }
     }
 }
-
+// /api/v1/guild/{guild_id}/leaderboard
 #[tracing::instrument(name = "Fetching top users from levels", skip(redis_pool, mongo_client))]
 #[actix_web::get("")]
 pub async fn get_top_users(
