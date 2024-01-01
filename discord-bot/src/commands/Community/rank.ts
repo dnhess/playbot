@@ -50,9 +50,13 @@ export const execute = async (interaction: CommandInteraction) => {
 
   const toNextLevel = 5 * Data.level ** 2 + 50 * Data.level + 100;
   Font.loadDefault();
+
   const rank = new RankCardBuilder()
-    .setAvatar(member.user.displayAvatarURL({ forceStatic: true }))
-    .setDisplayName(member?.nickname)
+    .setAvatar(
+      member?.displayAvatarURL({ forceStatic: true }) ||
+        member.user.displayAvatarURL({ forceStatic: true })
+    )
+    .setDisplayName(member?.nickname || member?.user?.username)
     .setUsername(`@${member?.user?.username}`)
     .setCurrentXP(Data.XP)
     .setRequiredXP(toNextLevel)

@@ -52,9 +52,11 @@ export const execute = async (interaction: CommandInteraction) => {
     }
 
     user.avatar =
-      guildUser.user.displayAvatarURL({ forceStatic: true }) || missingImage;
+      guildUser.displayAvatarURL({ forceStatic: true }) ||
+      guildUser.user.displayAvatarURL({ forceStatic: true }) ||
+      missingImage;
     user.username = guildUser.user.username;
-    user.displayName = guildUser.nickname || '';
+    user.displayName = guildUser.nickname || guildUser.user.username;
     if (user.displayName.length > 23) {
       user.displayName = `${user.displayName.slice(0, 23)}...`;
     }
@@ -71,15 +73,6 @@ export const execute = async (interaction: CommandInteraction) => {
 
   // Uncomment this when in dev mode
   // guildData.pop()
-
-  // Temp, the heihgt is not working properly
-  guildData.push({
-    avatar: missingImage,
-    username: 'Random User',
-    displayName: 'Random User',
-    xp: 0,
-    rank: guildData.length + 1,
-  });
 
   Font.loadDefault();
 
