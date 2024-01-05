@@ -62,7 +62,7 @@ pub async fn get_top_users(
     };
 
     // Use Level::find_top_users_by_guild to fetch the top users from MongoDB
-    match Level::find_top_users_by_guild(&mut connection, &mongo_client, &guild_id, 11).await {
+    match Level::find_top_users_by_guild(&mut connection, &mongo_client, &guild_id, 10).await {
         Ok(levels) => {
             // If result is None, return a 404
             if levels.len() == 0 {
