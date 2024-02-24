@@ -1,0 +1,36 @@
+[package]
+name = "backend"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "backend"
+path = "src/main.rs"
+
+[dependencies]
+actix-web = "4.4.0"
+config = { version = "0.13.4", features = ["yaml"] }
+dotenv = "0.15.0"
+serde = { version = "1.0.193", features = ["derive"] }
+tokio = { version = "1.35.1", features = ["macros", "rt-multi-thread"] }
+sentry = "0.32.1"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = [
+    "fmt",
+    "std",
+    "env-filter",
+    "registry",
+    'json',
+    'tracing-log',
+] }
+sentry-tracing = "0.32.1"
+deadpool-redis = "0.14.0"
+chrono = { version = "0.4.31" }
+serde_json = { version = "1.0.108", features = ["raw_value"] }
+reqwest = "0.11.23"
+futures = "0.3.29"
+mongodb = "2.8.0"
+

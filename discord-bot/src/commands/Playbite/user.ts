@@ -16,9 +16,7 @@ type TUserStatsResponse = {
 
 export const data = new SlashCommandBuilder()
   .setName('user')
-  .setDescription(
-    'Get info and stats for a Playbite user. Contributed by TotallyNotSeth'
-  )
+  .setDescription('Get info and stats for a Playbite user.')
   .addStringOption((option) =>
     option
       .setName('user')
@@ -29,8 +27,7 @@ export const data = new SlashCommandBuilder()
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();
   const user = interaction.options.getString('user');
-
-  const userStats = await fetch(`${config.BASE_API_URL}/users/${user}/stats`);
+  const userStats = await fetch(`${config.BACKEND_URL}/user/${user}`);
 
   try {
     const userJson: TUserStatsResponse = await userStats.json();

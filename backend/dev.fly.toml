@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for prod-discord-bot-playbot on 2023-12-18T22:55:58-06:00
+# fly.toml app configuration file generated for dev-playbot-backend on 2023-12-24T13:32:49-06:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "prod-discord-bot-playbot"
+app = "dev-playbot-backend"
 primary_region = "ord"
 
 [build]
@@ -12,8 +12,8 @@ primary_region = "ord"
   strategy = "bluegreen"
 
 [http_service]
-  internal_port = 3000
-  force_https = true
+  internal_port = 5000
+  protocol = "tcp"
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 1
@@ -24,9 +24,9 @@ primary_region = "ord"
     timeout = "5s"
     grace_period = "10s"
     method = "GET"
-    path = "/health"
+    path = "/health-check/"
 
 [[vm]]
   cpu_kind = "shared"
   cpus = 1
-  memory_mb = 512
+  memory_mb = 256

@@ -74,7 +74,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       },
       {
         name: 'Available',
-        value: collectible.available.toLocaleString(),
+        value:
+          collectible.available.toLocaleString() === '-1'
+            ? '∞'
+            : collectible.available.toLocaleString(),
         inline: true,
       },
       {

@@ -26,7 +26,6 @@ import { reactionRoleEvent } from './events/reactions/reactionRoleEvent';
 import { sendJoinReaction } from './events/welcome/sendJoinReaction';
 import { sendWelcome } from './events/welcome/sendWelcome';
 import { sendWelcomeDM } from './events/welcome/sendWelcomeDM';
-import { convertGameResponseToGameData } from './interfaces/IGame';
 import { messages } from './messages/messages';
 import rollbar from './rollbarConfig';
 import { levelSchema } from './Schemas/level';
@@ -70,17 +69,12 @@ client.once(Events.ClientReady, async (c) => {
   console.log(`Ready! Logged in as ${c?.user?.tag}!`);
   try {
     console.log('starting games fetching');
-    const games = await fetch(`${config.BASE_API_URL}/feed?plat=web`);
+    const games = await fetch(`${config.BACKEND_URL}/games`);
 
     const gamesJson = await games.json();
-    const gamesData = convertGameResponseToGameData(
-      gamesJson.filter(
-        (game: { title: string }) => game.title === 'All Games'
-      )[0]
-    );
 
-    const choices: { name: string; value: string }[] = gamesData.map(
-      (game) => ({
+    const choices: { name: string; value: string }[] = gamesJson.games.map(
+      (game: { name: any; id: any }) => ({
         name: game.name,
         value: game.id,
       })

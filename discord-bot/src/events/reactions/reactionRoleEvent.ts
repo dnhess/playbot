@@ -7,7 +7,7 @@ import type {
   User,
 } from 'discord.js';
 
-import { reactionRoles } from '../../Schemas/reactionRoles';
+import config from '../../config';
 
 export const reactionRoleEvent = async (
   reaction: MessageReaction | PartialMessageReaction,
@@ -50,117 +50,116 @@ export const reactionRoleEvent = async (
   console.log(`Reaction role guild ID: ${reaction.message.guild.id}`);
 
   // Fetch the emoji from the guild
-  let emojiInGuild = reaction.message.guild.emojis.cache.find(
-    (e) => e.id === reaction.emoji.id
-  );
+  let emojiInGuild = reaction.emoji.name;
 
   // If the emoji is not in the guild, use the emoji from the reaction
-  if (!emojiInGuild) {
+  if (reaction.emoji.id) {
     // @ts-ignore
-    emojiInGuild = reaction.emoji.id || reaction.emoji.name;
+    emojiInGuild = `<:${reaction.emoji.name}:${reaction.emoji.id}>`;
   }
 
   console.log(`Emoji in guild: ${emojiInGuild}`);
 
-  // Find the reaction role in the database
-  reactionRoles.findOne(
-    {
-      guildId: reaction.message.guild.id,
-      channelId: reaction.message.channel.id,
-      messageId: reaction.message.id,
-      emoji: emojiInGuild,
-    },
-    async (err: any, data: any) => {
-      if (err) throw err;
-      if (!reaction.message.guild) return;
-      if (data) {
-        console.log(`Reaction role found for ${reaction.message.guild.name}!`);
-        const member = reaction.message.guild.members.cache.get(user.id);
+  if (!reaction.message.guild) return;
+
+  fetch(
+    `${config.BACKEND_URL}/guild/${reaction.message.guild.id}/message/${reaction.message.id}/emoji/${emojiInGuild}`
+  ).then(async (res): Promise<void> => {
+    const { status } = res;
+    if (status === 404) {
+      console.log(
+        'No reaction role found for this message, status 404 from API'
+      );
+      return;
+    }
+    const data = await res.json();
+
+    if (!reaction.message.guild) return;
+    if (data) {
+      console.log(`Reaction role found for ${reaction.message.guild.name}!`);
+      const member = reaction.message.guild.members.cache.get(user.id);
+      console.log(
+        `Member: ${member?.user?.tag || member?.user?.username} (${member?.id})`
+      );
+      if (!member) return;
+
+      // Check if bot has higher role than the role to add
+      const botUser = reaction.message.guild.members.cache.get(
+        client.user?.id || ''
+      );
+
+      if (!botUser) return;
+
+      const botHighestRole = botUser.roles.highest;
+
+      const roleToAdd = reaction.message.guild.roles.cache.get(data.roleId);
+
+      if (!roleToAdd) return;
+
+      if (botHighestRole.position <= roleToAdd.position) {
         console.log(
-          `Member: ${member?.user?.tag || member?.user?.username} (${
-            member?.id
-          })`
+          `Bot has lower role than the role to add (${roleToAdd.name})`
         );
-        if (!member) return;
-
-        // Check if bot has higher role than the role to add
-        const botUser = reaction.message.guild.members.cache.get(
-          client.user?.id || ''
-        );
-
-        if (!botUser) return;
-
-        const botHighestRole = botUser.roles.highest;
-
-        const roleToAdd = reaction.message.guild.roles.cache.get(data.roleId);
-
-        if (!roleToAdd) return;
-
-        if (botHighestRole.position <= roleToAdd.position) {
-          console.log(
-            `Bot has lower role than the role to add (${roleToAdd.name})`
+        try {
+          member.send(
+            `I don't have the permission to add the role ${roleToAdd.name} to you. Please contact a server administrator.`
           );
-          try {
-            member.send(
-              `I don't have the permission to add the role ${roleToAdd.name} to you. Please contact a server administrator.`
-            );
-          } catch (error) {
-            console.error(
-              `Could not send message to ${
-                member?.user?.tag || member?.user?.username
-              } (${member.id})`
-            );
+        } catch (error) {
+          console.error(
+            `Could not send message to ${
+              member?.user?.tag || member?.user?.username
+            } (${member.id})`
+          );
+        }
+        return;
+      }
+
+      const eventProperties = {
+        guildId: reaction.message.guild.id,
+        guildName: reaction.message.guild.name,
+        userName: member.user.username,
+        userId: member.id,
+        roleName: roleToAdd.name,
+      };
+
+      // If the member already has the role, remove it
+      if (member.roles.cache.has(data.roleId) && !isAdd) {
+        console.log(
+          `Removing role ${data.roleId} from ${
+            member?.user?.tag || member?.user?.username
+          }`
+        );
+        track(
+          'Reaction',
+          {
+            type: 'remove',
+            ...eventProperties,
+          },
+          {
+            user_id: member.id,
+            time: Date.now(),
           }
-          return;
-        }
-
-        const eventProperties = {
-          guildId: reaction.message.guild.id,
-          guildName: reaction.message.guild.name,
-          userName: member.user.username,
-          userId: member.id,
-          roleName: roleToAdd.name,
-        };
-
-        // If the member already has the role, remove it
-        if (member.roles.cache.has(data.roleId) && !isAdd) {
-          console.log(
-            `Removing role ${data.roleId} from ${
-              member?.user?.tag || member?.user?.username
-            }`
-          );
-          track(
-            'Reaction',
-            {
-              type: 'remove',
-              ...eventProperties,
-            },
-            {
-              user_id: member.id,
-              time: Date.now(),
-            }
-          );
-          member.roles.remove(data.roleId);
-        } else if (!member.roles.cache.has(data.roleId) && isAdd) {
-          console.log(
-            `Adding role ${data.roleId} to ${
-              member?.user?.tag || member?.user?.username
-            }`
-          );
-          track(
-            'Reaction',
-            {
-              type: 'add',
-              ...eventProperties,
-            },
-            {
-              user_id: member.id,
-              time: Date.now(),
-            }
-          );
-          member.roles.add(data.roleId);
-        }
+        );
+        member.roles.remove(data.roleId);
+      } else if (!member.roles.cache.has(data.roleId) && isAdd) {
+        console.log(
+          `Adding role ${data.roleId} to ${
+            member?.user?.tag || member?.user?.username
+          }`
+        );
+        track(
+          'Reaction',
+          {
+            type: 'add',
+            ...eventProperties,
+          },
+          {
+            user_id: member.id,
+            time: Date.now(),
+          }
+        );
+        member.roles.add(data.roleId);
       }
     }
-  );
+  });
 };

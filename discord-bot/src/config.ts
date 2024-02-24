@@ -12,6 +12,8 @@ const {
   REDIS_URL,
 } = process.env;
 
+let { BACKEND_URL } = process.env;
+
 // If any of the required environment variables are missing, throw an error
 if (
   !CLIENT_ID ||
@@ -19,9 +21,9 @@ if (
   !BASE_API_URL ||
   !MONODB_URL ||
   !ROLLBAR_ACCESS_TOKEN ||
-  !REDIS_URL
+  !REDIS_URL ||
+  !BACKEND_URL
 ) {
-  console.log('BASE API URL', BASE_API_URL);
   if (!CLIENT_ID) {
     throw new Error('CLIENT_ID is missing from .env');
   }
@@ -40,6 +42,9 @@ if (
   if (!REDIS_URL) {
     throw new Error('REDIS_URL is missing from .env');
   }
+  if (!BACKEND_URL) {
+    BACKEND_URL = BASE_API_URL;
+  }
 }
 
 const config: Record<string, string> = {
@@ -50,6 +55,7 @@ const config: Record<string, string> = {
   MONODB_URL,
   ROLLBAR_ACCESS_TOKEN,
   REDIS_URL,
+  BACKEND_URL,
 };
 
 export default config;
