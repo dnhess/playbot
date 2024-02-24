@@ -109,6 +109,7 @@ export const execute = async (interaction: CommandInteraction) => {
       container: {
         style: {
           backgroundColor: '#000',
+          fontSize: '20px',
         },
       },
       overlay: {
@@ -125,11 +126,13 @@ export const execute = async (interaction: CommandInteraction) => {
         text: {
           style: {
             color: '#fff',
+            fontsize: '22px',
           },
         },
         handle: {
           style: {
             color: '#fff',
+            fontSize: '18px',
           },
         },
       },
