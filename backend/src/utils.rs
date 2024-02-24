@@ -1,10 +1,12 @@
 // In util.rs or a similar module
 
-use deadpool_redis::{Connection, redis::{cmd, self}};
+use deadpool_redis::{
+    redis::{self, cmd},
+    Connection,
+};
+use serde::de::DeserializeOwned;
 use serde::Serialize;
 use serde_json;
-use serde::de::DeserializeOwned;
-
 
 pub async fn cache_in_redis<T: Serialize>(
     key: &str,
@@ -21,7 +23,7 @@ pub async fn cache_in_redis<T: Serialize>(
         .arg(key)
         .arg(&value_json)
         .arg("EX")
-        .arg(timeout) 
+        .arg(timeout)
         .query_async::<_, ()>(connection)
         .await
         .map_err(|_| ())
@@ -31,10 +33,8 @@ pub async fn fetch_from_redis<T: DeserializeOwned>(
     key: &str,
     connection: &mut Connection,
 ) -> Result<T, redis::RedisError> {
-    let redis_result: Result<String, redis::RedisError> = cmd("GET")
-        .arg(key)
-        .query_async(connection)
-        .await;
+    let redis_result: Result<String, redis::RedisError> =
+        cmd("GET").arg(key).query_async(connection).await;
 
     match redis_result {
         Ok(json) => serde_json::from_str(&json).map_err(|err| {
