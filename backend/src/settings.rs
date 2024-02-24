@@ -26,8 +26,7 @@ pub struct MongoDBSettings {
 
 impl MongoDBSettings {
     pub fn get_uri(&self) -> String {
-        let uri = self.uri.clone();
-        uri
+        self.uri.clone()
     }
 
     pub fn get_database(&self) -> String {

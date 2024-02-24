@@ -33,7 +33,7 @@ pub async fn get_reaction(
     {
         Ok(reaction_role) => {
             // If result is None, return a 404
-            if let None = reaction_role {
+            if reaction_role.is_none() {
                 return HttpResponse::NotFound().json("Reaction role not found.");
             }
 

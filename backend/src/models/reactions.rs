@@ -109,14 +109,14 @@ impl ReactionRole {
                     {
                         tracing::error!("Failed to cache reaction role in Redis: {:?}", e);
                     }
-                    return Ok(Some(reaction_role));
+                    Ok(Some(reaction_role))
                 } else {
-                    return Ok(None);
+                    Ok(None)
                 }
             }
             Err(_) => {
                 tracing::event!(target: "backend", tracing::Level::DEBUG, "Reaction roles not found in MongoDB.");
-                return Ok(None);
+                Ok(None)
             }
         }
     }

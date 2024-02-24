@@ -23,17 +23,12 @@ pub async fn get_user_rank(
     };
 
     // Use Level::find_by_guild_id_and_user_id to fetch the level from MongoDB
-    match Level::find_by_guild_id_and_user_id(
-        &mongo_client,
-        &mut connection,
-        &mut &guild_id,
-        &user_id,
-    )
-    .await
+    match Level::find_by_guild_id_and_user_id(&mongo_client, &mut connection, &guild_id, &user_id)
+        .await
     {
         Ok(level) => {
             // If result is None, return a 404
-            if let None = level {
+            if level.is_none() {
                 return HttpResponse::NotFound().json("Level not found.");
             }
 
@@ -77,7 +72,7 @@ pub async fn get_top_users(
     match Level::find_top_users_by_guild(&mut connection, &mongo_client, &guild_id, 10).await {
         Ok(levels) => {
             // If result is None, return a 404
-            if levels.len() == 0 {
+            if levels.is_empty() {
                 return HttpResponse::NotFound().json("Levels not found.");
             }
 
