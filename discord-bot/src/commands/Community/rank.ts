@@ -30,6 +30,10 @@ export const execute = async (interaction: CommandInteraction) => {
     `${config.BACKEND_URL}/guild/${guild.id}/user/${member.id}/rank`
   );
 
+  if (Data.status === 404) {
+    return interaction.reply(`No rank found for ${member.user.username}`);
+  }
+
   if (Data.status !== 200) {
     return interaction.reply(
       `There was an error getting the rank for ${member.user.username}`
