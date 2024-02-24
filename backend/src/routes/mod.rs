@@ -1,5 +1,5 @@
-mod health;
 mod api;
+mod health;
 
-pub use health::health_check;
 pub use api::games_routes_config;
+pub use health::health_check;

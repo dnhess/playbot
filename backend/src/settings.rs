@@ -1,11 +1,11 @@
-use mongodb::{ options, Client, error::Error} ;
+use mongodb::{error::Error, options, Client};
 /// Global settings for exposing all preconfigured variables
 #[derive(serde::Deserialize, Clone)]
 pub struct Settings {
     pub application: ApplicationSettings,
     pub debug: bool,
     pub redis: RedisSettings,
-    pub mongo: MongoDBSettings
+    pub mongo: MongoDBSettings,
 }
 
 /// Redis settings for the entire app
@@ -29,13 +29,13 @@ impl MongoDBSettings {
         let uri = self.uri.clone();
         uri
     }
-    
+
     pub fn get_database(&self) -> String {
         let database = self.database.clone();
         println!("MongoDB Database: {}", database);
         database
     }
-    
+
     pub async fn init(&self) -> Result<Client, Error> {
         let client = options::ClientOptions::parse(&self.get_uri()).await?;
 
@@ -43,7 +43,7 @@ impl MongoDBSettings {
             Ok(client) => {
                 println!("Connected to MongoDB");
                 Ok(client)
-            },
+            }
             Err(e) => {
                 panic!("Failed to connect to MongoDB: {}", e);
             }

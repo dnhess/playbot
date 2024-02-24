@@ -1,6 +1,10 @@
-use serde::{Deserialize, Serialize};
+use crate::{
+    routes::api::v1::games::fetch_games,
+    routes::api::v1::games::Game,
+    utils::{cache_in_redis, fetch_from_redis},
+};
 use actix_web::{web, HttpResponse};
-use crate::{utils::{cache_in_redis, fetch_from_redis}, routes::api::v1::games::Game, routes::api::v1::games::fetch_games};
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Ranking {
@@ -25,8 +29,8 @@ pub struct RankingsByPeriod {
 #[tracing::instrument(name = "Fetching playbite game", skip(redis_pool))]
 #[actix_web::get("/{name}")]
 pub async fn get_game(
-  name: web::Path<String>,
-  redis_pool: web::Data<deadpool_redis::Pool>,
+    name: web::Path<String>,
+    redis_pool: web::Data<deadpool_redis::Pool>,
 ) -> HttpResponse {
     tracing::event!(target: "backend", tracing::Level::INFO, "Accessing game endpoint.");
 
@@ -34,7 +38,8 @@ pub async fn get_game(
         Ok(conn) => conn,
         Err(e) => {
             tracing::error!("{}", e);
-            return HttpResponse::InternalServerError().json("We cannot process this request at the current time.");
+            return HttpResponse::InternalServerError()
+                .json("We cannot process this request at the current time.");
         }
     };
 
@@ -44,14 +49,17 @@ pub async fn get_game(
         Ok(game) => {
             tracing::event!(target: "backend", tracing::Level::INFO, "Game found in Redis.");
             HttpResponse::Ok().json(game)
-        },
+        }
         Err(_) => {
             tracing::event!(target: "backend", tracing::Level::DEBUG, "Game not found in Redis.");
             match fetch_games(&redis_pool).await {
                 Ok(games) => {
                     tracing::event!(target: "backend", tracing::Level::DEBUG, "Found all games from API");
                     let all_games = games.games;
-                    match all_games.iter().find(|&game| game.name.as_ref() == Some(&game_name)) {
+                    match all_games
+                        .iter()
+                        .find(|&game| game.name.as_ref() == Some(&game_name))
+                    {
                         Some(found_game) => {
                             match fetch_rankings(&found_game.id).await {
                                 Ok(rankings) => {
@@ -60,23 +68,31 @@ pub async fn get_game(
                                         game: found_game.clone(),
                                         rankings,
                                     };
-                                    if let Err(e) = cache_in_redis::<GameResponse>(&format!("game:{}", game_name), &game_response, &mut connection, 3600).await {
+                                    if let Err(e) = cache_in_redis::<GameResponse>(
+                                        &format!("game:{}", game_name),
+                                        &game_response,
+                                        &mut connection,
+                                        3600,
+                                    )
+                                    .await
+                                    {
                                         tracing::error!("Failed to cache game in Redis: {:?}", e);
                                     }
                                     HttpResponse::Ok().json(game_response)
-                                },
+                                }
                                 Err(e) => {
-                                  tracing::error!("Failed to fetch rankings from API: {:?}", e);
-                                  HttpResponse::InternalServerError().json("Failed to fetch rankings")
+                                    tracing::error!("Failed to fetch rankings from API: {:?}", e);
+                                    HttpResponse::InternalServerError()
+                                        .json("Failed to fetch rankings")
                                 }
                             }
-                        },
-                        None => HttpResponse::NotFound().json("Game not found")
+                        }
+                        None => HttpResponse::NotFound().json("Game not found"),
                     }
-                },
+                }
                 Err(e) => {
-                  tracing::error!("Failed to fetch games from API: {:?}", e);
-                  HttpResponse::InternalServerError().json("Failed to fetch games")
+                    tracing::error!("Failed to fetch games from API: {:?}", e);
+                    HttpResponse::InternalServerError().json("Failed to fetch games")
                 }
             }
         }
@@ -84,32 +100,29 @@ pub async fn get_game(
 }
 
 async fn fetch_rankings(game_id: &str) -> Result<RankingsByPeriod, reqwest::Error> {
-  let base_url = "https://playbiteapi.azurewebsites.net/api/games/";
+    let base_url = "https://playbiteapi.azurewebsites.net/api/games/";
 
-  let all_url = format!("{}{}/rankings?type=all", base_url, game_id);
-  let week_url = format!("{}{}/rankings?type=week", base_url, game_id);
-  let day_url = format!("{}{}/rankings?type=day", base_url, game_id);
+    let all_url = format!("{}{}/rankings?type=all", base_url, game_id);
+    let week_url = format!("{}{}/rankings?type=week", base_url, game_id);
+    let day_url = format!("{}{}/rankings?type=day", base_url, game_id);
 
-  let all_future = fetch_ranking(all_url);
-  let week_future = fetch_ranking(week_url);
-  let day_future = fetch_ranking(day_url);
+    let all_future = fetch_ranking(all_url);
+    let week_future = fetch_ranking(week_url);
+    let day_future = fetch_ranking(day_url);
 
-  let (all_result, week_result, day_result) = futures::join!(all_future, week_future, day_future);
+    let (all_result, week_result, day_result) = futures::join!(all_future, week_future, day_future);
 
-  let all_rankings = all_result?;
-  let week_rankings = week_result?;
-  let day_rankings = day_result?;
+    let all_rankings = all_result?;
+    let week_rankings = week_result?;
+    let day_rankings = day_result?;
 
-  Ok(RankingsByPeriod {
-      all: all_rankings,
-      week: week_rankings,
-      day: day_rankings,
-  })
+    Ok(RankingsByPeriod {
+        all: all_rankings,
+        week: week_rankings,
+        day: day_rankings,
+    })
 }
 
 async fn fetch_ranking(url: String) -> Result<Vec<Ranking>, reqwest::Error> {
-  reqwest::get(&url).await?.json::<Vec<Ranking>>().await
+    reqwest::get(&url).await?.json::<Vec<Ranking>>().await
 }
-
-
-
