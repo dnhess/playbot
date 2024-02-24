@@ -46,5 +46,5 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/heads/dev-') }}
         run: flyctl deploy --remote-only -c ./dev.fly.toml
         env:
-          FLY_API_TOKEN: ${{ secrets.FLY_BACKEND_DEPLOY }}
+          FLY_API_TOKEN: ${{ secrets.FLY_BACKEND_DEPLOY_DEV }}
         working-directory: backend
