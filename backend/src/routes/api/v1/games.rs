@@ -49,7 +49,7 @@ pub async fn get_all_games(redis_pool: actix_web::web::Data<deadpool_redis::Pool
 }
 
 async fn fetch_games_from_api() -> Result<Payload, String> {
-    let url = "https://playbiteapi.azurewebsites.net/api/games";
+    let url = "https://api.playbite.com/api/games";
     tracing::event!(target: "backend", tracing::Level::DEBUG, "Starging request to API: {:?}", url);
 
     let response = match reqwest::get(url).await {
