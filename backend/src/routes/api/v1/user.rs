@@ -124,7 +124,7 @@ pub async fn get_user(
 }
 
 async fn fetch_user(user_name: &str) -> Result<User, String> {
-    let base_url = "https://playbiteapi.azurewebsites.net/api/users/";
+    let base_url = "https://api.playbite.com/api/users/";
 
     let url = format!("{}{}/stats", base_url, user_name);
 

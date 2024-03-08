@@ -71,7 +71,71 @@ export const execute = async (interaction: CommandInteraction) => {
     .setStatus('none')
     .setGraphemeProvider(BuiltInGraphemeProvider.FluentEmojiFlat)
     .setStyles({
-      container: 'text-2xl',
+      progressbar: {
+        thumb: {
+          style: {
+            backgroundColor: '#fff',
+          },
+        },
+        track: {
+          style: {
+            backgroundColor: '#6632ec',
+          },
+        },
+      },
+      statistics: {
+        level: {
+          text: {
+            style: {
+              color: '#fff',
+            },
+          },
+        },
+        xp: {
+          text: {
+            style: {
+              color: '#fff',
+            },
+          },
+        },
+        rank: {
+          text: {
+            style: {
+              color: '#fff',
+            },
+          },
+        },
+      },
+      container: {
+        style: {
+          backgroundColor: '#000',
+          fontSize: '20px',
+        },
+      },
+      overlay: {
+        style: {
+          backgroundColor: '#000',
+        },
+      },
+      background: {
+        style: {
+          backgroundColor: '#6632ec',
+        },
+      },
+      username: {
+        text: {
+          style: {
+            color: '#fff',
+            fontsize: '22px',
+          },
+        },
+        handle: {
+          style: {
+            color: '#fff',
+            fontSize: '18px',
+          },
+        },
+      },
     });
 
   const Card = await rank.build({

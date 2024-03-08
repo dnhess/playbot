@@ -100,7 +100,7 @@ pub async fn get_game(
 }
 
 async fn fetch_rankings(game_id: &str) -> Result<RankingsByPeriod, reqwest::Error> {
-    let base_url = "https://playbiteapi.azurewebsites.net/api/games/";
+    let base_url = "https://api.playbite.com/api/games/";
 
     let all_url = format!("{}{}/rankings?type=all", base_url, game_id);
     let week_url = format!("{}{}/rankings?type=week", base_url, game_id);
