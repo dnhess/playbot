@@ -24,6 +24,20 @@ export const data = new SlashCommandBuilder()
       .setRequired(true)
   );
 
+const formatNumber = (value: number): string => {
+  const formattedNumber = value.toLocaleString();
+
+  if (value >= 1000000000) {
+    const billions = Math.floor(value / 1000000000);
+    return `${formattedNumber} (${billions}b)`;
+  }
+  if (value >= 1000000) {
+    const millions = Math.floor(value / 1000000);
+    return `${formattedNumber} (${millions}m)`;
+  }
+  return formattedNumber;
+};
+
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.deferReply();
   const user = interaction.options.getString('user');
@@ -36,7 +50,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
         'undefined ',
         ''
       ),
-      value: statItem.value.toLocaleString(),
+      // eslint-disable-next-line no-restricted-globals
+      value: isNaN(Number(statItem.value))
+        ? statItem.value
+        : formatNumber(Number(statItem.value)),
       inline: true,
     }));
 
