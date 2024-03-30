@@ -1,8 +1,10 @@
+// @ts-nocheck
 import { track } from '@amplitude/analytics-node';
 import fetch from 'cross-fetch';
 import {
   ChannelType,
   Client,
+  EmbedBuilder,
   Events,
   GatewayIntentBits,
   InteractionType,
@@ -28,6 +30,7 @@ import { sendWelcome } from './events/welcome/sendWelcome';
 import { sendWelcomeDM } from './events/welcome/sendWelcomeDM';
 import { messages } from './messages/messages';
 import rollbar from './rollbarConfig';
+import { guildLogsSchema } from './Schemas/enableLogging';
 import { levelSchema } from './Schemas/level';
 import { pendingTasksSchema, Tasks } from './Schemas/pending-tasks';
 import { UserSchema } from './Schemas/user';
@@ -441,6 +444,56 @@ client.on(Events.GuildAuditLogEntryCreate, async (auditLog, guild) => {
     if (error instanceof Error) {
       const eventProperties = {
         error: error.message,
+      };
+
+      rollbar?.error(error, eventProperties);
+    }
+  }
+});
+
+client.on(Events.MessageDelete, async (message) => {
+  try {
+    if (!message.content) return;
+    if (message.guild) {
+      guildLogsSchema.findOne(
+        {
+          guildId: message.guildId,
+        },
+        async (err: any, data: { channel: string }) => {
+          if (err) throw err;
+          if (data && message.guild) {
+            const channel = message.guild.channels.cache.get(data.channel);
+            if (channel) {
+              const embed = new EmbedBuilder()
+                .setColor('Red')
+                .setTitle(
+                  `Message from ${message?.author?.username} deleted in #${message?.channel?.name}`
+                )
+                .addFields(
+                  {
+                    name: 'Author',
+                    value: `<@${message.author.id}>`,
+                  },
+                  {
+                    name: 'Message Content',
+                    value: message.content,
+                  }
+                );
+
+              channel.send({ embeds: [embed] });
+            }
+          }
+        }
+      );
+    }
+  } catch (error) {
+    console.error(`Error during MessageDelete event: ${error}`);
+
+    if (error instanceof Error) {
+      const eventProperties = {
+        error: error.message,
+        channelName: message?.channel?.name,
+        guildName: message?.guild?.name,
       };
 
       rollbar?.error(error, eventProperties);
