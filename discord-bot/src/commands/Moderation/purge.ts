@@ -6,29 +6,111 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
+import { guildLogsSchema } from '../../Schemas/enableLogging';
+
 export const data = new SlashCommandBuilder()
   .setName('purge')
-  .setDescription('Removes X number of messages from a channel')
+  .setDescription('Bulk remove messages from a specific member')
+  .addUserOption((option) =>
+    option
+      .setName('target')
+      .setDescription('The member to remove messages from.')
+      .setRequired(true)
+  )
   .addIntegerOption((option) =>
     option
       .setName('amount')
-      .setDescription('The amount of messages you wish to delete')
-      .setMinValue(1)
-      .setMaxValue(100)
+      .setDescription('The number of messages to remove.')
       .setRequired(true)
   )
-  .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
+  .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageMessages);
 // eslint-disable-next-line consistent-return
 export const execute = async (interaction: CommandInteraction) => {
-  const number = interaction.options.getInteger('amount');
+  const target = interaction.options.getUser('target');
+  const amount = interaction.options.getInteger('amount');
+  const targetMember = interaction.guild.members.cache.get(target.id);
 
-  const embed = new EmbedBuilder()
-    .setColor('#7E47F3')
-    .setDescription(
-      `:white_check_mark: Successfully **deleted** ${number} messages!`
-    );
+  // If not admin limit amount to 20
+  if (!interaction.member.permissions.has('ADMINISTRATOR') && amount > 20) {
+    return interaction.reply({
+      content: 'You can only delete 20 messages at a time.',
+      ephemeral: true,
+    });
+  }
 
-  await interaction.channel?.bulkDelete(number);
+  if (amount <= 0 || amount > 100) {
+    return interaction.reply({
+      content: 'Please provide a valid amount between 1 and 100.',
+      ephemeral: true,
+    });
+  }
 
-  await interaction.reply({ embeds: [embed], ephemeral: true });
+  // Report the command execution to the guilds channel, found with guildSchema guild.id
+  const guild = await interaction.client.guilds.fetch(interaction.guildId);
+
+  guildLogsSchema.findOne({ guildId: guild.id }, async (err, requestData) => {
+    if (err) throw err;
+    if (requestData) {
+      const loggingChannel = guild.channels.cache.get(requestData.channel);
+      if (loggingChannel) {
+        if (
+          targetMember.roles.highest.rawPosition >=
+          interaction.member.roles.highest.rawPosition
+        ) {
+          loggingChannel.send({
+            embeds: [
+              new EmbedBuilder()
+                .setColor('Red')
+                .setDescription(
+                  `**${interaction.user.username}** (<@${interaction.user.id}>) tried to delete messages from **${target?.username} (<@${target.id}>)** but was denied.`
+                ),
+            ],
+          });
+
+          return;
+        }
+
+        loggingChannel.send({
+          embeds: [
+            new EmbedBuilder()
+              .setColor('Red')
+              .setDescription(
+                `**${interaction.user.username}** (<@${interaction.user.id}>) has deleted **${amount}** messages from **${target?.username} (<@${target.id}>)**.`
+              ),
+          ],
+        });
+      }
+    }
+  });
+
+  if (
+    targetMember.roles.highest.rawPosition >=
+    interaction.member.roles.highest.rawPosition
+  ) {
+    return interaction.reply({
+      content:
+        'You cannot purge messages from someone with an equal or higher role.',
+      ephemeral: true,
+    });
+  }
+
+  const { channel } = interaction;
+  const messages = await channel.messages.fetch({ limit: 100 });
+  const filteredMessages = messages
+    .filter((msg) => msg.author.id === target.id)
+    .first(amount);
+
+  if (filteredMessages.size === 0) {
+    return interaction.reply({
+      content: 'No messages found from the specified member.',
+      ephemeral: true,
+    });
+  }
+
+  await channel.bulkDelete(filteredMessages, true);
+
+  return interaction.reply({
+    content: `Successfully removed ${filteredMessages.length} messages from ${target.tag}.`,
+    ephemeral: true,
+  });
 };

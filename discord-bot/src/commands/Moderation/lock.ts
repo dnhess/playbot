@@ -17,7 +17,7 @@ export const data = new SlashCommandBuilder()
       .addChannelTypes(ChannelType.GuildText)
       .setRequired(true)
   )
-  .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageChannels);
+  .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator);
 // eslint-disable-next-line consistent-return
 export const execute = async (interaction: CommandInteraction) => {
   const channel = interaction.options.getChannel('channel');
