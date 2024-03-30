@@ -463,6 +463,13 @@ client.on(Events.MessageDelete, async (message) => {
           if (err) throw err;
           if (data && message.guild) {
             const channel = message.guild.channels.cache.get(data.channel);
+
+            if (
+              channel &&
+              (channel?.name === 'mods' || channel?.name === 'survey')
+            )
+              return;
+
             if (channel) {
               const embed = new EmbedBuilder()
                 .setColor('Red')
