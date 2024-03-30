@@ -44,37 +44,6 @@ export const auditLogEventCreateLog = async (auditLog, guild) => {
     );
   }
 
-  if (action === AuditLogEvent.MessageBulkDelete) {
-    guildLogsSchema.findOne(
-      { guildId: guild.id },
-      async (err: any, data: { channel: string }) => {
-        if (err) throw err;
-        if (data) {
-          const mChannel = guild.channels.cache.get(data.channel);
-          if (!mChannel) return;
-
-          const logEmbed = new EmbedBuilder()
-            .setColor('Red')
-            .setTitle('Message Bulk Deleted')
-            .addFields(
-              {
-                name: 'Message Count',
-                value: `${target.rawPosition}`,
-                inline: false,
-              },
-              {
-                name: 'Deleted By',
-                value: `${executor.username}#${executor.discriminator} (<@${executor?.id}>)`,
-                inline: false,
-              }
-            );
-
-          mChannel.send({ embeds: [logEmbed] });
-        }
-      }
-    );
-  }
-
   if (action === AuditLogEvent.MemberKick) {
     guildLogsSchema.findOne(
       { guildId: guild.id },
