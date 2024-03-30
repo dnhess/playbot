@@ -453,7 +453,7 @@ client.on(Events.GuildAuditLogEntryCreate, async (auditLog, guild) => {
 
 client.on(Events.MessageDelete, async (message) => {
   try {
-    if (!message.content) return;
+    if (message.content === '' && message?.attachments.size === 0) return;
     if (message.guild) {
       guildLogsSchema.findOne(
         {
@@ -476,11 +476,28 @@ client.on(Events.MessageDelete, async (message) => {
                   },
                   {
                     name: 'Message Content',
-                    value: message.content,
+                    value: message?.content || 'No text',
                   }
                 );
 
-              channel.send({ embeds: [embed] });
+              if (message?.attachments?.size === 1) {
+                const image = message.attachments.first();
+                embed.setImage(image.url);
+              }
+
+              const additionalEmbeds = [];
+
+              if (message?.attachments?.size > 1) {
+                message.attachments.forEach((attachment) => {
+                  const attachmentEmbed = new EmbedBuilder().setImage(
+                    attachment.url
+                  );
+
+                  additionalEmbeds.push(attachmentEmbed);
+                });
+              }
+
+              channel.send({ embeds: [embed, ...additionalEmbeds] });
             }
           }
         }
