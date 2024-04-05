@@ -307,6 +307,26 @@ client.on(Events.MessageCreate, async (message) => {
 
     // If message is a reply, ignore it
     if (message.reference) return;
+    // Check if the bot was mentioned in the message
+    if (message.mentions.users.has(client.user.id)) {
+      // Check if the message content matches "I read the rules." (case-insensitive)
+      if (/^<@!?\d+>\s+I read the rules\.$/i.test(message.content)) {
+        const roleId = '1066470092159856650';
+        const role = guild.roles.cache.get(roleId);
+
+        if (role) {
+          try {
+            await message.member.roles.add(role);
+            await message.react('🪄'); // Add the magic wand reaction
+          } catch (error) {
+            console.error(`Error adding role or reacting to message: ${error}`);
+            message.channel.send('An error occurred while adding the role :(');
+          }
+        } else {
+          console.error(`Role with ID ${roleId} not found.`);
+        }
+      }
+    }
 
     messages.forEach((msg) => {
       if (msg.message.test(message.content)) {
