@@ -310,7 +310,7 @@ client.on(Events.MessageCreate, async (message) => {
     // Check if the bot was mentioned in the message
     if (message.mentions.users.has(client.user.id)) {
       // Check if the message content matches "I read the rules." (case-insensitive)
-      if (/^<@!?\d+>\s+I read the rules\.$/i.test(message.content)) {
+      if (/^<@!?\d+>\s+I read the rules\.?$/i.test(message.content)) {
         const roleId = '1066470092159856650';
         const role = guild.roles.cache.get(roleId);
 
