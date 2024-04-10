@@ -307,6 +307,50 @@ client.on(Events.MessageCreate, async (message) => {
 
     // If message is a reply, ignore it
     if (message.reference) return;
+    // AUTO DELETE POLLS TEMP SOLUTION
+    if (
+      !message.content &&
+      !message?.attachments.size &&
+      !message.member?.permissions.has('ADMINISTRATOR')
+    ) {
+      message.delete();
+      // Send a message to the user that they can't send empty messages, they should only be the one to see the message
+      message.author.send('You cannot send polls in this server');
+      // Send a message to the audit log channel
+      if (message.guild) {
+        guildLogsSchema.findOne(
+          {
+            guildId: message.guildId,
+          },
+          async (err: any, data: { channel: string }) => {
+            if (err) throw err;
+            if (data && message.guild) {
+              const channel = message.guild.channels.cache.get(data.channel);
+
+              if (
+                channel &&
+                (channel?.name === 'mods' || channel?.name === 'survey')
+              )
+                return;
+
+              if (channel) {
+                const embed = new EmbedBuilder()
+                  .setColor('Red')
+                  .setTitle(
+                    `Poll from ${author?.username} auto deleted in #${message?.channel?.name} - BETA`
+                  )
+                  .addFields({
+                    name: 'Author',
+                    value: `<@${message.author.id}>`,
+                  });
+                channel.send({ embeds: [embed] });
+              }
+            }
+          }
+        );
+      }
+    }
+
     // Check if the bot was mentioned in the message
     if (message.mentions.users.has(client.user.id)) {
       // Check if the message content matches "I read the rules." (case-insensitive)
