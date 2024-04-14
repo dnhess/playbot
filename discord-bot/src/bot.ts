@@ -9,6 +9,7 @@ import {
   GatewayIntentBits,
   InteractionType,
   Partials,
+  PermissionFlagsBits,
 } from 'discord.js';
 import express from 'express';
 // Import mongoose
@@ -309,9 +310,11 @@ client.on(Events.MessageCreate, async (message) => {
     if (message.reference) return;
     // AUTO DELETE POLLS TEMP SOLUTION
     if (
-      !message.content &&
+      message.content === '' &&
       !message?.attachments.size &&
-      !message.member?.permissions.has('ADMINISTRATOR')
+      !message?.embeds.size &&
+      !message?.stickers.size &&
+      !message.member.permissions.has(PermissionFlagsBits.Administrator)
     ) {
       message.delete();
       // Send a message to the user that they can't send empty messages, they should only be the one to see the message
