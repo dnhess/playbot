@@ -304,6 +304,10 @@ client.on(Events.MessageCreate, async (message) => {
     )
       return;
 
+    if (message?.type === 'GUILD_MEMBER_JOIN') {
+      return;
+    }
+
     levelCheck(message);
 
     // If message is a reply, ignore it
