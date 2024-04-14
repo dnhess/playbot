@@ -11,6 +11,7 @@ import {
   Partials,
   PermissionFlagsBits,
 } from 'discord.js';
+import { MessageType } from 'discord-api-types/v10';
 import express from 'express';
 // Import mongoose
 import mongoose from 'mongoose';
@@ -304,7 +305,7 @@ client.on(Events.MessageCreate, async (message) => {
     )
       return;
 
-    if (message?.type === 'GUILD_MEMBER_JOIN') {
+    if (message?.type !== MessageType.Default) {
       return;
     }
 
