@@ -35,4 +35,16 @@ export const messages = [
       return `What ever game you are the best at!`;
     },
   },
+  {
+    message: /what are the odds .+/i,
+    response: () => {
+      return 'Nobody knows the odds and nobody will tell you what they are';
+    },
+  },
+  {
+    message: /what are the chances .+/i,
+    response: () => {
+      return 'Nobody knows the odds and nobody will tell you what they are';
+    },
+  },
 ];
