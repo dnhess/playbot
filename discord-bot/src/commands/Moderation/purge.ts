@@ -30,14 +30,6 @@ export const execute = async (interaction: CommandInteraction) => {
   const amount = interaction.options.getInteger('amount');
   const targetMember = interaction.guild.members.cache.get(target.id);
 
-  // If not admin limit amount to 20
-  if (!interaction.member.permissions.has('ADMINISTRATOR') && amount > 20) {
-    return interaction.reply({
-      content: 'You can only delete 20 messages at a time.',
-      ephemeral: true,
-    });
-  }
-
   if (amount <= 0 || amount > 100) {
     return interaction.reply({
       content: 'Please provide a valid amount between 1 and 100.',
