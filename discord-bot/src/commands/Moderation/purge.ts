@@ -32,7 +32,7 @@ export const execute = async (interaction: CommandInteraction) => {
 
   if (amount <= 0 || amount > 100) {
     return interaction.reply({
-      content: 'Please provide a valid amount between 1 and 100.',
+      content: 'Please provide a valid amount between 1 and 100',
       ephemeral: true,
     });
   }
