@@ -69,7 +69,7 @@ export const execute = async (interaction: CommandInteraction) => {
               new EmbedBuilder()
                 .setColor('Red')
                 .setDescription(
-                  `**${interaction.user.username}** (<@${interaction.user.id}>) tried to delete all messages from **${target?.username} (<@${target.id}>)** but was denied.`
+                  `**${interaction.user.username}** (<@${interaction.user.id}>) tried to delete all messages from **${targetMember?.user?.username} (<@${targetMember?.user?.id}>)** but was denied.`
                 ),
             ],
           });
@@ -82,7 +82,7 @@ export const execute = async (interaction: CommandInteraction) => {
             new EmbedBuilder()
               .setColor('Red')
               .setDescription(
-                `**${interaction.user.username}** (<@${interaction.user.id}>) has started the bulk removal messages from **${target?.username} (<@${target.id}>)**.`
+                `**${interaction.user.username}** (<@${interaction.user.id}>) has started the bulk removal messages from **${targetMember?.user?.username} (<@${targetMember?.user?.id}>)**.`
               ),
           ],
         });
