@@ -2,6 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 
 export const messages = [
   {
+    // eslint-disable-next-line
     message: /(create|make|build|construct|design)\s+(a\s+)?(playbite\s+)?collectible/i,
     response: () => {
       return {
