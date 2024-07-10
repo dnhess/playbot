@@ -2,7 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 
 export const messages = [
   {
-    message: /(create|make|build|construct|design)\s+a\s+collectible/i,
+    message: /(create|make|build|construct|design)\s+(a\s+)?(playbite\s+)?collectible/i,
     response: () => {
       return {
         embeds: [
