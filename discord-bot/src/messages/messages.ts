@@ -3,7 +3,8 @@ import { EmbedBuilder } from 'discord.js';
 export const messages = [
   {
     // eslint-disable-next-line
-    message: /(create|make|build|construct|design)\s+(a\s+)?(playbite\s+)?collectible/i,
+    message:
+      /(create|make|build|construct|design)\s+(a\s+)?(playbite\s+)?collectible/i,
     response: () => {
       return {
         embeds: [
@@ -46,6 +47,43 @@ export const messages = [
     message: /what are the chances .+/i,
     response: () => {
       return 'Nobody knows the odds and nobody will tell you what they are';
+    },
+  },
+  {
+    message: /(lost|losing|decrease|reduced)\s+(\d+)?\s*tickets?/i,
+    response: () => {
+      return 'Checkout <#1084878200980643890> for information specifically about ticket loss.';
+    },
+  },
+  {
+    message: /went\s+from\s+\d+\s+to\s+\d+\s*tickets?/i,
+    response: () => {
+      return 'Checkout <#1084878200980643890> for information specifically about ticket loss.';
+    },
+  },
+  {
+    message: /why\s+am\s+I\s+getting\s+only\s+\d+\s+tickets?\s+every\s+game/i,
+    response: () => {
+      return 'Checkout <#1084878200980643890> for information specifically about ticket loss.';
+    },
+  },
+  {
+    message: /why\s+did\s+I\s+go\s+from\s+\d+k?\s+to\s+\d+\s+tickets?/i,
+    response: () => {
+      return 'Checkout <#1084878200980643890> for information specifically about ticket loss.';
+    },
+  },
+  {
+    message: /why\s+am\s+I\s+only\s+(getting|earning)\s+\d+\s+tickets?/i,
+    response: () => {
+      return 'Checkout <#1084878200980643890> for information specifically about ticket loss.';
+    },
+  },
+  {
+    message:
+      /why\s+(did|do)\s+my\s+(ticket\s+earnings|tickets)\s+(drop|decrease|reduce|go\s+down)\?/i,
+    response: () => {
+      return 'Checkout <#1084878200980643890> for information specifically about ticket loss.';
     },
   },
 ];
