@@ -27,5 +27,4 @@ export * as game from './Playbite/game';
 export * as managetopleaderboardreport from './Playbite/manage-top-leaderboard-report';
 export * as play from './Playbite/play';
 export * as referral from './Playbite/referral';
-export * as top from './Playbite/top';
 export * as user from './Playbite/user';
