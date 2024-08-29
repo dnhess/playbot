@@ -86,4 +86,46 @@ export const messages = [
       return 'Checkout <#1084878200980643890> for information specifically about ticket loss.';
     },
   },
+  {
+    // Handles straightforward queries like "what is available in Bulgaria" or "what prizes are available in Sweden"
+    message:
+      /what('s| is)?\s(available\s(in|for)\s\w+\??|prizes?\sare\savailable\s(in|for)\s\w+)/i,
+    response: () => {
+      return {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle('Prizes Availability')
+            .setColor('#7E47F3')
+            .setDescription(
+              `If you do not live in the US, Canada, or the UK the prizes currently available to you are:
+
+              Roblox, Minecoins, Steam, Nitro, Valorant, Taco Bell, McDonalds, Temu, Shein, Lululemon, Krispy Kreme, Dunkin Donuts, Chick-fil-a, Netflix, Twitch, NBA/NFL/NHL stores, Cinnabon, Five Guys, Panda Express, Jamba Juice, Papa Johns, Ihop, Chipotle, Uber Eats, Dominos, Doordash, H&M, TJ Maxx, Walmart 
+              
+              *Currently, all prizes in India are out of stock.`
+            ),
+        ],
+      };
+    },
+  },
+  {
+    // Handles more complex or conversational queries like "sorry to bother but is the fortnite vbucks giftcard available in North Macedonia"
+    message:
+      /(?:sorry\s+to\s+bother\s+but\s+)?is\s+.+\s+(prize|prizes?|gift\s?cards?|cards?)\s+available\s(in|for)\s\w+|\w+\s+(prize|prizes?|gift\s?cards?|cards?)\s+available\s(in|for)\s\w+\??/i,
+    response: () => {
+      return {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle('Prizes Availability')
+            .setColor('#7E47F3')
+            .setDescription(
+              `If you do not live in the US, Canada, or the UK the prizes currently available to you are:
+
+              Roblox, Minecoins, Steam, Nitro, Valorant, Taco Bell, McDonalds, Temu, Shein, Lululemon, Krispy Kreme, Dunkin Donuts, Chick-fil-a, Netflix, Twitch, NBA/NFL/NHL stores, Cinnabon, Five Guys, Panda Express, Jamba Juice, Papa Johns, Ihop, Chipotle, Uber Eats, Dominos, Doordash, H&M, TJ Maxx, Walmart 
+              
+              *Currently, all prizes in India are out of stock.`
+            ),
+        ],
+      };
+    },
+  },
 ];
