@@ -108,9 +108,8 @@ export const messages = [
     },
   },
   {
-    // Handles more complex or conversational queries like "sorry to bother but is the fortnite vbucks giftcard available in North Macedonia"
     message:
-      /(?:sorry\s+to\s+bother\s+but\s+)?is\s+.+\s+(prize|prizes?|gift\s?cards?|cards?)\s+available\s(in|for)\s\w+|\w+\s+(prize|prizes?|gift\s?cards?|cards?)\s+available\s(in|for)\s\w+\??/i,
+      /(is|are)\s+\w+(\s+\w+)*\s+(gift\s?card|giftcard|card|prize|product|item|collectible)\s+(available|avaliable|in\sstock)(\s+in\s\w+)?\??/i,
     response: () => {
       return {
         embeds: [
