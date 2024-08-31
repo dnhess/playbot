@@ -127,4 +127,25 @@ export const messages = [
       };
     },
   },
+  {
+    // Matches queries like "stock in [country]" or "prizes in [country]"
+    message:
+      /\b(gift\s?card|giftcard|card|prize|product|item|collectible|stock|prizes)\s(\w+)\b/i,
+    response: () => {
+      return {
+        embeds: [
+          new EmbedBuilder()
+            .setTitle('Prizes Availability')
+            .setColor('#7E47F3')
+            .setDescription(
+              `If you do not live in the US, Canada, or the UK the prizes currently available to you are:
+
+              Roblox, Minecoins, Steam, Nitro, Valorant, Taco Bell, McDonalds, Temu, Shein, Lululemon, Krispy Kreme, Dunkin Donuts, Chick-fil-a, Netflix, Twitch, NBA/NFL/NHL stores, Cinnabon, Five Guys, Panda Express, Jamba Juice, Papa Johns, Ihop, Chipotle, Uber Eats, Dominos, Doordash, H&M, TJ Maxx, Walmart 
+              
+              *Currently, all prizes in India are out of stock.`
+            ),
+        ],
+      };
+    },
+  },
 ];
